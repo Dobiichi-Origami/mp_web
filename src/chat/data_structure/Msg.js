@@ -1,7 +1,7 @@
 //构造conversation的msg对象结构体
 import vm from 'src/main.js'
 class Msg {
-	constructor(index, type, content_url, chat_type, temp, time, extra_content) {
+	constructor(index, type, content_url, chat_type, temp, time,me) {
 		// this.content
 		// this.content_type
 		// this.url
@@ -14,6 +14,7 @@ class Msg {
 		// this.revoke
 		// this.revoke_user
 		// this.atList
+		this.me=me;
 		if (!type) {
 			// //客户端魔法表情type也为TXT
 			// if(content_url=='[骰子]' || content_url=='[猜拳]'){
@@ -51,8 +52,8 @@ class Msg {
 		this.time = time;
 		//响应revoke;
 		this.revoke=false;
-		if (extra_content)
-			this.extra_content = extra_content;
+		// if (extra_content)
+		// 	this.extra_content = extra_content;
 		//console.log(this)
 		//存储	
 		vm.$store.state.chat.conversation[index].msg.push(this);
