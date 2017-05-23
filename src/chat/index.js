@@ -56,7 +56,7 @@ import Extra from './data_structure/Extra'
 import GroupExtra from './data_structure/GroupExtra'
 import Msg from './data_structure/Msg'
 import Conversation from './data_structure/Conversation'
-// import uploadimg from './RongSDK_helper/uploadimg'
+import uploadimg from './RongSDK_helper/uploadimg'
 var mpIM = new MpIM();
 console.log(mpIM.init)
 //对外暴露的唯一对象。
@@ -334,7 +334,7 @@ var chat = {
 				console.log(vm.$store.state.current_user._id);
 				if (info.me) {
 					me.id = info.sender_id;
-					me.no = info.sender_id;
+					me.no = info.sender_no;
 					other.id = info.target_id;
 					other.no = info.target_no;
 				} else {
@@ -528,8 +528,9 @@ var chat = {
 			var file = content_url.file;
 			content_url = content_url.url;
 		}
-		var time = new Date().getTime(),
-			msg = new Msg(index, type, content_url, chat_type, temp, time, extra_content),extra,body;
+		// var extra;
+		// var time = new Date().getTime(),
+		// 	msg = new Msg(index, type, content_url, chat_type, temp, time, extra_content),extra,body;
 			 // sender_id:'551d812efbe78e6ec27b1049',
 		  //   sender_no:230,
 		  //   sender_name:'123',
@@ -546,24 +547,6 @@ var chat = {
 		  //   target_type:0,
 		  //   target_id:'550d6af6fbe78e1ec58b95ca',
 		  //   target_no:219
-			body={
-				sender_id:vm.$store.state.chat.conversation[index].me.id,
-			    sender_no:vm.$store.state.chat.conversation[index].me.no,
-			    sender_name:vm.$store.state.chat.conversation[index].me.name,
-			    sender_head_img:vm.$store.state.chat.conversation[index].me.headimg,
-			    msg_type:0,
-			    msg_time:new Date().getTime(),
-			    msg_content_type:1,
-			    msg_content:mpIM.toBase64(JSON.stringify({
-			      speakType:chat_type,   
-			      content:content_url,
-			      atList:[],      
-			      temp:temp
-			    })),
-			    target_type:type,
-			    target_id:vm.$store.state.chat.conversation[index].other.id,
-			    target_no:vm.$store.state.chat.conversation[index].other.no
-			}
 // <<<<<<< HEAD
 // 			extra,
 // 			conversationType;
@@ -572,32 +555,51 @@ var chat = {
 			
 			//msg.set_atList();//消息中加入@马化腾
 // =======
-		if (vm.$store.state.chat.conversation[index].isGroup) {
-			if (atList) {//如果有atList
-				msg.set_atList(atList);
-			}
-			extra = new GroupExtra(index, atList, msg.content_type, msg.chat_type, extra_content);
-		}
-		else
-			extra = new Extra(index, msg.content_type, msg.chat_type, temp, extra_content);
+		// if (vm.$store.state.chat.conversation[index].isGroup) {
+		// 	if (atList) {//如果有atList
+		// 		msg.set_atList(atList);
+		// 	}
+		// 	extra = new GroupExtra(index, atList, msg.content_type, msg.chat_type, extra_content);
+		// }
+		// else
+		// 	extra = new Extra(index, msg.content_type, msg.chat_type, temp, extra_content);
 
 		//自己发的消息
-		msg.set_from();
+		// msg.set_from();
 		//img
-		if (type == 1) {
-			//回调中取到url后将已存的本地url换掉，再发送融云消息
+		// if (type == 1) {
+		// 	//回调中取到url后将已存的本地url换掉，再发送融云消息
+			var msg=new Msg(index,1,content_url,0, 0,new Date().getTime(),true);
 			function callback(url_) {
+				console.log(url_,'%%%%')
 				if (url_.match('jpg') || url_.match('png')) {
 					msg.url = url_;
 					msg.set_send_success();
-					Rong.sendMessageImg(JSON.stringify(extra), msg.url, vm.$store.state.chat.conversation[index], msg);
+					var body={
+						sender_id:vm.$store.state.chat.conversation[index].me.id,
+					    sender_no:vm.$store.state.chat.conversation[index].me.no,
+					    sender_name:vm.$store.state.chat.conversation[index].me.name,
+					    sender_head_img:vm.$store.state.chat.conversation[index].me.headimg,
+					    msg_type:0,
+					    msg_time:new Date().getTime(),
+					    msg_content_type:type,
+					    msg_content:mpIM.toBase64(JSON.stringify({
+					      speakType:chat_type,   
+					      content:content_url,
+					      atList:[],      
+					      temp:temp
+					    })),
+					    target_type:0,
+					    target_id:vm.$store.state.chat.conversation[index].other.id,
+					    target_no:vm.$store.state.chat.conversation[index].other.no
+					}
+					mpIM.send(body)
 				}
 			}
 			uploadimg(file, callback);
-		}
+		// }
 		//txt
-		else
-			mpIM.send(body)
+		// else
 			//Rong.sendMessageTxt(JSON.stringify(extra), msg.content, vm.$store.state.chat.conversation[index], msg);
 	},
 	send_img: function (e,index) {
@@ -788,7 +790,7 @@ var chat = {
 		if(index===undefined){
 			return;
 		}
-		var msg=new Msg(index, message.msg_content_type, message.msg_content.content, message.msg_content.speakType, message.msg_content.temp, message.msg_time);
+		var msg=new Msg(index, message.msg_content_type, message.msg_content.content, message.msg_content.speakType, message.msg_content.temp, message.msg_time,message.me);
 		// var receiveType = extra.contentType;//收到的消息的content类型
 		// if (receiveType == 'gift_message') {
 		// 	//礼物消息做特殊处理，需要存到好友通知数组中,不建立会话
