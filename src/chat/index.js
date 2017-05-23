@@ -522,6 +522,13 @@ var chat = {
 		console.log(con);
 		return (con.length - 1);//创建新对话后返回对话数组最后一个索引值，此处需要修正
 	},
+
+	// newIMSend: function (index) {
+	// 	if (index == 0) {
+			
+	// 	}
+	// },
+
 	send: function (index, type, content_url, chat_type, temp, extra_content, atList) {
 		//构造msg对象并存储
 		if (type == 1) {

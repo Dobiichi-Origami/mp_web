@@ -10,6 +10,9 @@
    		<p @click="test(6)">向cmd_msg[0]拒绝求婚</p>
    		<p @click="test(7)">向cmd_msg[0]同意离婚</p>
    		<p @click="test(8)">向cmd_msg[0]拒绝离婚</p>
+		<br>
+   		<h1>新IM聊天demo</h1>
+		<p @click="newTest(0)">给index0发消息</p>
     </div>
 </template>
 
@@ -47,6 +50,9 @@
 
 				if (index == 8)
 					chat.cmd_sender("couple_divorce_reply", 0, "reject", "当然是选择原谅我啊")
+
+			},
+			newTest: function() {
 
 			},
 			change: function(e) {
