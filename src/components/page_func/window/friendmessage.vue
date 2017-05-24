@@ -376,7 +376,6 @@
 					this.tishi = '';
 					console.log(this.$store.state.chat.conversation[this.list.index])
 				}
-
 			},
 			send_magicimg(index, type){
 				chat.send_magicimg(index, type);
