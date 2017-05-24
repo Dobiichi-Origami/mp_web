@@ -56,7 +56,9 @@ import Extra from './data_structure/Extra'
 import GroupExtra from './data_structure/GroupExtra'
 import Msg from './data_structure/Msg'
 import Conversation from './data_structure/Conversation'
-import uploadimg from './RongSDK_helper/uploadimg'
+// require('./mpIM/plupload.js')
+require('./mpIM/qiniu.js')
+// import uploadimg from './RongSDK_helper/uploadimg'
 var mpIM = new MpIM();
 console.log(mpIM.init)
 //对外暴露的唯一对象。
@@ -523,129 +525,131 @@ var chat = {
 		return (con.length - 1);//创建新对话后返回对话数组最后一个索引值，此处需要修正
 	},
 	send: function (index, type, content_url, chat_type, temp, extra_content, atList) {
-		//构造msg对象并存储
+		console.log(type)
 		if (type == 1) {
-			var file = content_url.file;
-			content_url = content_url.url;
-		}
-		// var extra;
-		// var time = new Date().getTime(),
-		// 	msg = new Msg(index, type, content_url, chat_type, temp, time, extra_content),extra,body;
-			 // sender_id:'551d812efbe78e6ec27b1049',
-		  //   sender_no:230,
-		  //   sender_name:'123',
-		  //   sender_head_img:'http://7x2wk4.com2.z0.glb.qiniucdn.com/FjSVAW5sjDmeort4fXB6OZ5JLlJ7-head',
-		  //   msg_type:0,
-		  //   msg_time:new Date().getTime(),
-		  //   msg_content_type:1,
-		  //   msg_content:{
-		  //     speakType:0,   
-		  //     content:mp.toBase64(inp.value),
-		  //     atList:[],      
-		  //     temp:0
-		  //   }
-		  //   target_type:0,
-		  //   target_id:'550d6af6fbe78e1ec58b95ca',
-		  //   target_no:219
-// <<<<<<< HEAD
-// 			extra,
-// 			conversationType;
-// 		if (vm.$store.state.chat.conversation[index].isGroup) {	
-// 			conversationType = 3;
-			
-			//msg.set_atList();//消息中加入@马化腾
-// =======
-		// if (vm.$store.state.chat.conversation[index].isGroup) {
-		// 	if (atList) {//如果有atList
-		// 		msg.set_atList(atList);
-		// 	}
-		// 	extra = new GroupExtra(index, atList, msg.content_type, msg.chat_type, extra_content);
-		// }
-		// else
-		// 	extra = new Extra(index, msg.content_type, msg.chat_type, temp, extra_content);
-
-		//自己发的消息
-		// msg.set_from();
-		//img
-		// if (type == 1) {
-		// 	//回调中取到url后将已存的本地url换掉，再发送融云消息
-			var msg=new Msg(index,1,content_url,0, 0,new Date().getTime(),true);
-			function callback(url_) {
-				console.log(url_,'%%%%')
-				if (url_.match('jpg') || url_.match('png')) {
-					msg.url = url_;
-					msg.set_send_success();
-					var body={
-						sender_id:vm.$store.state.chat.conversation[index].me.id,
-					    sender_no:vm.$store.state.chat.conversation[index].me.no,
-					    sender_name:vm.$store.state.chat.conversation[index].me.name,
-					    sender_head_img:vm.$store.state.chat.conversation[index].me.headimg,
-					    msg_type:0,
-					    msg_time:new Date().getTime(),
-					    msg_content_type:type,
-					    msg_content:mpIM.toBase64(JSON.stringify({
-					      speakType:chat_type,   
-					      content:content_url,
-					      atList:[],      
-					      temp:temp
-					    })),
-					    target_type:0,
-					    target_id:vm.$store.state.chat.conversation[index].other.id,
-					    target_no:vm.$store.state.chat.conversation[index].other.no
-					}
-					mpIM.send(body)
+				var body={
+					sender_id:vm.$store.state.chat.conversation[index].me.id,
+				    sender_no:vm.$store.state.chat.conversation[index].me.no,
+				    sender_name:vm.$store.state.chat.conversation[index].me.name,
+				    sender_head_img:vm.$store.state.chat.conversation[index].me.headimg,
+				    msg_type:0,
+				    msg_time:new Date().getTime(),
+				    msg_content_type:1,
+				    msg_content:mpIM.toBase64(JSON.stringify({
+				      speakType:0,   
+				      content:content_url,
+				      atList:[],      
+				      temp:temp
+				    })),
+				    target_type:0,
+				    target_id:vm.$store.state.chat.conversation[index].other.id,
+				    target_no:vm.$store.state.chat.conversation[index].other.no
 				}
+				mpIM.send(body)
+		}else{
+			var body={
+				sender_id:vm.$store.state.chat.conversation[index].me.id,
+			    sender_no:vm.$store.state.chat.conversation[index].me.no,
+			    sender_name:vm.$store.state.chat.conversation[index].me.name,
+			    sender_head_img:vm.$store.state.chat.conversation[index].me.headimg,
+			    msg_type:0,
+			    msg_time:new Date().getTime(),
+			    msg_content_type:type,
+			    msg_content:mpIM.toBase64(JSON.stringify({
+			      speakType:chat_type,   
+			      content:content_url,
+			      atList:[],      
+			      temp:temp
+			    })),
+			    target_type:0,
+			    target_id:vm.$store.state.chat.conversation[index].other.id,
+			    target_no:vm.$store.state.chat.conversation[index].other.no
 			}
-			uploadimg(file, callback);
-		// }
-		//txt
-		// else
-			//Rong.sendMessageTxt(JSON.stringify(extra), msg.content, vm.$store.state.chat.conversation[index], msg);
-	},
-	send_img: function (e,index) {
-		var file = e.target.files[0];
-		if (file) {
-			if (file.name.slice(-4) == '.png' || file.name.slice(-4) == '.jpg') {
-				//取本地图片地址
-				var node = e.target;
-				var imgURL = '';
-				try {
-					var file = null;
-					if (node.files && node.files[0]) {
-						file = node.files[0];
-					} else if (node.files && node.files.item(0)) {
-						file = node.files.item(0);
-					}
-					//Firefox 因安全性问题已无法直接通过input[file].value 获取完整的文件路径  
-					try {
-						imgURL = file.getAsDataURL();
-					} catch (e) {
-						imgURL = window.URL.createObjectURL(file);
-					}
-				} catch (e) {
-					if (node.files && node.files[0]) {
-						var reader = new FileReader();
-						reader.onload = function (e) {
-							imgURL = e.target.result;
-						};
-						reader.readAsDataURL(node.files[0]);
-					}
-				}
-				var file_ = {
-					url: imgURL,
-					file: file
-				}
-				chat.send(index, 1, file_, 0, 0);
-			} else
-				this.$store.state.f_error(this.$store.state, "当前仅支持传送png,jpg格式");
+			mpIM.send(body)
 		}
+	},
+	uploaderimg:function(index){
+		var me=this;
+		var qiniu=Qiniu.uploader({
+		    runtimes: 'html5,flash,html4',                 //上传模式,依次退化
+		    browse_button: 'pickfiles'+index,             //上传选择的点选按钮，**必需**
+		  	uptoken_url: 'http://test.mrpyq.com/api/qiniu',//Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
+		   // uptoken : 'TUo-Zhi8ICQGKqHVuIzL1rYdb5itNEF4F6fQzJjr:kgY7N3pZmmaSISiqDa-5Z1K694s=:eyJzY29wZSI6Im1yd2VjaGF0IiwiZGVhZGxpbmUiOjE0OTU1MzA4OTV9', //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
+		    // unique_names: true, 					   // 默认 false，key为文件名。若开启该选项，SDK为自动生成上传成功后的key（文件名）。
+		    // save_key: true,   					  // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK会忽略对key的处理
+		    domain: 'http://7x2wk4.com2.z0.glb.qiniucdn.com/',   //bucket 域名，下载资源时用到，**必需**
+		    get_new_uptoken: false,  //设置上传文件的时候是否每次都重新获取新的token
+		    container: 'container'+index,          //上传区域DOM ID，默认是browser_button的父元素，
+		    max_file_size: '100mb',               //最大文件体积限制
+		    flash_swf_url: './js/Moxie.swf',     //引入flash,相对路径
+		    max_retries: 2,                     //上传失败最大重试次数
+		    dragdrop: false,                   //开启可拖曳上传
+		    // drop_element: 'container',     //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
+		    chunk_size: '4mb',               //分块上传时，每片的体积
+		    auto_start: true, 				//选择文件后自动上传，若关闭需要自己绑定事件触发上传
+		    save_key: false,
+		    unique_names: false,         
+		    init: {
+		        'FilesAdded': function(up, files) {
+					// plupload.each(files, function(file) {
+					//     // 文件添加进队列后,处理相关的事情
+					//    for (var i = 0; i < files.length; i++) {
+					//                   var fileItem = files[i].getNative(),
+					//                         url = window.URL || window.webkitURL || window.mozURL;
+					//                   var src = url.createObjectURL(fileItem);
+					//                   var msg=new Msg(index,1,src+'?',0, 0,new Date().getTime(),true);
+					//       	 }
+					// });
+		        },
+		        'BeforeUpload': function(up, file) {
+		        	var fileItem = file.getNative(),
+	                url = window.URL || window.webkitURL || window.mozURL;
+	                var src = url.createObjectURL(fileItem);
+	               	var msg=new Msg(index,1,{url:src,id:file.id},0, 0,new Date().getTime(),true);
+		        },
+		        'UploadProgress': function(up, file){
+		        },
+		        'FileUploaded': function(up, file, info) {
+		        	// 	chat.send(index, type, content_url, chat_type, temp)
+					// index 发送目标序号
+					// type 发送类型，0为文本，1为图片，2为魔法表情，3为红包，4为礼物。
+					// content_url 发送内容，文本或url
+					// chat_type 聊天类型 0为角色说，1为本人说，2为剧情
+					// temp 0 普通消息 1 临时消息
+	                for(var i=0;i<vm.$store.state.chat.conversation[index].msg.length;i++){
+	                	console.log(vm.$store.state.chat.conversation[index].msg[i].id,file.id)
+	                	if(vm.$store.state.chat.conversation[index].msg[i].id==file.id){
+	                		var message=vm.$store.state.chat.conversation[index].msg[i];
+	                		message.send_success=true;
+	                		message.url=='http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key;
+	                		vm.$store.state.chat.conversation[index].msg.splice(i,1,message)
+	                		break;
+	                	}
+	                }
+					// var msg=new Msg(index,1,'http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key,0, 0,new Date().getTime(),true);
+					// msg.set_send_success();
+		   //          me.send(index,1,'http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key,0,0)
+		        },
+		        'Error': function(up, err, errTip) {
+		        	console.log(err)
+		        },
+		        'UploadComplete': function() {
+		               //队列文件处理完毕后,处理相关的事情
+		        },
+		        'Key': function(up, file) {
+		            // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
+		            // 该配置必须要在 unique_names: false , save_key: false 时才生效
+		            var key = new Date().getTime();
+		            return key
+		        }
+		    }
+		})
 	},
 	//根据以后接口改参数，礼物类型等等
 	send_gift: function (index) {
 		var gift = this.get_gift();
 		this.send(index, 4, gift.name, 0, 0, gift);
 	},
-
 	send_magicimg: function (index, type) {
 		//0骰子1猜拳
 		var magicimg = this.get_magicimg(type)

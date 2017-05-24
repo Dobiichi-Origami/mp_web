@@ -92,8 +92,9 @@ function MpIMClient(){
 	}
 	//每隔4.8分钟一次心跳，BODY不用传
 	this.heart=function(){
+		var me=this;
 		setInterval(function(){
-			this.ws.send({'ver':1,'op':2,'seq':this.seq++,'body':''})
+			me.ws.send({'ver':1,'op':2,'seq':this.seq++,'body':''})
 		},288000)
 	}
 	//登陆
@@ -205,6 +206,7 @@ function MpIMClient(){
 			'body':body
 		}
 		data=JSON.stringify(data);
+		console.log('发送消息')
 		console.log(data)
 		this.ws.send(data)
 	}

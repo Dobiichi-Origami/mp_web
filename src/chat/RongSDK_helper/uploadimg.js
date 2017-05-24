@@ -1,5 +1,4 @@
 import UploadClient from './RongUploadImg/init'
-
 function upload(_file, callback_) {
 	var Rong = RongIMClient.getInstance();
 	var url = "";

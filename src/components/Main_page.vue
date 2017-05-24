@@ -126,6 +126,11 @@
       system
 		},
 		mounted: function() {
+			this.$http.get("http://test.mrpyq.com/api/qiniu", {
+				}).then(
+					(res) => {
+						console.log(res.body)
+					})
 			var me = this,
 				ele1 = document.getElementById("li1"),
 				ele2 = document.getElementById("li2"),

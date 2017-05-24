@@ -27,8 +27,22 @@ class Msg {
 		}
 		//图片格式没有content，有额外的url
 		else if (type == 1) {
-			this.url = content_url
+			//添加本地图片id
+			if(content_url.url){
+				this.url = content_url.url;
+				this.id=content_url.id;
+			}else{
+				this.url=content_url
+			}
 			this.content_type = "IMAGE"
+			//如果图片已经存在，就删除该消息
+			if(me){
+				for(var i=0;i<vm.$store.state.chat.conversation[index].msg.length;i++){
+					if(vm.$store.state.chat.conversation[index].msg[i].url==this.url){
+						return;
+					}
+				}
+			}
 		} else if (type == 2) {
 			this.content = content_url
 			this.content_type = "MAGIC_PIC"
