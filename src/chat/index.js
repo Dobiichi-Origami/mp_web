@@ -524,52 +524,41 @@ var chat = {
 		console.log(con);
 		return (con.length - 1);//创建新对话后返回对话数组最后一个索引值，此处需要修正
 	},
-	send: function (index, type, content_url, chat_type, temp, extra_content, atList) {
+	send: function (index, type, content_url, chat_type, temp, atList,defaultcontent) {
 		console.log(type)
-		if (type == 1) {
-				var body={
-					sender_id:vm.$store.state.chat.conversation[index].me.id,
-				    sender_no:vm.$store.state.chat.conversation[index].me.no,
-				    sender_name:vm.$store.state.chat.conversation[index].me.name,
-				    sender_head_img:vm.$store.state.chat.conversation[index].me.headimg,
-				    msg_type:0,
-				    msg_time:new Date().getTime(),
-				    msg_content_type:1,
-				    msg_content:mpIM.toBase64(JSON.stringify({
-				      speakType:0,   
-				      content:content_url,
-				      atList:[],      
-				      temp:temp
-				    })),
-				    target_type:0,
-				    target_id:vm.$store.state.chat.conversation[index].other.id,
-				    target_no:vm.$store.state.chat.conversation[index].other.no
-				}
-				mpIM.send(body)
-		}else{
-			var body={
-				sender_id:vm.$store.state.chat.conversation[index].me.id,
-			    sender_no:vm.$store.state.chat.conversation[index].me.no,
-			    sender_name:vm.$store.state.chat.conversation[index].me.name,
-			    sender_head_img:vm.$store.state.chat.conversation[index].me.headimg,
-			    msg_type:0,
-			    msg_time:new Date().getTime(),
-			    msg_content_type:type,
-			    msg_content:mpIM.toBase64(JSON.stringify({
-			      speakType:chat_type,   
-			      content:content_url,
-			      atList:[],      
-			      temp:temp
-			    })),
-			    target_type:0,
-			    target_id:vm.$store.state.chat.conversation[index].other.id,
-			    target_no:vm.$store.state.chat.conversation[index].other.no
-			}
-			mpIM.send(body)
+		var targetType;
+        //找到index对应的会话，设置该会话中消息的target_type
+        if (vm.$store.state.chat.conversation[index].isGroup) {
+            targetType = 1;
+        } else {
+            targetType = 0;
+        }	
+		var body={
+			sender_id:vm.$store.state.chat.conversation[index].me.id,
+		    sender_no:vm.$store.state.chat.conversation[index].me.no,
+		    sender_name:vm.$store.state.chat.conversation[index].me.name,
+		    sender_head_img:vm.$store.state.chat.conversation[index].me.headimg,
+		    msg_type:0,
+		    msg_time:new Date().getTime(),
+		    msg_content_type:type,
+		    msg_content:mpIM.toBase64(JSON.stringify({
+		      speakType:0,   
+		      content:content_url,
+		      atList:[],     
+		      defaultContent: defaultcontent, 
+		      temp:temp
+		    })),
+		    target_type:targetType,
+		    target_id:vm.$store.state.chat.conversation[index].other.id,
+		    target_no:vm.$store.state.chat.conversation[index].other.no
 		}
+		console.log(content_url)
+		mpIM.send(body)
+		
 	},
 	uploaderimg:function(index){
 		var me=this;
+		console.log('运行'+index)
 		var qiniu=Qiniu.uploader({
 		    runtimes: 'html5,flash,html4',                 //上传模式,依次退化
 		    browse_button: 'pickfiles'+index,             //上传选择的点选按钮，**必需**
@@ -606,6 +595,7 @@ var chat = {
 	                url = window.URL || window.webkitURL || window.mozURL;
 	                var src = url.createObjectURL(fileItem);
 	               	var msg=new Msg(index,1,{url:src,id:file.id},0, 0,new Date().getTime(),true);
+	               	console.log('上传前')
 		        },
 		        'UploadProgress': function(up, file){
 		        },
@@ -616,6 +606,7 @@ var chat = {
 					// content_url 发送内容，文本或url
 					// chat_type 聊天类型 0为角色说，1为本人说，2为剧情
 					// temp 0 普通消息 1 临时消息
+					console.log('上传后')
 	                for(var i=0;i<vm.$store.state.chat.conversation[index].msg.length;i++){
 	                	console.log(vm.$store.state.chat.conversation[index].msg[i].id,file.id)
 	                	if(vm.$store.state.chat.conversation[index].msg[i].id==file.id){
@@ -628,7 +619,7 @@ var chat = {
 	                }
 					// var msg=new Msg(index,1,'http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key,0, 0,new Date().getTime(),true);
 					// msg.set_send_success();
-		   //          me.send(index,1,'http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key,0,0)
+		   			me.send(index,1,'http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key,0,0)
 		        },
 		        'Error': function(up, err, errTip) {
 		        	console.log(err)
@@ -653,7 +644,8 @@ var chat = {
 	send_magicimg: function (index, type) {
 		//0骰子1猜拳
 		var magicimg = this.get_magicimg(type)
-		this.send(index, 2, magicimg.magicPicDesc, 0, 0, magicimg);
+		// this.send(index, 2, magicimg.magicPicDesc, 0, 0, magicimg);
+		this.send(index, 2, magicimg, 0, 0, undefined, magicimg.magicPicDesc);
 	},
 
 	//找到群详细数组中指定群ID的群详细项

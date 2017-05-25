@@ -31,7 +31,7 @@
 									<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)" >
 										<span v-html="rong(slist.content)" v-if="slist.content_type=='TXT'"></span>
 										<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
-											<img :src="slist.extra_content.animatedPicUrl" alt="" >
+											<img :src="slist.content.animatedPicUrl" alt="" >
 										</div>
 										<div v-if="slist.content_type=='IMAGE'" class="img_show">
 											<div v-if="slist.send_success" class="otherurl">
@@ -57,7 +57,7 @@
 										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)">
 											<span v-html="rong(slist.content)" v-if="slist.content_type=='TXT'"></span>
 											<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
-												<img :src="slist.extra_content.animatedPicUrl" alt="">
+												<img :src="slist.content.animatedPicUrl" alt="">
 											</div>
 											<div v-if="slist.content_type=='IMAGE'" class="img_show">
 												<img :src="slist.url" alt="" @dblclick="seeimg(slist.url)" @click.stop="show_chehui(sindex,true)">
@@ -105,7 +105,7 @@
 				<div :class="{wordsay:true,border_left:true,active:!myself_say_act}" @click="f_me_say($event)">角色说</div>
 				<div :class="{wordsay:true,border_right:true,active:myself_say_act}" @click="f_me_say($event)">本人说</div>
 				<p class="addjuqing_switch" @click="start_juqing">添加剧情</p>
-				<p class="select_img" :id="'container'+list.index"><input type="file" accept="image/jpeg,image/jpg,image/png"  :id="'pickfiles'+list.index" @change="ceshi()"><img src="~assets/chat/add_img.png" alt=""></p>
+				<p class="select_img" :id="'container'+list.index"><input type="file" accept="image/jpeg,image/jpg,image/png"  :id="'pickfiles'+list.index"><img src="~assets/chat/add_img.png" alt=""></p>
 				<p class="face" @click="show_emoji"><img src="~assets/chat/add_face.png" alt=""></p>
 			</div>
 			<div class="messageval">
@@ -119,7 +119,7 @@
 	import chat from "src/chat/index.js"
 	export default ({
 		props: ['index', 'list'],
-		data() {
+		data(){
 			return {
 				myself_say_act: 0,
 				juqing: 0,
@@ -151,9 +151,6 @@
 			chat.uploaderimg(this.list.index);
 		},
 		methods: {
-			ceshi:function(){
-				alert('ceshi')
-			},
 			del_msg:function(lindex,sindex){
 				this.$store.state.chat.conversation[lindex].msg.splice(sindex,1);
 			},
@@ -197,9 +194,6 @@
 			},
 			check_emojitype: function(type) {
 				this.emojitype = type;
-			},
-			send_img: function(e,index) {
-				chat.uploaderimg(e,index);
 			},
 			add_yan_emoji: function(event) {
 				var emoji = event.target.innerHTML,

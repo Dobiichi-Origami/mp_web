@@ -170,12 +170,17 @@ function MpIMClient(){
 			return;
 		}else if(data.op==5){
 			//此处调用消息处理的方法
-			if(data.body.msg){
-				msg=data.body.msg;
-				msg.msg_content=JSON.parse(this.base64ToString(msg.msg_content));
-				msg.me=true;
-				console.log('发送成功:')
-				console.log(msg)
+			if(data.body){
+				if(data.body.msg){
+					msg=data.body.msg;
+					msg.msg_content=JSON.parse(this.base64ToString(msg.msg_content));
+					msg.me=true;
+					console.log('发送成功:')
+					console.log(msg)
+				}
+			}else{
+				console.log('发送数据格式错误')
+				return;
 			}
 		}else if(data.op==9){
 			if(data.body){
@@ -205,9 +210,9 @@ function MpIMClient(){
 			'seq':this.seq++,
 			'body':body
 		}
-		data=JSON.stringify(data);
 		console.log('发送消息')
 		console.log(data)
+		data=JSON.stringify(data);
 		this.ws.send(data)
 	}
 }
