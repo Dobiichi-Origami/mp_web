@@ -1,7 +1,7 @@
 //构造conversation的msg对象结构体
 import vm from 'src/main.js'
 class Msg {
-	constructor(index, type, content_url, chat_type, temp, time,me) {
+	constructor(index, type, content_url, chat_type, temp, time, me) {
 		// this.content
 		// this.content_type
 		// this.url

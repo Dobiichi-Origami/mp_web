@@ -534,6 +534,14 @@ var chat = {
         // if (type == 2) {
         // 	content_url = JSON.stringify(content_url);
         // }
+        var targetType;
+        //找到index对应的会话，设置该会话中消息的target_type
+        if (vm.$store.state.chat.conversation[index].isGroup) {
+            targetType = 1;
+        } else {
+            targetType = 0;
+        }
+
 
         var body = {
             sender_id: vm.$store.state.chat.conversation[index].me.id,
@@ -546,11 +554,11 @@ var chat = {
             msg_content: mpIM.toBase64(JSON.stringify({
                 speakType: chat_type,
                 content: content_url,
-                atList: [],
+                atList: atList,
                 defaultContent: defaultcontent,
                 temp: temp
             })),
-            target_type: 0, //私聊，群聊，聊天室
+            target_type: targetType, //私聊，群聊，聊天室
             target_id: vm.$store.state.chat.conversation[index].other.id,
             target_no: vm.$store.state.chat.conversation[index].other.no
         }
@@ -745,7 +753,9 @@ var chat = {
         if (index === undefined) {
             return;
         }
+
         var msg = new Msg(index, message.msg_content_type, message.msg_content.content, message.msg_content.speakType, message.msg_content.temp, message.msg_time, message.me);
+
 
         //对收到的消息设置uid
         msg.set_uid(message.msg_uid);
