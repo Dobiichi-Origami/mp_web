@@ -110,7 +110,7 @@
 				<div :class="{wordsay:true,border_left:true,active:!myself_say_act}" @click="f_me_say($event)">角色说</div>
 				<div :class="{wordsay:true,border_right:true,active:myself_say_act}" @click="f_me_say($event)">本人说</div>
 				<p class="addjuqing_switch" @click="start_juqing">添加剧情</p>
-				<p class="select_img"><input type="file" accept="image/jpeg,image/jpg,image/png" @change="send_img($event,list.index)"><img src="~assets/chat/add_img.png" alt=""></p>
+				<p class="select_img" :id="'container'+list.index"><input type="file" accept="image/jpeg,image/jpg,image/png"  :id="'pickfiles'+list.index"><img src="~assets/chat/add_img.png" alt=""></p>
 				<p class="face" @click="show_emoji"><img src="~assets/chat/add_face.png" alt=""></p>
 			</div>
 			<div class="messageval">
@@ -206,6 +206,8 @@
 			}
 			console.log(this.list);
 			this.not_open=this.list.not_open?'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;top:'+(this.$store.state.pageY + 40) + 'px;'+'left:'+(this.$store.state.pageX + 40) + 'px;'+'opacity:0':'';
+			console.log(chat.uploaderimg)
+			chat.uploaderimg(this.list.index);
 		},
 		methods: {
 			del_msg:function(lindex,sindex){
@@ -327,9 +329,6 @@
 			},
 			check_emojitype: function(type) {
 				this.emojitype = type;
-			},
-			send_img: function(e,index) {
-				chat.send_img(e,index);
 			},
 			add_yan_emoji: function(event) {
 				var emoji = event.target.innerHTML,
