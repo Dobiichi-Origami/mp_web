@@ -418,7 +418,7 @@
 					this.juqing_tishi='请输入内容！'
 				}else{
 					var me = this;
-					chat.send(me.list.index, 0, me.juqingval, 2, 0);
+					chat.send(me.list.index, 0, me.juqingval, 3, 0);
 					this.jq_switch = false;
 					this.juqingval = '';
 					this.juqing_tishi='';

@@ -21,7 +21,7 @@
 					    	<span :style="list.group?'line-height:26px;color:rgb(149, 105, 105)':''">{{list.user?'NO.'+list.user.no:'(群组)'}}</span>
 				    	</p>
 				    	<p class="lastest_msg" v-if="list.group&& $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].chat_type!='SYSTEM'">
-				    		{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].me?'我':$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].speaker.speakerName}}：{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content}}
+				    	<!-- 	{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].me?'我':$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].speaker.speakerName}}：{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content}} -->
 				    	</p>
 				    	<p class="lastest_msg" v-if="$store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].chat_type=='SYSTEM' ">
 				    		{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content}}

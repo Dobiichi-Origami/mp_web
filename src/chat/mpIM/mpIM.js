@@ -76,12 +76,13 @@ function MpIMClient(){
 	//初始化
 	this.init=function(DeviceInfo){
 		this.DeviceInfo=DeviceInfo;
-		this.ws=new WebSocket('ws://10.10.1.3:8099/sub');
+		this.ws=new WebSocket('ws://101.37.28.77:8090/sub');
 		console.log('正在连接')
 		var me=this;
 		this.ws.onopen=function(){
 			if(this.readyState==1){
 				console.log('链接成功');
+				console.log(DeviceInfo)
 				me.login(DeviceInfo)
 			}else{
 				console.log('链接失败，重新连接中')
@@ -94,7 +95,7 @@ function MpIMClient(){
 	this.heart=function(){
 		var me=this;
 		setInterval(function(){
-			me.ws.send({'ver':1,'op':2,'seq':this.seq++,'body':''})
+			me.ws.send(JSON.stringify({'ver':1,'op':2,'seq':this.seq++}))
 		},288000)
 	}
 	//登陆
@@ -177,6 +178,19 @@ function MpIMClient(){
 					msg.me=true;
 					console.log('发送成功:')
 					console.log(msg)
+					if(!msg.msg_type){
+						//聊天消息
+						chat.receivetext(msg)
+					}else if(msg.msg_type==1){
+						//cmd消息
+						chat.receivecmd(msg)
+					}else if(msg.msg_type==2){
+						//系统消息
+						chat.receivesystem(msg)
+					}
+				}else{
+					console.log('数据错误');
+					return;
 				}
 			}else{
 				console.log('发送数据格式错误')
@@ -189,17 +203,17 @@ function MpIMClient(){
 				msg.me=false;
 				console.log('收到消息:')
 				console.log(msg)
+				if(!msg.msg_type){
+					//聊天消息
+					chat.receivetext(msg)
+				}else if(msg.msg_type==1){
+					//cmd消息
+					chat.receivecmd(msg)
+				}else if(msg.msg_type==2){
+					//系统消息
+					chat.receivesystem(msg)
+				}
 			}
-		}
-		if(!msg.msg_type){
-			//聊天消息
-			chat.receivetext(msg)
-		}else if(msg.msg_type==1){
-			//cmd消息
-			chat.receivecmd(msg)
-		}else if(msg.msg_type==2){
-			//系统消息
-			chat.receivesystem(msg)
 		}
 	}
 	//发送消息

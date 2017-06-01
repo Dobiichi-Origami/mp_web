@@ -463,6 +463,7 @@ var chat = {
 				type = 3;
 				me.id = info.member._id;
 				me.no = info.member.no;
+				console.log(info)
 				other.id = info._id;
 				conExist = this.conversationExist(me.id, other.id, con, me.no);
 				console.log(conExist)
@@ -509,7 +510,6 @@ var chat = {
 				}
 			}
 		}
-
 		conversation.unreadCount = 0;//初始化未读消息数目为0
 		con.push(conversation);	
 		console.log(conversation,conExist);
@@ -527,6 +527,7 @@ var chat = {
 	send: function (index, type, content_url, chat_type, temp, atList,defaultcontent) {
 		console.log(type)
 		var targetType;
+		console.log(vm.$store.state.chat.conversation[index])
         //找到index对应的会话，设置该会话中消息的target_type
         if (vm.$store.state.chat.conversation[index].isGroup) {
             targetType = 1;
@@ -542,7 +543,7 @@ var chat = {
 		    msg_time:new Date().getTime(),
 		    msg_content_type:type,
 		    msg_content:mpIM.toBase64(JSON.stringify({
-		      speakType:0,   
+		      speakType:chat_type,   
 		      content:content_url,
 		      atList:[],     
 		      defaultContent: defaultcontent, 
@@ -550,10 +551,11 @@ var chat = {
 		    })),
 		    target_type:targetType,
 		    target_id:vm.$store.state.chat.conversation[index].other.id,
-		    target_no:vm.$store.state.chat.conversation[index].other.no
+		    target_no:vm.$store.state.chat.conversation[index].other.no-0
 		}
 		console.log(content_url)
 		mpIM.send(body)
+		console.log(body)
 		
 	},
 	uploaderimg:function(index){
@@ -612,8 +614,8 @@ var chat = {
 	                	if(vm.$store.state.chat.conversation[index].msg[i].id==file.id){
 	                		var message=vm.$store.state.chat.conversation[index].msg[i];
 	                		message.send_success=true;
-	                		message.url=='http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key;
-	                		vm.$store.state.chat.conversation[index].msg.splice(i,1,message)
+	                		message.url='http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key;
+	                		vm.$store.state.chat.conversation[index].msg.splice(i,1,message);
 	                		break;
 	                	}
 	                }

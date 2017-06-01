@@ -263,7 +263,8 @@
 			},
 			revoke:function(conversation_index, msg_index,time) {
 				var t=new Date().getTime();
-				if (t-time<=180000){
+				// console.log(t-(time*1000))
+				if (t-time*1000<=1800000){
 					chat.cmd_sender("msg_revoke", conversation_index, msg_index, "")
 				}else{
 					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
@@ -283,7 +284,7 @@
 					this.juqing_tishi='请输入内容！'
 				}else{
 					var me = this;
-					chat.send(me.list.index, 0, me.juqingval, 2, 0);
+					chat.send(me.list.index, 0, me.juqingval, 3, 0);
 					this.jq_switch = false;
 					this.juqingval = '';
 					this.juqing_tishi='';
