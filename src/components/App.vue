@@ -184,7 +184,6 @@
 		}
 	}
 	/*	转转转动画*/
-	
 	.ajax-loader {
 		font-size: 10px;
 		width: 1.5em;
