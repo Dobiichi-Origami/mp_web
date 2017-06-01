@@ -460,8 +460,10 @@ var chat = {
                         if (vm.$store.state.chat.conversation[index].msg[i].id == file.id) {
                             var message = vm.$store.state.chat.conversation[index].msg[i];
                             message.send_success = true;
-                            message.url == 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key;
+                            message.url = 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key;
+                            console.log(message)
                             vm.$store.state.chat.conversation[index].msg.splice(i, 1, message)
+                            console.log(vm.$store.state.chat.conversation[index])
                             break;
                         }
                     }
@@ -615,7 +617,7 @@ var chat = {
         "defaultContent"    :String(新的消息类型，解析不了的时候，默认是SCMessageContentTypeText类型，这个类型默认从这个字段读取content)原rongmsgcontent的content字段，用作兼容,
         "temp"              :Int
     }*/
-    receiveChat: function(message) {
+    receivetext: function(message) {
         //首先构建一条msg
         // this.content
         // this.content_type

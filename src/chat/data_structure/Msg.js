@@ -35,9 +35,10 @@ class Msg {
 				this.url=content_url
 			}
 			this.content_type = "IMAGE"
-			//如果图片已经存在，就删除该消息
+			//如果图片已经存在，就删除该消息(不生成此条消息)
 			if(me){
 				for(var i=0;i<vm.$store.state.chat.conversation[index].msg.length;i++){
+					console.log(vm.$store.state.chat.conversation[index].msg[i].url, this.url)
 					if(vm.$store.state.chat.conversation[index].msg[i].url==this.url){
 						return;
 					}
