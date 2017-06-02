@@ -526,10 +526,8 @@ var chat = {
 	},
 
 	send: function (index, type, content_url, chat_type, temp, atList,title,defaultcontent) {
-
-		console.log(type)
 		var targetType;
-		console.log(vm.$store.state.chat.conversation[index])
+		
         //找到index对应的会话，设置该会话中消息的target_type
         if (vm.$store.state.chat.conversation[index].isGroup) {
             targetType = 1;
@@ -556,10 +554,7 @@ var chat = {
 		    target_no:vm.$store.state.chat.conversation[index].other.no-0,
 		    group_member_title:title,
 		}
-		console.log(content_url)
 		mpIM.send(body)
-		console.log(body)
-		
 	},
 	uploaderimg:function(index){
 		var me=this;
@@ -670,12 +665,10 @@ var chat = {
 
 	//根据群id和皮id判断此皮在群中的身份
 	checkMemberType: function (groupId, userId) {
-        var member = {
-            memberType: 1,
-            memberTitle: ''
-        }
+        
+        
 		//根据groupId找到对应群的群详细
-		//var memberType = 1;
+		var memberType = 1;
 		// var groupDetail;
 		// var groupsDetail = vm.$store.state.messages.groupsDetail;
 		// console.log("当前账号所有群的群详细");
@@ -693,13 +686,13 @@ var chat = {
 		if (groupDetail) {
 			//先判断此皮是否是群主
 			if (userId == groupDetail.owner._id) {
-				member.memberType = 20;
+				memberType = 20;
                 
 			}
 			//再判断此皮是否属于管理员组
 			for (var j = 0,jl = groupDetail.admins.length;j < jl;j++) {
 				if (groupDetail.admins[j]._id == userId) {
-					member.memberType = 10;
+					memberType = 10;
 					break;
 				}
 			}
@@ -811,7 +804,7 @@ var chat = {
                 speakerHeadimg: message.sender_head_img,
                 speakerId: message.sender_id,
                 speakerNo: message.sender_no,
-                //speakerTitle: extra.selfTitle,
+                speakerTitle: message.group_member_title,
             }
 
             speaker.memberType = this.checkMemberType(message.target_id,message.sender_id);

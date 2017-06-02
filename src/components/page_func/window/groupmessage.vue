@@ -515,7 +515,7 @@
 					chat.send(me.list.index, 0, me.val, me.myself_say_act, 0,undefined,title);
 					this.val = '';
 					this.tishi = '';
-					console.log(this.$store.state.chat.conversation[this.list.index])
+					// console.log(this.$store.state.chat.conversation[this.list.index])
 				}
 			},
 			send_magicimg(index, type) {
