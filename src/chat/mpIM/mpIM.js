@@ -94,7 +94,8 @@ function MpIMClient(){
 	//每隔4.8分钟一次心跳，BODY不用传
 	this.heart=function(){
 		var me=this;
-		setInterval(function(){
+		clearInterval(this.time)
+		this.time=setInterval(function(){
 			me.ws.send(JSON.stringify({'ver':1,'op':2,'seq':this.seq++}))
 		},288000)
 	}
