@@ -668,8 +668,12 @@ var chat = {
 
 	//根据群id和皮id判断此皮在群中的身份
 	checkMemberType: function (groupId, userId) {
+        var member = {
+            memberType: 1,
+            memberTitle: ''
+        }
 		//根据groupId找到对应群的群详细
-		var memberType = 1;
+		//var memberType = 1;
 		// var groupDetail;
 		// var groupsDetail = vm.$store.state.messages.groupsDetail;
 		// console.log("当前账号所有群的群详细");
@@ -682,16 +686,18 @@ var chat = {
 		// }
 		// console.log("发言人所属群的群详细");
 		var groupDetail = this.findGroupDetail(groupId);
+
 		console.log(groupDetail);
 		if (groupDetail) {
 			//先判断此皮是否是群主
 			if (userId == groupDetail.owner._id) {
-				memberType = 20;
+				member.memberType = 20;
+                
 			}
 			//再判断此皮是否属于管理员组
 			for (var j = 0,jl = groupDetail.admins.length;j < jl;j++) {
 				if (groupDetail.admins[j]._id == userId) {
-					memberType = 10;
+					member.memberType = 10;
 					break;
 				}
 			}
@@ -797,17 +803,18 @@ var chat = {
         msg.set_uid(message.msg_uid);
 
         //群消息需要设置发言人
-        // if (message.conversationType == 3) {//为群会话消息，需要在msg中添加发言人信息
-        //     var speaker = {
-        //         speakerName: extra.selfName,
-        //         speakerHeadimg: extra.selfHeadimg,
-        //         speakerId: extra.selfId,
-        //         speakerNo: extra.selfNo,
-        //         speakerTitle: extra.selfTitle,
-        //     }
-        //     speaker.memberType = this.checkMemberType(extra.groupId,extra.selfId);
-        //     msg.set_from(speaker);
-        // }
+        if (message.target_type == 1) {//为群会话消息，需要在msg中添加发言人信息
+            var speaker = {
+                speakerName: message.sender_name,
+                speakerHeadimg: message.sender_head_img,
+                speakerId: message.sender_id,
+                speakerNo: message.sender_no,
+                //speakerTitle: extra.selfTitle,
+            }
+
+            speaker.memberType = this.checkMemberType(message.target_id,message.sender_id);
+            msg.set_from(speaker);
+        }
         console.log('本地會話数组:', vm.$store.state.chat.conversation);
 
     },
