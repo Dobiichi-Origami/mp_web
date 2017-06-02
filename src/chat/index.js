@@ -524,7 +524,7 @@ var chat = {
 		console.log(con);
 		return (con.length - 1);//创建新对话后返回对话数组最后一个索引值，此处需要修正
 	},
-	send: function (index, type, content_url, chat_type, temp, atList,defaultcontent) {
+	send: function (index, type, content_url, chat_type, temp, atList,title,defaultcontent) {
 		console.log(type)
 		var targetType;
 		console.log(vm.$store.state.chat.conversation[index])
@@ -551,7 +551,8 @@ var chat = {
 		    })),
 		    target_type:targetType,
 		    target_id:vm.$store.state.chat.conversation[index].other.id,
-		    target_no:vm.$store.state.chat.conversation[index].other.no-0
+		    target_no:vm.$store.state.chat.conversation[index].other.no-0,
+		    group_member_title:title,
 		}
 		console.log(content_url)
 		mpIM.send(body)

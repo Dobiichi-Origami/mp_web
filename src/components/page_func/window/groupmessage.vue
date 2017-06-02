@@ -503,8 +503,16 @@
 				if (this.val == '') {
 					this.tishi = "请输入内容！";
 				} else {
-					var me = this;
-					chat.send(me.list.index, 0, me.val, me.myself_say_act, 0);
+					var me = this,title;
+					for(var i=0;i<this.$store.state.messages.grouplist.length;i++){
+						console.log(this.$store.state.messages.grouplist[i]._id)
+						if(this.$store.state.chat.conversation[this.list.index].other.id==this.$store.state.messages.grouplist[i]._id){
+							title=this.$store.state.messages.grouplist[i].member.title;
+							console.log(title)
+							break;
+						}
+					}
+					chat.send(me.list.index, 0, me.val, me.myself_say_act, 0,undefined,title);
 					this.val = '';
 					this.tishi = '';
 					console.log(this.$store.state.chat.conversation[this.list.index])
