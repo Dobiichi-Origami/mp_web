@@ -105,6 +105,7 @@ var chat = {
 											details.push(res.body.group);
 											if(details.length==vm.$store.state.messages.grouplist.length){
 												vm.$store.state.messages.groupsDetail=details;
+												vm.$store.state.friendcenter_mounted(vm.$store.state,vm);
 												vm.$store.state.group_switch=true;
 											}
 										}
@@ -524,7 +525,6 @@ var chat = {
 		console.log(con);
 		return (con.length - 1);//创建新对话后返回对话数组最后一个索引值，此处需要修正
 	},
-
 	send: function (index, type, content_url, chat_type, temp, atList,title,defaultcontent) {
 		var targetType;
 		
@@ -552,8 +552,9 @@ var chat = {
 		    target_type:targetType,
 		    target_id:vm.$store.state.chat.conversation[index].other.id,
 		    target_no:vm.$store.state.chat.conversation[index].other.no-0,
-		    group_member_title:title,
+		    // group_member_title:title,
 		}
+		console.log(body)
 		mpIM.send(body)
 	},
 	uploaderimg:function(index){
@@ -708,14 +709,22 @@ var chat = {
 		console.log('我的当前身份类型:',this.checkMemberType(otherId, meId))
 		console.log("status为:", status);
 		if (status === undefined) {//status不存在时，属于取群详细设置会话禁言的情形
+			console.log('@@@@@@@@@@@@@@')
 			if (this.checkMemberType(otherId, meId) == 1) {//我的当前身份为普通用户
-				if (this.findGroupDetail(otherId).silenced) {//群处于禁言状态
-					conversation.set_silenced(1);
-				} else {
-					conversation.set_silenced(0);
+				if(this.findGroupDetail(otherId)){
+					if (this.findGroupDetail(otherId).silenced) {//群处于禁言状态
+						console.log('#############')
+						conversation.set_silenced(1);
+					} else {
+						conversation.set_silenced(0);
+						console.log('=============')
+					}
+				}else{
+					console.log('%%%%%%%%%%%%%')
 				}
 			} else {//群主，管理员不受影响
 				conversation.set_silenced(0);
+				console.log('!!!!!!!!!!!')
 			}
 		} else { //status存在时，属于消息通知的情形
 			if (this.checkMemberType(otherId, meId) == 1) {//我的当前身份为普通用户

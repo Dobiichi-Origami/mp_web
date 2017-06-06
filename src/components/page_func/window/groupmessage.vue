@@ -35,7 +35,7 @@
 									<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)" >
 										<span v-html="rong(slist.content)" v-if="slist.content_type=='TXT'"></span>
 										<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
-											<img :src="slist.extra_content.animatedPicUrl" alt="" >
+											<img :src="slist.content.animatedPicUrl" alt="" >
 										</div>
 										<div v-if="slist.content_type=='IMAGE'" class="img_show">
 											<div v-if="slist.send_success" class="otherurl">
@@ -58,10 +58,10 @@
 									<img :src="slist.speaker.speakerHeadimg" alt="" class="headimg">
 									<div class="other_info">
 										<p class="other_name"><span v-if="slist.speaker.speakerTitle" class="group_member_title" :style="{background:title_bg(slist.speaker.memberType)}">{{slist.speaker.speakerTitle}}</span>{{slist.speaker.speakerName}}<span v-show="show_userno_switch">NO.{{slist.speaker.speakerNo}}</span></p>
-										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}"  @click="show_chehui(sindex)">
+										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}"  @click.stop="show_chehui(sindex,true)">
 											<span v-html="rong(slist.content)" v-if="slist.content_type=='TXT'"></span>
 											<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
-												<img :src="slist.extra_content.animatedPicUrl" alt="">
+												<img :src="slist.content.animatedPicUrl" alt="">
 											</div>
 											<div v-if="slist.content_type=='IMAGE'" class="img_show">
 												<img :src="slist.url" alt="" @dblclick="seeimg(slist.url)">

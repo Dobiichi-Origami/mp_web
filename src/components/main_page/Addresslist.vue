@@ -13,7 +13,6 @@
 							<img :src="slist.headimg" alt="">
 							<div class="friendinfo">
 								<p class="friendname">{{slist.name}}<span>NO.{{slist.no}}</span></p>
-
 								<span class="messagecontent">{{slist.content}}</span>
 							</div>
 							<span @click="openwindow($event,bindex,sindex)" :data-index="slist.user._id" class="enterroom">聊天</span>
@@ -46,8 +45,10 @@
 			}
 		},
 		mounted: function() {
-			if (this.$store.state.current_user) {
-				this.$store.state.friendcenter_mounted(this.$store.state, this);
+			if (this.$store.state.current_user){
+				if(this.$store.state.messages.groupsDetail.length){
+					this.$store.state.friendcenter_mounted(this.$store.state, this);
+				}
 			}
 			console.log(this.$store.state.messages.grouplist)
 		},
