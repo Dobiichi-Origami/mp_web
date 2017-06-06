@@ -10,6 +10,9 @@
    		<p @click="test(6)">向cmd_msg[0]拒绝求婚</p>
    		<p @click="test(7)">向cmd_msg[0]同意离婚</p>
    		<p @click="test(8)">向cmd_msg[0]拒绝离婚</p>
+		<br>
+   		<h1>新IM聊天demo</h1>
+		<p @click="newTest(0)">给</p>
     </div>
 </template>
 
@@ -49,6 +52,29 @@
 					chat.cmd_sender("couple_divorce_reply", 0, "reject", "当然是选择原谅我啊")
 
 			},
+			// newTest: function(index) {
+			// 	if (index == 0) {
+			// 		var data={
+			// 		    sender_id:'550d6af6fbe78e1ec58b95ca',
+			// 		    sender_no:219,
+			// 		    sender_name:'abc',
+			// 		    sender_head_img:'http://7x2wk4.com2.z0.glb.qiniucdn.com/FjSVAW5sjDmeort4fXB6OZ5JLlJ7-head',
+			// 		    msg_type:0,
+			// 		    msg_time:new Date().getTime(),
+			// 		    msg_content_type:0,
+			// 		    msg_content:mp.toBase64(JSON.stringify({
+			// 		      speakType:0,
+			// 		      content:'一个测试test',
+			// 		      atList:[],
+			// 		      temp:0
+			// 		    })),
+			// 		    target_type:0,
+			// 		    target_id:'551d812efbe78e6ec27b1049',
+			// 		    target_no:230
+			// 		}
+			// 		chat.newIMSend(data);
+			// 	}
+			// },
 			change: function(e) {
 				chat.send_img(e)
 			}

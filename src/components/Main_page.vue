@@ -471,7 +471,9 @@
 										} else if (location.href.match(/Main_page\/Detail/i) != null) {
 											//this.$store.state.detail_mounted(this.$store.state, this);
 										} else if (location.href.match(/Main_page\/Addresslist/i) != null) {
-											this.$store.state.friendcenter_mounted(this.$store.state, this);
+											if(this.$store.state.messages.groupsDetail.length){
+												this.$store.state.friendcenter_mounted(this.$store.state, this);
+											}
 										} else {
 											this.$store.state.home_mounted(this.$store.state, this);
 										}
