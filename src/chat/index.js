@@ -352,6 +352,10 @@ var chat = {
 				if (conExist!=undefined){//
 					//显示消息提示
 					//vm.$store.state.message_window[conExist].show=1;
+					console.log('*****'+vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id,vm.$store.state))
+					if(!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id,vm.$store.state)){
+						vm.$store.state.chat.conversation[conExist].set_unreadCount()
+					}
 					return conExist;
 				}else{
 					if (info.me) {
@@ -368,6 +372,9 @@ var chat = {
 				}
 				//产生会话
 				conversation = new Conversation(me, other);
+				if(!vm.$store.state.unread_msg(other.id,vm.$store.state)){
+					conversation.set_unreadCount();
+				}
 			}else if (info.target_type == 1) { //群聊
 				if(vm.$store.state.group_switch){
 					//console.log(vm.$store.state.messages.grouplist)
@@ -392,6 +399,9 @@ var chat = {
 					console.log(conExist + '***************');
 					if (conExist!=undefined){
 						vm.$store.state.message_window[conExist].show=1;
+						if(!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id,vm.$store.state)){
+							vm.$store.state.chat.conversation[conExist].set_unreadCount()
+						}
 						return conExist;
 					}
 					else {
@@ -418,12 +428,14 @@ var chat = {
 					//
 					//设置会话禁言状态,取当前会话对应的群组的禁言状态进行设置
 					this.setSilenced(conversation);
-
 					for(var i=0;i<vm.$store.state.messages.grouplist.length;i++){
 						if(other.id==vm.$store.state.messages.grouplist[i]._id){
 							group_details=vm.$store.state.messages.grouplist[i];
 							break;
 						}
+					}
+					if(!vm.$store.state.unread_msg(other.id,vm.$store.state)){
+						conversation.set_unreadCount();
 					}
 				}else{
 					var th=this;
@@ -510,8 +522,7 @@ var chat = {
 						break;
 				}
 			}
-		}
-		conversation.unreadCount = 0;//初始化未读消息数目为0
+		}//初始化未读消息数目为0
 		con.push(conversation);	
 		console.log(conversation,conExist);
 		if(conversation && isreseive){
@@ -542,13 +553,13 @@ var chat = {
 		    msg_type:0,
 		    msg_time:new Date().getTime(),
 		    msg_content_type:type,
-		    msg_content:mpIM.toBase64(JSON.stringify({
+		    msg_content:JSON.stringify({
 		      speakType:chat_type,   
 		      content:content_url,
 		      atList:[],     
 		      defaultContent: defaultcontent, 
 		      temp:temp
-		    })),
+		    }),
 		    target_type:targetType,
 		    target_id:vm.$store.state.chat.conversation[index].other.id,
 		    target_no:vm.$store.state.chat.conversation[index].other.no-0,
