@@ -5,50 +5,49 @@ const Chat = {
 		//自己的账号id，main_page页面赋值
 		deviceid: '',
 		//每一个消息有一个conversation，如果有插入，没有新建
-		conversation: [],//eval(localStorage.getItem(localStorage.getItem('access_token')))
+		conversation: [], //eval(localStorage.getItem(localStorage.getItem('access_token')))
 		//当前选择的图片
 		selected_img: "",
 		//系统消息
 		cmd_msg: {
-			"friendCmd":[],
-			"groupCmd":[],
-			"count":0//通知总数
+			"friendCmd": [],
+			"groupCmd": [],
+			"count": 0 //通知总数
 		},
-		emoji:{
-		  "emojis":RongIMLib.RongIMEmoji.emojis, /*获取所有融云的表情 是一个数组,保存span*/
-		  "yan_emoji": [
-		    "┭┮﹏┭┮",            // 呜呜呜
-		    "ヾ(￣▽￣)Bye~Bye~",    // bye bye
-		    "( ﹁ ﹁ ) ~→",        // 斜眼
-		    "Ψ(￣∀￣)Ψ",           //美味
-		    "✧(≖ ◡ ≖✿)",            // 闪
+		emoji: {
+			"yan_emoji": [
+		    "┭┮﹏┭┮", // 呜呜呜
+		    "ヾ(￣▽￣)Bye~Bye~", // bye bye
+		    "( ﹁ ﹁ ) ~→", // 斜眼
+		    "Ψ(￣∀￣)Ψ", //美味
+		    "✧(≖ ◡ ≖✿)", // 闪
 		    "━━(￣ー￣*|||━━", //淡定
-		    "(；′⌒`)",            //伤心
-		    "X﹏X",                // 糟糕
-		    "（＝。＝）",          // 厌恶
-		    "o(*^＠^*)o",          // 乖
-		    "o(￣ヘ￣o＃)",        // 哼哼
-		    "~~( ﹁ ﹁ ) ~~~",     // 切
-		    "┑(￣Д ￣)┍",        // 恐怖
-		    "(⊙﹏⊙)",           // 呃呃呃
-		    "o( =•ω•= )m",        //喵星人
-		    "┗( T﹏T )┛",       // 投降
-		    "(✿◡‿◡)",             // 害羞
+		    "(；′⌒`)", //伤心
+		    "X﹏X", // 糟糕
+		    "（＝。＝）", // 厌恶
+		    "o(*^＠^*)o", // 乖
+		    "o(￣ヘ￣o＃)", // 哼哼
+		    "~~( ﹁ ﹁ ) ~~~", // 切
+		    "┑(￣Д ￣)┍", // 恐怖
+		    "(⊙﹏⊙)", // 呃呃呃
+		    "o( =•ω•= )m", //喵星人
+		    "┗( T﹏T )┛", // 投降
+		    "(✿◡‿◡)", // 害羞
 		    "（づ￣3￣）づ╭❤～", // 亲
-		    "Σ( ° △ °|||)︴",   // 汗
+		    "Σ( ° △ °|||)︴", // 汗
 		    "Hi~ o(*￣▽￣*)ブ", //hi
 		    "┗|｀O′|┛ 嗷~~", //嗷
 		    "(☄⊙ω⊙)☄", //吓到
 		    "( *￣▽￣)((≧︶≦*)", //蹭
 		  ],
-		  "wen_emoji": [
+			"wen_emoji": [
 		    "平身",
 		    "你妈喊你回家吃饭",
 		    "臣妾做不到啊!"
 		  ],
-		  "magic_emoji": []
+			"magic_emoji": []
 		}
-	}	
+	}
 }
 export default Chat;
 

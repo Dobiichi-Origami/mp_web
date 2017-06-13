@@ -110,27 +110,26 @@
   </div>
 </template>
 <script>
-  import message from "./page_func/message"
-  import system from "./page_func/system_message"
+	import message from "./page_func/message"
+	import system from "./page_func/system_message"
 	import chat from 'src/chat'
 	import activity from "./page_func/activity"
 	import btn from "./page_func/btn"
-  import seeimg from "./page_func/seeimg.vue"
+	import seeimg from "./page_func/seeimg.vue"
 	export default {
 		updated: function() {},
 		components: {
 			activity,
 			btn,
-      message,
-      seeimg,
-      system
+			message,
+			seeimg,
+			system
 		},
 		mounted: function() {
-			this.$http.get("http://test.mrpyq.com/api/qiniu", {
-				}).then(
-					(res) => {
-						console.log(res.body)
-					})
+			this.$http.get("http://test.mrpyq.com/api/qiniu", {}).then(
+				(res) => {
+					console.log(res.body)
+				})
 			var me = this,
 				ele1 = document.getElementById("li1"),
 				ele2 = document.getElementById("li2"),
@@ -471,7 +470,7 @@
 										} else if (location.href.match(/Main_page\/Detail/i) != null) {
 											//this.$store.state.detail_mounted(this.$store.state, this);
 										} else if (location.href.match(/Main_page\/Addresslist/i) != null) {
-											if(this.$store.state.messages.groupsDetail.length){
+											if (this.$store.state.messages.groupsDetail.length) {
 												this.$store.state.friendcenter_mounted(this.$store.state, this);
 											}
 										} else {
@@ -553,7 +552,7 @@
 		-ms-user-select: none;
 	}
 	
-	#box{
+	#box {
 		margin: 0 auto;
 		margin-top: 72px;
 		width: 1100px;

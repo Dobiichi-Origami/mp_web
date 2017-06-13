@@ -44,7 +44,6 @@
 		mounted: function() {
 			_czc.push(["_trackEvent", "登录页面", "登录页面打开次数"]);
 			TDAPP.onEvent("登录页面", "登录页面打开次数");
-			// this.cleardata();
 		},
 		methods: {
 			login: function() {
@@ -75,53 +74,6 @@
 						me.error = '登录失败'
 					}
 				)
-			},
-			cleardata: function() {
-				//清空更换账号前的数据
-				// this.$store.state.details = {
-				// 	item: false,
-				// 	comments_pagemore: false,
-				// 	like_inform: false,
-				// 	me_inform: false,
-				// 	my_pi_like: false,
-				// 	play_user: false,
-				// 	comments: false,
-				// };
-				// this.$store.state.title = '';
-				// this.$store.state.current_user = false;
-				// this.$store.state.current_user_pe = false;
-				// this.$store.state.current_room = false;
-				// this.$store.state.rooms = false;
-				// this.$store.state.users = false;
-				// this.$store.state.fresh = false;
-				// //this.$store.state.add_number = 0;
-				// this.$store.state.per_number = 0;
-				// this.$store.state.per_pagenumber = 1;
-				// this.$store.state.per_pagemore = false;
-				// this.$store.state.news_pagemore = false;
-				// this.$store.state.news_pagenumber = 1;
-				// this.$store.state.pagenumber = 1;
-				// this.$store.state.pagemore = false;
-				// this.$store.state.home_items = [];
-				// this.$store.state.news_items = [];
-				// this.$store.state.news_datas = [];
-				// this.$store.state.home_datas = [];
-				// this.$store.state.per_items = [];
-				// this.$store.state.per_datas = [];
-				// this.$store.state.su_re = false;
-				// this.$store.state.date = false;
-				// this.$store.state.home_loader = true;
-				// this.$store.state.per_loader = true;
-				// this.$store.state.news_loader = true;
-				// this.$store.state.news = 0;
-				// this.$store.state.show_error = false;
-				// this.$store.state.error = '';
-				// this.$store.state.news_date = false;
-				// this.$store.state.error_fade = true;
-				// this.$store.state.img_show = false;
-				// this.$store.state.img_index = -1;
-				// this.$store.state.img_photos = false;
-				// this.$store.state.photos_show = [];
 			},
 			set_location: function() {
 				var a = new Date().getTime()
