@@ -33,7 +33,9 @@
 								<div v-else>
 									<img :src="$store.state.chat.conversation[list.index].me.headimg" alt="" class="headimg">
 									<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)" >
-										<span v-if="slist.content_type=='TXT'"></span>
+
+										<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
+
 										<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 											<img :src="slist.content.animatedPicUrl" alt="" >
 										</div>
@@ -58,8 +60,8 @@
 									<img :src="slist.speaker.speakerHeadimg" alt="" class="headimg">
 									<div class="other_info">
 										<p class="other_name"><span v-if="slist.speaker.speakerTitle" class="group_member_title" :style="{background:title_bg(slist.speaker.memberType)}">{{slist.speaker.speakerTitle}}</span>{{slist.speaker.speakerName}}<span v-show="show_userno_switch">NO.{{slist.speaker.speakerNo}}</span></p>
-										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}"  @click.stop="show_chehui(sindex,true)">
-											<span v-if="slist.content_type=='TXT'"></span>
+										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.
+											<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
 											<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 												<img :src="slist.content.animatedPicUrl" alt="">
 											</div>
@@ -179,20 +181,20 @@
 				//剧情显示开关
 				jq_switch: false,
 				tishi: '',
-				juqing_tishi:'',
+				juqing_tishi: '',
 				emojitype: 0,
 				emoji_swi: false,
-				length:0,
-				chehui_switch:true,
+				length: 0,
+				chehui_switch: true,
 				//群资料
-				group_info:{},
-				group_switch:false,
-				all_members_show:false,
-				all_members_list:[],
-				check_show_no_act:false,
-				show_userno_string:'已关闭',
-				show_userno_switch:false,
-				not_open:this.list.not_open?'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;'+'opacity:0':'',
+				group_info: {},
+				group_switch: false,
+				all_members_show: false,
+				all_members_list: [],
+				check_show_no_act: false,
+				show_userno_string: '已关闭',
+				show_userno_switch: false,
+				not_open: this.list.not_open ? 'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;' + 'opacity:0' : '',
 			}
 		},
 		mounted: function() {
@@ -205,37 +207,37 @@
 				var dom = document.querySelector('#window_container');
 			}
 			console.log(this.list);
-			this.not_open=this.list.not_open?'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;top:'+(this.$store.state.pageY + 40) + 'px;'+'left:'+(this.$store.state.pageX + 40) + 'px;'+'opacity:0':'';
+			this.not_open = this.list.not_open ? 'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;top:' + (this.$store.state.pageY + 40) + 'px;' + 'left:' + (this.$store.state.pageX + 40) + 'px;' + 'opacity:0' : '';
 			console.log(chat.uploaderimg)
 			chat.uploaderimg(this.list.index);
 		},
 		methods: {
-			del_msg:function(lindex,sindex){
-				this.$store.state.chat.conversation[lindex].msg.splice(sindex,1);
+			del_msg: function(lindex, sindex) {
+				this.$store.state.chat.conversation[lindex].msg.splice(sindex, 1);
 			},
-			f_check_show_no:function(){
-				this.check_show_no_act=!this.check_show_no_act;
-				if(this.show_userno_string=='已开启'){
-					this.show_userno_string='已关闭';
-				}else{
-					this.show_userno_string='已开启'
+			f_check_show_no: function() {
+				this.check_show_no_act = !this.check_show_no_act;
+				if (this.show_userno_string == '已开启') {
+					this.show_userno_string = '已关闭';
+				} else {
+					this.show_userno_string = '已开启'
 				}
-				this.show_userno_switch=!this.show_userno_switch;
+				this.show_userno_switch = !this.show_userno_switch;
 			},
-			title_bg:function(type){
-				if(type == 20){
+			title_bg: function(type) {
+				if (type == 20) {
 					return '#fc9934'
-				}else if(type == 10){
+				} else if (type == 10) {
 					return '#4eae4d'
-				}else{
+				} else {
 					return '#3dcbef'
 				}
 			},
-			close_all_members:function(){
-				this.all_members_show=false;
+			close_all_members: function() {
+				this.all_members_show = false;
 			},
 			//获取所有群成员
-			get_all_members:function(){
+			get_all_members: function() {
 				this.$http({
 					method: 'get',
 					url: 'http://test.mrpyq.com/api/group/members_in_group',
@@ -246,36 +248,37 @@
 					},
 					emulateJSON: true,
 				}).then((res) => {
-					var s=res.body.items,n=1;
-					for(var i=0;i<s.length;i++){
+					var s = res.body.items,
+						n = 1;
+					for (var i = 0; i < s.length; i++) {
 						console.log(s[i].title)
-						if(!s[i].title){
-							n=i;
+						if (!s[i].title) {
+							n = i;
 							console.log(n)
 							break;
 						}
 					}
-					var a=[];
-					for(var i=n;i<s.length;i++){
-						if(s[i].title){
+					var a = [];
+					for (var i = n; i < s.length; i++) {
+						if (s[i].title) {
 							a.push(s[i]);
-							s.splice(i,1);
+							s.splice(i, 1);
 							i--;
 						}
 					}
-					for(var i=0;i<a.length;i++){
-						s.splice(n,0,a[i])
+					for (var i = 0; i < a.length; i++) {
+						s.splice(n, 0, a[i])
 					}
-					this.all_members_list=s;
-					this.all_members_show=true;
+					this.all_members_list = s;
+					this.all_members_show = true;
 				})
 			},
 			//群资料
-			close_group_info:function(){
-				this.group_switch=false;
+			close_group_info: function() {
+				this.group_switch = false;
 			},
 			//获取群资料
-			getgroupinfo:function(){
+			getgroupinfo: function() {
 				this.$http({
 					method: 'get',
 					url: 'http://test.mrpyq.com/api/group/details',
@@ -287,40 +290,47 @@
 					emulateJSON: true,
 				}).then((res) => {
 					//title顺序排列
-					this.group_info=res.body.group;
-					this.group_switch=true;
+					this.group_info = res.body.group;
+					this.group_switch = true;
 				})
 			},
 			//消息向上滚动
-			scroll_top:function(){
-				this.chehui_switch=false;
-				var me=this;
-				setTimeout(function(){
-					if(me.length!=me.$store.state.chat.conversation[me.list.index].msg.length){
-					document.querySelector('#win'+me.list.group._id+' .window_box').scrollTop=parseInt(window.getComputedStyle(document.querySelector('#win'+me.list.group._id+' .windowcontent')).height)+1000;
-									console.log(window.getComputedStyle(document.querySelector('#win'+me.list.group._id+' .windowcontent')).height)
-					me.length=me.$store.state.chat.conversation[me.list.index].msg.length;
-				}
-				},10)
+			scroll_top: function() {
+				this.chehui_switch = false;
+				var me = this;
+				setTimeout(function() {
+					if (me.length != me.$store.state.chat.conversation[me.list.index].msg.length) {
+						document.querySelector('#win' + me.list.group._id + ' .window_box').scrollTop = parseInt(window.getComputedStyle(document.querySelector('#win' + me.list.group._id + ' .windowcontent')).height) + 1000;
+						console.log(window.getComputedStyle(document.querySelector('#win' + me.list.group._id + ' .windowcontent')).height)
+						me.length = me.$store.state.chat.conversation[me.list.index].msg.length;
+					}
+				}, 10)
 			},
-			seeimg:function(url){
-				var photos=[],index=0;
-				for(var i=0;i<this.$store.state.chat.conversation[this.list.index].msg.length;i++){
-					if(this.$store.state.chat.conversation[this.list.index].msg[i].content_type=='IMAGE'){
-						photos.push({large:this.$store.state.chat.conversation[this.list.index].msg[i].url})
+			seeimg: function(url) {
+				var photos = [],
+					index = 0;
+				for (var i = 0; i < this.$store.state.chat.conversation[this.list.index].msg.length; i++) {
+					if (this.$store.state.chat.conversation[this.list.index].msg[i].content_type == 'IMAGE') {
+						photos.push({
+							large: this.$store.state.chat.conversation[this.list.index].msg[i].url
+						})
 					}
 				}
-				for(var j=0;j<photos.length;j++){
-					if(url==photos[j].large){
-						index=j;
+				for (var j = 0; j < photos.length; j++) {
+					if (url == photos[j].large) {
+						index = j;
 						break;
 					}
 				}
 				console.log(index);
+<<<<<<< HEAD
 				this.$store.state.see_img(this.$store.state,index,photos);
 			},
 			rong: function(str) {
 				
+=======
+				this.$store.state.see_img(this.$store.state, index, photos);
+>>>>>>> master
 			},
 			check_emojitype: function(type) {
 				this.emojitype = type;
@@ -358,18 +368,19 @@
 				}
 				this.emoji_swi = false;
 			},
-			show_chehui: function(sindex,is_img) {
-				var me=this,t=0;
-				this.chehui_switch=true;
-				if(is_img){
-					t=350;
+			show_chehui: function(sindex, is_img) {
+				var me = this,
+					t = 0;
+				this.chehui_switch = true;
+				if (is_img) {
+					t = 350;
 				}
-				setTimeout(function(){
-					if(me.chehui_switch){
+				setTimeout(function() {
+					if (me.chehui_switch) {
 						var id = me.list.group._id + sindex;
 						console.log(id)
 						var dom1 = document.querySelector('#chehui' + id),
-						dom2=document.querySelector('#del'+id);
+							dom2 = document.querySelector('#del' + id);
 						if (dom1) {
 							if (dom1.dataset.show == 'true') {
 								dom1.style.display = 'none';
@@ -389,13 +400,13 @@
 							}
 						}
 					}
-				},t)
+				}, t)
 			},
-			revoke:function(conversation_index, msg_index,time) {
-				var t=new Date().getTime();
-				if (t-time<=180000){
+			revoke: function(conversation_index, msg_index, time) {
+				var t = new Date().getTime();
+				if (t - time <= 180000) {
 					chat.cmd_sender("msg_revoke", conversation_index, msg_index, "")
-				}else{
+				} else {
 					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
 			},
@@ -409,14 +420,14 @@
 			},
 			//确认添加剧情
 			sureadd_juqing: function() {
-				if(this.juqingval==''){
-					this.juqing_tishi='请输入内容！'
-				}else{
+				if (this.juqingval == '') {
+					this.juqing_tishi = '请输入内容！'
+				} else {
 					var me = this;
 					chat.send(me.list.index, 0, me.juqingval, 3, 0);
 					this.jq_switch = false;
 					this.juqingval = '';
-					this.juqing_tishi='';
+					this.juqing_tishi = '';
 				}
 			},
 			//开始剧情
@@ -458,7 +469,7 @@
 				dom.style.opacity = '0';
 			},
 			down: function(event) {
-				var dom = document.querySelector('#win'+this.list.group._id),
+				var dom = document.querySelector('#win' + this.list.group._id),
 					box = document.querySelectorAll('.window_select')[this.index],
 					x = parseInt(window.getComputedStyle(dom).left),
 					y = parseInt(window.getComputedStyle(dom).top),
@@ -498,16 +509,17 @@
 				if (this.val == '') {
 					this.tishi = "请输入内容！";
 				} else {
-					var me = this,title;
-					for(var i=0;i<this.$store.state.messages.grouplist.length;i++){
+					var me = this,
+						title;
+					for (var i = 0; i < this.$store.state.messages.grouplist.length; i++) {
 						console.log(this.$store.state.messages.grouplist[i]._id)
-						if(this.$store.state.chat.conversation[this.list.index].other.id==this.$store.state.messages.grouplist[i]._id){
-							title=this.$store.state.messages.grouplist[i].member.title;
+						if (this.$store.state.chat.conversation[this.list.index].other.id == this.$store.state.messages.grouplist[i]._id) {
+							title = this.$store.state.messages.grouplist[i].member.title;
 							console.log(title)
 							break;
 						}
 					}
-					chat.send(me.list.index, 0, me.val, me.myself_say_act, 0,undefined,title);
+					chat.send(me.list.index, 0, me.val, me.myself_say_act, 0, undefined, title);
 					this.val = '';
 					this.tishi = '';
 					// console.log(this.$store.state.chat.conversation[this.list.index])
@@ -515,12 +527,12 @@
 			},
 			send_magicimg(index, type) {
 				chat.send_magicimg(index, type);
-				this.emoji_swi=false;
+				this.emoji_swi = false;
 			},
 			//进入个人中心
 			f_check_personal: function(user) {
 				this.$store.state.current_user_pe = user;
-				this.$store.state.personal_mounted(this.$store.state,this);
+				this.$store.state.personal_mounted(this.$store.state, this);
 				this.$router.push('/Main_page/Personal');
 			},
 		},
@@ -528,297 +540,343 @@
 
 </script>
 <style scoped>
-.jinyan{
-	background: -webkit-linear-gradient(top left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%),-webkit-linear-gradient(top right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%),-webkit-linear-gradient(bottom left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%),-webkit-linear-gradient(bottom right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%);
-	background: -o-linear-gradient(top left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%),-o-linear-gradient(top right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%),-o-linear-gradient(bottom left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%),-o-linear-gradient(bottom right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%);
-	background: linear-gradient(to bottom right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%),linear-gradient(to bottom left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%),linear-gradient(to top right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%),linear-gradient(to top left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%);
-	color:#333;
-	height:126px;
-	line-height: 126px;
-	text-align:center;
-	font-size:30px;
-	letter-spacing: 40px;
-	background-size:493px;
-	text-indent: 40px;
-	box-shadow:0 0 6px 0px #000;
-}
-.group_member_title{
-	display: inline-block;
-	padding:0 5px;
-	border-radius:3px;
-	color:#FFF!important;
-	margin:0 5px 0 0!important;
-	line-height: 16px;
-
-}
-.all_members{
-	position: absolute;
-	top:0;
-	left:0;
-	width:100%;
-	height:100%;
-	overflow:hidden;
-	background: #fff;
-}
-.all_members>div:nth-child(2){
-	height:556px;
-	width:600px;
-	overflow:auto;
-}
-.all_members li{
-	width:500px;
-	height:60px;
-	float:left;
-	border-bottom:1px solid #ededed;
-	cursor:pointer;
-}
-.all_members li:hover{
-	background: #ccc;
-}
-.group_members_details>img{
-	float:left;
-	height:50px;
-	width:50px;
-	border-radius:5px;
-	margin:5px 10px;
-}
-.group_members_details>div{
-	float:left;
-	width:300px;
-	margin-left: 5px;
-}
-.group_members_details>div>p{
-	font-size:14px;
-	width:300px;
-	margin-top:7px;
-	overflow:hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-.group_members_details>div>p:nth-child(2){
-	margin-top:5px;
-	color:#888;
-}
-.group_members_details>p{
-	float: right;
-	padding:0 5px;
-	background: #ccc;
-	border-radius:3px;
-	margin-top:19px;
-	margin-right:10px;
-	font-size:12px;
-	line-height: 22px;
-	color:#fff;
-}
-.check_show_no{
-	float:right;
-	width:40px;
-	height:20px;
-	background: #fff;
-	border-radius:11px;
-	cursor:pointer;
-	margin:10px 8px 0 0 ;
-	position: relative;
-	border:1px solid #ddd;
-	transition: all .3s;
-}
-.check_show_no.active{
-	background: #42c047;
-	border:1px solid #42c047;
-}
-.check_show_no>i{
-	display: block;
-	width:16px;
-	height:16px;
-	border-radius: 50%;
-	background: #fff;
-	box-shadow: 0 0 5px #000;
-	position: absolute;
-	top:2px;
-	left:1px;
-	transition: all .3s;
-}
-.check_show_no.active>i{
-	left:23px;
-	box-shadow:none;
-}
-.show_no_switch{
-	color:#999;
-	font-size:12px;
-	margin-left:20px;
-}
-.group_members_headimg{
-	float:left;
-	padding-bottom:10px;
-	width:410px;
-}
-.group_members_headimg>li{
-	float:left;
-	padding:0 9px;
-	cursor:pointer;
-}
-.group_members_headimg>li>img{
-	display: block;
-	width:50px;
-	height:50px;
-	border-radius:50%;
-}
-.group_members_headimg>li>p{
-	width:50px;
-	text-align:center;
-	font-size:12px;
-	margin-top:5px;
-	text-overflow: ellipsis;
-	overflow:hidden;
-	white-space: nowrap;
-	color:#999;
-}
-.group_member>div{
-	float:left;
-	width:50px;
-	height:50px;
-	border-radius:50%;
-	border:1px solid #ddd;
-	text-align:center;
-	line-height:50px;
-	background:#eee;
-	margin-left:9px;
-	cursor:pointer;
-}
-.group_details{
-	padding-left:12px;
-}
-.group_details>div>p:nth-child(1){
-	font-size:14px;
-	color:#999;
-	line-height:40px;
-
-}
-.group_details>div>p:nth-child(2){
-	line-height: 20px;
-	color:#666;
-	padding-bottom:5px;
-}
-.group_details>div{
-	border-bottom:1px solid #ededed;
-	float:left;
-	width:100%;
-}
-.group_banner{
-	height:240px;
-	overflow:hidden;
-}
-.group_banner>img{
-	display: block;
-	width:80px;
-	height:80px;
-	margin:0 auto;
-	margin-top:40px;
-	border-radius:50%;
-}
-.group_banner>p{
-	color:#fff;
-	text-align:center;
-}
-.group_banner>p:nth-child(2){
-	font-size:16px;
-	margin-top:15px;
-}
-.group_banner>p:nth-child(3){
-	font-size:12px;
-	line-height: 24px
-}
-.group_info{
-	position: absolute;
-	background: #fcfcfc;
-	width:100%;
-	height:100%;
-	top:0;
-	left:0;
-}
-.system_message{
-	margin-bottom:12px;
-}
-.magic_img{
-	cursor: pointer;
-	float: left;
-	padding:10px;
-}
-.magic_img:hover{
-	background: #ccc;
-}
-.magic_img:nth-child(2){
-	padding:20px;
-}
-.magic_img>img{
-	display: block;
-	width:60px;
-}
-.magic_img>img.small{
-	width:40px;
-}
-.other_revoke{
-		display: table;
-		font-size:12px;
-		background: #ddd;
-		text-align:center;
+	.jinyan {
+		background: -webkit-linear-gradient(top left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%), -webkit-linear-gradient(top right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%), -webkit-linear-gradient(bottom left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%), -webkit-linear-gradient(bottom right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%);
+		background: -o-linear-gradient(top left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%), -o-linear-gradient(top right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%), -o-linear-gradient(bottom left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%), -o-linear-gradient(bottom right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%);
+		background: linear-gradient(to bottom right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%), linear-gradient(to bottom left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%), linear-gradient(to top right, #ccc 0%, #fff 25%, transparent 25%, transparent 100%), linear-gradient(to top left, #ccc 0%, #fff 25%, transparent 25%, transparent 100%);
+		color: #333;
+		height: 126px;
+		line-height: 126px;
+		text-align: center;
+		font-size: 30px;
+		letter-spacing: 40px;
+		background-size: 493px;
+		text-indent: 40px;
+		box-shadow: 0 0 6px 0px #000;
+	}
+	
+	.group_member_title {
+		display: inline-block;
+		padding: 0 5px;
 		border-radius: 3px;
-		padding:0 10px;
-		margin:0 auto;
+		color: #FFF!important;
+		margin: 0 5px 0 0!important;
+		line-height: 16px;
 	}
-	.revoke{
+	
+	.all_members {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		background: #fff;
+	}
+	
+	.all_members>div:nth-child(2) {
+		height: 556px;
+		width: 600px;
+		overflow: auto;
+	}
+	
+	.all_members li {
+		width: 500px;
+		height: 60px;
+		float: left;
+		border-bottom: 1px solid #ededed;
+		cursor: pointer;
+	}
+	
+	.all_members li:hover {
+		background: #ccc;
+	}
+	
+	.group_members_details>img {
+		float: left;
+		height: 50px;
+		width: 50px;
+		border-radius: 5px;
+		margin: 5px 10px;
+	}
+	
+	.group_members_details>div {
+		float: left;
+		width: 300px;
+		margin-left: 5px;
+	}
+	
+	.group_members_details>div>p {
+		font-size: 14px;
+		width: 300px;
+		margin-top: 7px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	
+	.group_members_details>div>p:nth-child(2) {
+		margin-top: 5px;
+		color: #888;
+	}
+	
+	.group_members_details>p {
+		float: right;
+		padding: 0 5px;
+		background: #ccc;
+		border-radius: 3px;
+		margin-top: 19px;
+		margin-right: 10px;
+		font-size: 12px;
+		line-height: 22px;
+		color: #fff;
+	}
+	
+	.check_show_no {
+		float: right;
+		width: 40px;
+		height: 20px;
+		background: #fff;
+		border-radius: 11px;
+		cursor: pointer;
+		margin: 10px 8px 0 0;
+		position: relative;
+		border: 1px solid #ddd;
+		transition: all .3s;
+	}
+	
+	.check_show_no.active {
+		background: #42c047;
+		border: 1px solid #42c047;
+	}
+	
+	.check_show_no>i {
+		display: block;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background: #fff;
+		box-shadow: 0 0 5px #000;
+		position: absolute;
+		top: 2px;
+		left: 1px;
+		transition: all .3s;
+	}
+	
+	.check_show_no.active>i {
+		left: 23px;
+		box-shadow: none;
+	}
+	
+	.show_no_switch {
+		color: #999;
+		font-size: 12px;
+		margin-left: 20px;
+	}
+	
+	.group_members_headimg {
+		float: left;
+		padding-bottom: 10px;
+		width: 410px;
+	}
+	
+	.group_members_headimg>li {
+		float: left;
+		padding: 0 9px;
+		cursor: pointer;
+	}
+	
+	.group_members_headimg>li>img {
+		display: block;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+	}
+	
+	.group_members_headimg>li>p {
+		width: 50px;
+		text-align: center;
+		font-size: 12px;
+		margin-top: 5px;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+		color: #999;
+	}
+	
+	.group_member>div {
+		float: left;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		border: 1px solid #ddd;
+		text-align: center;
+		line-height: 50px;
+		background: #eee;
+		margin-left: 9px;
+		cursor: pointer;
+	}
+	
+	.group_details {
+		padding-left: 12px;
+	}
+	
+	.group_details>div>p:nth-child(1) {
+		font-size: 14px;
+		color: #999;
+		line-height: 40px;
+	}
+	
+	.group_details>div>p:nth-child(2) {
+		line-height: 20px;
+		color: #666;
+		padding-bottom: 5px;
+	}
+	
+	.group_details>div {
+		border-bottom: 1px solid #ededed;
+		float: left;
+		width: 100%;
+	}
+	
+	.group_banner {
+		height: 240px;
+		overflow: hidden;
+	}
+	
+	.group_banner>img {
+		display: block;
+		width: 80px;
+		height: 80px;
+		margin: 0 auto;
+		margin-top: 40px;
+		border-radius: 50%;
+	}
+	
+	.group_banner>p {
+		color: #fff;
+		text-align: center;
+	}
+	
+	.group_banner>p:nth-child(2) {
+		font-size: 16px;
+		margin-top: 15px;
+	}
+	
+	.group_banner>p:nth-child(3) {
+		font-size: 12px;
+		line-height: 24px
+	}
+	
+	.group_info {
+		position: absolute;
+		background: #fcfcfc;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+	}
+	
+	.system_message {
+		margin-bottom: 12px;
+	}
+	
+	.magic_img {
+		cursor: pointer;
+		float: left;
+		padding: 10px;
+	}
+	
+	.magic_img:hover {
+		background: #ccc;
+	}
+	
+	.magic_img:nth-child(2) {
+		padding: 20px;
+	}
+	
+	.magic_img>img {
+		display: block;
+		width: 60px;
+	}
+	
+	.magic_img>img.small {
+		width: 40px;
+	}
+	
+	.other_revoke {
+		display: table;
+		font-size: 12px;
+		background: #ddd;
+		text-align: center;
+		border-radius: 3px;
+		padding: 0 10px;
+		margin: 0 auto;
+	}
+	
+	.revoke {
 		display: table;
 		background: #ddd;
-		border-radius:3px;
-		text-align:center;
-		font-size:12px;
-		padding:0 10px;
-		margin:0 auto;
+		border-radius: 3px;
+		text-align: center;
+		font-size: 12px;
+		padding: 0 10px;
+		margin: 0 auto;
 	}
-	.magic_pic>img{
+	
+	.magic_pic>img {
 		display: block;
-		width:70px;
+		width: 70px;
 	}
-	.ajax-loader-container{
+	
+	.ajax-loader-container {
 		position: absolute;
-		height:100%;
-		width:100%;
-		background: rgba(0,0,0,.3);
+		height: 100%;
+		width: 100%;
+		background: rgba(0, 0, 0, .3);
 	}
-	.ajax-loader{
+	
+	.ajax-loader {
 		position: absolute;
-		top:50%;
-		left:50%;
-		margin-top:-.75em;
-		margin-left:-.75em;
+		top: 50%;
+		left: 50%;
+		margin-top: -.75em;
+		margin-left: -.75em;
 	}
-	.localurl>img{
+	
+	.localurl>img {
 		display: block;
-		width:80px;
+		width: 80px;
 		border-radius: 5px;
 	}
-	.localurl{
+	
+	.localurl {
 		position: relative;
 	}
-	.otherurl>img,.img_show>img{
+	
+	.otherurl>img,
+	.img_show>img {
 		display: block;
-		width:150px;
+		width: 150px;
 		border-radius: 5px;
 	}
+	
 	.select_img {
 		float: right;
 		width: 26px;
 		height: 22px;
 		overflow: hidden;
 		position: relative;
-		margin:8px 15px 0 0;
+		margin: 8px 15px 0 0;
 	}
-	.select_img>img{
+	
+	.select_img>img {
 		display: block;
-		height:22px;
+		height: 22px;
 	}
+	
 	.select_img>input {
-		font-size:0;
+		font-size: 0;
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -883,7 +941,7 @@
 		border-right: none;
 		border-left: 1px solid #bbb;
 		background: url(~assets/chat/close_emoji.png) center center no-repeat;
-		border:none;
+		border: none;
 	}
 	
 	.emoji_yan>span,
@@ -914,8 +972,10 @@
 		height: 611px;
 	}
 	
-	.windowheader,.group_info_header,.all_members_header{
-		width:500px;
+	.windowheader,
+	.group_info_header,
+	.all_members_header {
+		width: 500px;
 		background: #333;
 		height: 55px;
 		font-size: 16px;
@@ -924,42 +984,51 @@
 		line-height: 55px;
 		position: relative;
 	}
-	.group_info_header>img,.all_members_header>img{
+	
+	.group_info_header>img,
+	.all_members_header>img {
 		position: absolute;
 		display: block;
-		width:12px;
-		top:22px;
-		right:15px;
-		cursor:pointer;
+		width: 12px;
+		top: 22px;
+		right: 15px;
+		cursor: pointer;
 	}
+	
 	.windowheader>p {
 		position: absolute;
 		color: #fff;
-		height:100%;
+		height: 100%;
 		right: 12px;
 		top: 0;
 		cursor: pointer;
 	}
-	.windowheader>p>img{
+	
+	.windowheader>p>img {
 		display: block;
-		width:16px;
+		width: 16px;
 	}
+	
 	.windowheader>p:nth-child(1) {
 		right: 70px;
 	}
-	.windowheader>p:nth-child(1)>img{
-		width:18px;
-		margin-top:22px;
+	
+	.windowheader>p:nth-child(1)>img {
+		width: 18px;
+		margin-top: 22px;
 	}
+	
 	.windowheader>p:nth-child(2) {
 		right: 40px;
 	}
-	.windowheader>p:nth-child(2)>img{
-		margin-top:28px;
+	
+	.windowheader>p:nth-child(2)>img {
+		margin-top: 28px;
 	}
-	.windowheader>p:nth-child(3)>img{
-		margin-top:23px;
-		width:12px;
+	
+	.windowheader>p:nth-child(3)>img {
+		margin-top: 23px;
+		width: 12px;
 	}
 	
 	.window_box {
@@ -1118,11 +1187,13 @@
 		word-break: break-word;
 		cursor: pointer;
 	}
-	div.wordcontent.active{
-		padding:0;
+	
+	div.wordcontent.active {
+		padding: 0;
 		white-space: normal;
-		border:none;
+		border: none;
 	}
+	
 	.wordcontent.self,
 	.other_word .wordcontent.self {
 		background: #ddd;
@@ -1240,9 +1311,11 @@
 		background: -o-linear-gradient(top left, #eee, #ccc, #fff);
 		background: linear-gradient(to bottom right, #eee, #ccc, #fff);
 	}
-	p.juqing_sure>span:hover{
+	
+	p.juqing_sure>span:hover {
 		background: #fff;
 	}
+	
 	p.juqing_sure>span:nth-child(1) {
 		border-right: 1px solid #ccc;
 	}
@@ -1257,19 +1330,20 @@
 		margin-right: 30px;
 		cursor: pointer;
 		background: url(~assets/chat/add_juqing.png) left center no-repeat;
-		padding-left:16px;
-		background-size:12px;
+		padding-left: 16px;
+		background-size: 12px;
 	}
 	
 	p.face {
 		float: right;
 		line-height: 40px;
 		cursor: pointer;
-		margin:8px 15px 0 0;
+		margin: 8px 15px 0 0;
 	}
-	p.face>img{
+	
+	p.face>img {
 		display: block;
-		width:22px;
+		width: 22px;
 	}
 	
 	.me_selfsay {
@@ -1320,7 +1394,7 @@
 	
 	.other_name {
 		font-size: 14px;
-		margin:0;
+		margin: 0;
 	}
 	
 	.other_name>span {

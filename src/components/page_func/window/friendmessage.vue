@@ -29,7 +29,9 @@
 								<div v-else>
 									<img :src="$store.state.chat.conversation[list.index].me.headimg" alt="" class="headimg">
 									<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)" >
+
 										<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
+
 										<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 											<img :src="slist.content.animatedPicUrl" alt="" >
 										</div>
@@ -119,7 +121,7 @@
 	import chat from "src/chat/index.js"
 	export default ({
 		props: ['index', 'list'],
-		data(){
+		data() {
 			return {
 				myself_say_act: 0,
 				juqing: 0,
@@ -128,13 +130,13 @@
 				//剧情显示开关
 				jq_switch: false,
 				tishi: '',
-				juqing_tishi:'',
+				juqing_tishi: '',
 				emojitype: 0,
 				emoji_swi: false,
-				length:0,
-				chehui_switch:true,
-				not_open:this.list.not_open?'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;'+'opacity:0':'',
-				linshi:this.$store.state.chat.conversation[this.list.index].msg.length?this.$store.state.chat.conversation[this.list.index].msg[0].temp:0
+				length: 0,
+				chehui_switch: true,
+				not_open: this.list.not_open ? 'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;' + 'opacity:0' : '',
+				linshi: this.$store.state.chat.conversation[this.list.index].msg.length ? this.$store.state.chat.conversation[this.list.index].msg[0].temp : 0
 			}
 		},
 		mounted: function() {
@@ -146,45 +148,47 @@
 				var dom = document.querySelector('#window_container');
 			}
 			console.log(this.list);
-			this.not_open=this.list.not_open?'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;top:'+(this.$store.state.pageY + 40) + 'px;'+'left:'+(this.$store.state.pageX + 40) + 'px;'+'opacity:0':'';
+			this.not_open = this.list.not_open ? 'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;top:' + (this.$store.state.pageY + 40) + 'px;' + 'left:' + (this.$store.state.pageX + 40) + 'px;' + 'opacity:0' : '';
 			//引入Plupload 、qiniu.js后
 			chat.uploaderimg(this.list.index);
 		},
 		methods: {
-			del_msg:function(lindex,sindex){
-				this.$store.state.chat.conversation[lindex].msg.splice(sindex,1);
+			del_msg: function(lindex, sindex) {
+				this.$store.state.chat.conversation[lindex].msg.splice(sindex, 1);
 			},
-			chat:function(){
+			chat: function() {
 				console.log(1)
 			},
-			scroll_top:function(){
-				this.chehui_switch=false;
-				var me=this;
-				setTimeout(function(){
-					if(me.length!=me.$store.state.chat.conversation[me.list.index].msg.length){
-					document.querySelector('#win'+me.list.user.user._id+' .window_box').scrollTop=parseInt(window.getComputedStyle(document.querySelector('#win'+me.list.user.user._id+' .windowcontent')).height)+1000;
-									console.log(window.getComputedStyle(document.querySelector('#win'+me.list.user.user._id+' .windowcontent')).height)
-					me.length=me.$store.state.chat.conversation[me.list.index].msg.length;
-				}
-				},10)
+			scroll_top: function() {
+				this.chehui_switch = false;
+				var me = this;
+				setTimeout(function() {
+					if (me.length != me.$store.state.chat.conversation[me.list.index].msg.length) {
+						document.querySelector('#win' + me.list.user.user._id + ' .window_box').scrollTop = parseInt(window.getComputedStyle(document.querySelector('#win' + me.list.user.user._id + ' .windowcontent')).height) + 1000;
+						console.log(window.getComputedStyle(document.querySelector('#win' + me.list.user.user._id + ' .windowcontent')).height)
+						me.length = me.$store.state.chat.conversation[me.list.index].msg.length;
+					}
+				}, 10)
 			},
-			seeimg:function(url){
-				var photos=[],index=0;
-				for(var i=0;i<this.$store.state.chat.conversation[this.list.index].msg.length;i++){
-					if(this.$store.state.chat.conversation[this.list.index].msg[i].content_type=='IMAGE'){
-						photos.push({large:this.$store.state.chat.conversation[this.list.index].msg[i].url})
+			seeimg: function(url) {
+				var photos = [],
+					index = 0;
+				for (var i = 0; i < this.$store.state.chat.conversation[this.list.index].msg.length; i++) {
+					if (this.$store.state.chat.conversation[this.list.index].msg[i].content_type == 'IMAGE') {
+						photos.push({
+							large: this.$store.state.chat.conversation[this.list.index].msg[i].url
+						})
 					}
 				}
-				for(var j=0;j<photos.length;j++){
-					if(url==photos[j].large){
-						index=j;
+				for (var j = 0; j < photos.length; j++) {
+					if (url == photos[j].large) {
+						index = j;
 						break;
 					}
 				}
 				console.log(index);
-				this.$store.state.see_img(this.$store.state,index,photos);
-			},
-			rong: function() {
+
+				this.$store.state.see_img(this.$store.state, index, photos);
 
 			},
 			check_emojitype: function(type) {
@@ -223,18 +227,19 @@
 				}
 				this.emoji_swi = false;
 			},
-			show_chehui: function(sindex,is_img) {
-				var me=this,t=0;
-				this.chehui_switch=true;
-				if(is_img){
-					t=350;
+			show_chehui: function(sindex, is_img) {
+				var me = this,
+					t = 0;
+				this.chehui_switch = true;
+				if (is_img) {
+					t = 350;
 				}
-				setTimeout(function(){
-					if(me.chehui_switch){
+				setTimeout(function() {
+					if (me.chehui_switch) {
 						var id = me.list.user.user._id + sindex;
 						console.log(id)
 						var dom1 = document.querySelector('#chehui' + id),
-						dom2=document.querySelector('#del'+id);
+							dom2 = document.querySelector('#del' + id);
 						if (dom1) {
 							if (dom1.dataset.show == 'true') {
 								dom1.style.display = 'none';
@@ -254,14 +259,14 @@
 							}
 						}
 					}
-				},t)
+				}, t)
 			},
-			revoke:function(conversation_index, msg_index,time) {
-				var t=new Date().getTime();
+			revoke: function(conversation_index, msg_index, time) {
+				var t = new Date().getTime();
 				// console.log(t-(time*1000))
-				if (t-time*1000<=1800000){
+				if (t - time * 1000 <= 1800000) {
 					chat.cmd_sender("msg_revoke", conversation_index, msg_index, "")
-				}else{
+				} else {
 					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
 			},
@@ -275,16 +280,16 @@
 			},
 			//确认添加剧情
 			sureadd_juqing: function() {
-				if(this.juqingval==''){
-					this.juqing_tishi='请输入内容！'
-				}else{
+				if (this.juqingval == '') {
+					this.juqing_tishi = '请输入内容！'
+				} else {
 					var me = this;
 					chat.send(me.list.index, 0, me.juqingval, 3, 0);
 					this.jq_switch = false;
 					this.juqingval = '';
-					this.juqing_tishi='';
+					this.juqing_tishi = '';
 				}
-				
+
 			},
 			//开始剧情
 			start_juqing: function() {
@@ -372,95 +377,111 @@
 					console.log(this.$store.state.chat.conversation[this.list.index])
 				}
 			},
-			send_magicimg(index, type){
+			send_magicimg(index, type) {
 				chat.send_magicimg(index, type);
-				this.emoji_swi=false;
+				this.emoji_swi = false;
 			},
 		},
 	})
 
 </script>
 <style scoped>
-.magic_img{
-	cursor: pointer;
-	float: left;
-	padding:10px;
-}
-.magic_img:hover{
-	background: #ccc;
-}
-.magic_img:nth-child(2){
-	padding:20px;
-}
-.magic_img>img{
-	display: block;
-	width:60px;
-}
-.magic_img>img.small{
-	width:40px;
-}
-	.other_revoke{
+	.magic_img {
+		cursor: pointer;
+		float: left;
+		padding: 10px;
+	}
+	
+	.magic_img:hover {
+		background: #ccc;
+	}
+	
+	.magic_img:nth-child(2) {
+		padding: 20px;
+	}
+	
+	.magic_img>img {
+		display: block;
+		width: 60px;
+	}
+	
+	.magic_img>img.small {
+		width: 40px;
+	}
+	
+	.other_revoke {
 		display: table;
-		font-size:12px;
+		font-size: 12px;
 		background: #ddd;
-		text-align:center;
+		text-align: center;
 		border-radius: 3px;
-		padding:0 10px;
-		margin:0 auto;
+		padding: 0 10px;
+		margin: 0 auto;
 	}
-	.revoke{
+	
+	.revoke {
 		display: table;
 		background: #ddd;
-		border-radius:3px;
-		text-align:center;
-		font-size:12px;
-		padding:0 10px;
-		margin:0 auto;
+		border-radius: 3px;
+		text-align: center;
+		font-size: 12px;
+		padding: 0 10px;
+		margin: 0 auto;
 	}
-	.magic_pic>img{
+	
+	.magic_pic>img {
 		display: block;
-		width:70px;
+		width: 70px;
 	}
-	.ajax-loader-container{
+	
+	.ajax-loader-container {
 		position: absolute;
-		height:100%;
-		width:100%;
-		background: rgba(0,0,0,.3);
+		height: 100%;
+		width: 100%;
+		background: rgba(0, 0, 0, .3);
 	}
-	.ajax-loader{
+	
+	.ajax-loader {
 		position: absolute;
-		top:50%;
-		left:50%;
-		margin-top:-.75em;
-		margin-left:-.75em;
+		top: 50%;
+		left: 50%;
+		margin-top: -.75em;
+		margin-left: -.75em;
 	}
-	.localurl>img{
+	
+	.localurl>img {
 		display: block;
-		width:80px;
+		width: 80px;
 		border-radius: 5px;
 	}
-	.localurl{
+	
+	.localurl {
 		position: relative;
 	}
-	.otherurl>img,.img_show>img{
+	
+	.otherurl>img,
+	.img_show>img {
 		display: block;
-		width:150px;
+		width: 150px;
 		border-radius: 5px;
 	}
+	
 	.select_img {
 		float: right;
 		width: 26px;
 		height: 22px;
 		overflow: hidden;
 		position: relative;
-		margin:8px 15px 0 0;
+		margin: 8px 15px 0 0;
 	}
-	.select_img>img{
+	
+	.select_img>img {
 		display: block;
-		height:22px;
+		height: 22px;
 	}
+	
 	.select_img>input {
-		font-size:0;
+		font-size: 0;
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -525,7 +546,7 @@
 		border-right: none;
 		border-left: 1px solid #bbb;
 		background: url(~assets/chat/close_emoji.png) center center no-repeat;
-		border:none;
+		border: none;
 	}
 	
 	.emoji_yan>span,
@@ -543,7 +564,7 @@
 		background: #bbb;
 	}
 	
-	.content{
+	.content {
 		position: fixed;
 		top: 100px;
 		z-index: 999;
@@ -555,6 +576,7 @@
 		box-shadow: 1px 1px 6px #333;
 		height: 611px;
 	}
+	
 	.windowheader {
 		background: #333;
 		height: 55px;
@@ -568,25 +590,30 @@
 	.windowheader>p {
 		position: absolute;
 		color: #fff;
-		height:100%;
+		height: 100%;
 		right: 12px;
 		top: 0;
 		cursor: pointer;
 	}
-	.windowheader>p>img{
+	
+	.windowheader>p>img {
 		display: block;
-		width:16px;
+		width: 16px;
 	}
+	
 	.windowheader>p:nth-child(1) {
 		right: 40px;
 	}
-	.windowheader>p:nth-child(1)>img{
-		margin-top:25px;
+	
+	.windowheader>p:nth-child(1)>img {
+		margin-top: 25px;
 	}
-	.windowheader>p:nth-child(2)>img{
-		margin-top:20px;
-		width:12px;
+	
+	.windowheader>p:nth-child(2)>img {
+		margin-top: 20px;
+		width: 12px;
 	}
+	
 	.window_box {
 		width: 530px;
 		height: 430px;
@@ -743,11 +770,13 @@
 		word-break: break-word;
 		cursor: pointer;
 	}
-	div.wordcontent.active{
-		padding:0;
+	
+	div.wordcontent.active {
+		padding: 0;
 		white-space: normal;
-		border:none;
+		border: none;
 	}
+	
 	.wordcontent.self,
 	.other_word .wordcontent.self {
 		background: #ddd;
@@ -865,9 +894,11 @@
 		background: -o-linear-gradient(top left, #eee, #ccc, #fff);
 		background: linear-gradient(to bottom right, #eee, #ccc, #fff);
 	}
-	p.juqing_sure>span:hover{
+	
+	p.juqing_sure>span:hover {
 		background: #fff;
 	}
+	
 	p.juqing_sure>span:nth-child(1) {
 		border-right: 1px solid #ccc;
 	}
@@ -882,19 +913,20 @@
 		margin-right: 30px;
 		cursor: pointer;
 		background: url(~assets/chat/add_juqing.png) left center no-repeat;
-		padding-left:16px;
-		background-size:12px;
+		padding-left: 16px;
+		background-size: 12px;
 	}
 	
 	p.face {
 		float: right;
 		line-height: 40px;
 		cursor: pointer;
-		margin:8px 15px 0 0;
+		margin: 8px 15px 0 0;
 	}
-	p.face>img{
+	
+	p.face>img {
 		display: block;
-		width:22px;
+		width: 22px;
 	}
 	
 	.me_selfsay {
@@ -945,7 +977,7 @@
 	
 	.other_name {
 		font-size: 14px;
-		margin:0;
+		margin: 0;
 	}
 	
 	.other_name>span {

@@ -16,6 +16,7 @@ class Conversation {
 			deviceid: other.deviceid, //发送方设备id
 		}
 		this.msg = [];
+		this.unreadCount=0;
 	}
 	set_title(title, group_member_type) {//设置本人的群头衔(和成员类型)
 		this.me.selfTitle = title;
@@ -23,6 +24,7 @@ class Conversation {
 	}
 	set_unreadCount() {
 		this.unreadCount++;
+		console.log('%%%%%%%%%%'+this.unreadCount+'%%%%%%%%%%%%%%%%%%%')
 		vm.$store.state.unread++;
 	}
 	set_group(type) {
