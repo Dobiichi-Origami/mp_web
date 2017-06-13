@@ -470,7 +470,7 @@
 										} else if (location.href.match(/Main_page\/Detail/i) != null) {
 											//this.$store.state.detail_mounted(this.$store.state, this);
 										} else if (location.href.match(/Main_page\/Addresslist/i) != null) {
-											if (this.$store.state.messages.groupsDetail.length) {
+											if (this.$store.state.chat.messages.groupsDetail.length) {
 												this.$store.state.friendcenter_mounted(this.$store.state, this);
 											}
 										} else {

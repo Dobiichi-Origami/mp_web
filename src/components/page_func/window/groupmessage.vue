@@ -60,7 +60,8 @@
 									<img :src="slist.speaker.speakerHeadimg" alt="" class="headimg">
 									<div class="other_info">
 										<p class="other_name"><span v-if="slist.speaker.speakerTitle" class="group_member_title" :style="{background:title_bg(slist.speaker.memberType)}">{{slist.speaker.speakerTitle}}</span>{{slist.speaker.speakerName}}<span v-show="show_userno_switch">NO.{{slist.speaker.speakerNo}}</span></p>
-										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.
+										
+										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}"  @click.stop="show_chehui(sindex,true)">
 											<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
 											<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 												<img :src="slist.content.animatedPicUrl" alt="">
@@ -323,14 +324,9 @@
 					}
 				}
 				console.log(index);
-<<<<<<< HEAD
-				this.$store.state.see_img(this.$store.state,index,photos);
-			},
-			rong: function(str) {
-				
-=======
+
 				this.$store.state.see_img(this.$store.state, index, photos);
->>>>>>> master
+
 			},
 			check_emojitype: function(type) {
 				this.emojitype = type;
@@ -511,10 +507,10 @@
 				} else {
 					var me = this,
 						title;
-					for (var i = 0; i < this.$store.state.messages.grouplist.length; i++) {
-						console.log(this.$store.state.messages.grouplist[i]._id)
-						if (this.$store.state.chat.conversation[this.list.index].other.id == this.$store.state.messages.grouplist[i]._id) {
-							title = this.$store.state.messages.grouplist[i].member.title;
+					for (var i = 0; i < this.$store.state.chat.messages.grouplist.length; i++) {
+						console.log(this.$store.state.chat.messages.grouplist[i]._id)
+						if (this.$store.state.chat.conversation[this.list.index].other.id == this.$store.state.chat.messages.grouplist[i]._id) {
+							title = this.$store.state.chat.messages.grouplist[i].member.title;
 							console.log(title)
 							break;
 						}

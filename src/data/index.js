@@ -194,12 +194,12 @@ const store = new Vuex.Store({
 		//窗口加载
 		windowchat:false,
 		//好友中心数据
-		messages: {
-			friendlist: [],
-			grouplist:[],//群列表，存储我的所有群(含有我在群中的身份信息)
-			groupsDetail:[],//所有群的详细信息(方便查看成员类型)
-			group_cmds:["group_join","group_quit","group_invite","group_kick","admin_cancel","admin_setting","group_transfer","group_silenced","group_admin_changed"],//群通知
-		},
+		// messages: {
+		// 	friendlist: [],
+		// 	grouplist:[],//群列表，存储我的所有群(含有我在群中的身份信息)
+		// 	groupsDetail:[],//所有群的详细信息(方便查看成员类型)
+		// 	group_cmds:["group_join","group_quit","group_invite","group_kick","admin_cancel","admin_setting","group_transfer","group_silenced","group_admin_changed"],//群通知
+		// },
 		//details数据
 		detail: [1],
 		//聊天小窗位置
@@ -369,7 +369,7 @@ const store = new Vuex.Store({
 			}
 		},
 		friendcenter_mounted: function (state, th) {
-			state.messages.friendlist=[];
+			state.chat.messages.friendlist=[];
 			state.title='通讯录';
 			state.loader = true;
 			th.$http({
@@ -382,7 +382,7 @@ const store = new Vuex.Store({
 				},
 				emulateJSON: true,
 			}).then((res) => {
-				state.messages.friendlist = res.body.items;
+				state.chat.messages.friendlist = res.body.items;
 				console.log(res.body);
 				console.log(0)
 				state.loader = false;
@@ -395,7 +395,7 @@ const store = new Vuex.Store({
 				},
 				emulateJSON: true,
 			}).then((res) => {
-				state.messages.grouplist = res.body.items;
+				state.chat.messages.grouplist = res.body.items;
 				console.log(res.body);
 			})
 		},

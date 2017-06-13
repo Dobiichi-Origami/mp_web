@@ -76,7 +76,8 @@ var chat = {
 				if (res.body.error) {
 					vm.$store.state.f_error(vm.$store.state, res.body.error);
 				} else if (res.body.items) {
-					vm.$store.state.messages.grouplist = res.body.items;
+					// vm.$store.state.messages.grouplist = res.body.items;
+					vm.$store.state.chat.messages.grouplist = res.body.items;
 					allgroup = res.body.items;
 					//console.log(res.body);
 					//获取所有群详细
@@ -98,8 +99,9 @@ var chat = {
 										vm.$store.state.f_error(vm.$store.state, res.body.error);
 									} else if (res.body.group) {
 										details.push(res.body.group);
-										if (details.length == vm.$store.state.messages.grouplist.length) {
-											vm.$store.state.messages.groupsDetail = details;
+										// if (details.length == vm.$store.state.messages.grouplist.length) {
+										if (details.length == vm.$store.state.chat.messages.grouplist.length) {
+											vm.$store.state.chat.messages.groupsDetail = details;
 											vm.$store.state.friendcenter_mounted(vm.$store.state, vm);
 											vm.$store.state.group_switch = true;
 										}
@@ -214,7 +216,8 @@ var chat = {
 			} else if (info.target_type == 1) { //群聊
 				if (vm.$store.state.group_switch) {
 					//console.log(vm.$store.state.messages.grouplist)
-					var groupList = vm.$store.state.messages.grouplist;
+					// var groupList = vm.$store.state.messages.grouplist;
+					var groupList = vm.$store.state.chat.messages.grouplist;
 					//console.log(groupList);
 					var currPi;
 					//遍历用户的所有群信息，找到和收到的群消息对应的群
@@ -269,9 +272,9 @@ var chat = {
 					//
 					//设置会话禁言状态,取当前会话对应的群组的禁言状态进行设置
 					this.setSilenced(conversation);
-					for (var i = 0; i < vm.$store.state.messages.grouplist.length; i++) {
-						if (other.id == vm.$store.state.messages.grouplist[i]._id) {
-							group_details = vm.$store.state.messages.grouplist[i];
+					for (var i = 0; i < vm.$store.state.chat.messages.grouplist.length; i++) {
+						if (other.id == vm.$store.state.chat.messages.grouplist[i]._id) {
+							group_details = vm.$store.state.chat.messages.grouplist[i];
 							break;
 						}
 					}
@@ -506,7 +509,7 @@ var chat = {
 	//找到群详细数组中指定群ID的群详细项
 	findGroupDetail: function (groupId) {
 		var groupDetail;
-		var groupsDetail = vm.$store.state.messages.groupsDetail;
+		var groupsDetail = vm.$store.state.chat.messages.groupsDetail;
 		console.log("当前账号所有群的群详细");
 		console.log(groupsDetail);
 		for (var i = 0, l = groupsDetail.length; i < l; i++) {
@@ -705,7 +708,7 @@ var chat = {
 			CmdHandler.R_revoke(message)
 		else if (message.content.name == "couple_apply" || message.content.name == "couple_divorce")
 			CmdHandler.R_couple(message)
-		else if (this.in_array(message.content.name, vm.$store.state.messages.group_cmds)) {
+		else if (this.in_array(message.content.name, vm.$store.state.chat.messages.group_cmds)) {
 			CmdHandler.R_group(message)
 		} //判断是否属于群组通知
 

@@ -1,7 +1,7 @@
 <template>
 	<div class="content" >
 		<div class="ajax-loader" v-show="$store.state.loader"></div>
-		<div  v-for="(blist,bindex) in this.$store.state.messages.friendlist">
+		<div  v-for="(blist,bindex) in this.$store.state.chat.messages.friendlist">
 			<div class="classname" :data-index="bindex" @click="bianxiao($event)">{{blist.name}}</div>
 			<ul :id="'class'+bindex" class="active classcontent" :style="{height:blist.friends.length*61+'px'}">
 				<li v-for="(slist,sindex) in blist.friends" :class="{noborder:sindex==0}">
@@ -47,7 +47,7 @@
 			openwindow:function(event,bindex,sindex){
 				var index=event.target.dataset.index;
 				if(this.$store.state.message_window.length==0){
-					this.$store.state.message_window.push({user:this.$store.state.messages.friendlist[bindex].friends[sindex],show:1});
+					this.$store.state.message_window.push({user:this.$store.state.chat.messages.friendlist[bindex].friends[sindex],show:1});
 				}else{
 					for(var i=0;i<this.$store.state.message_window.length;i++){
 						if(index==this.$store.state.message_window[i].user.user._id){
@@ -68,7 +68,7 @@
 							this.$store.state.message_window.splice(i,1,a);
 							return;
 						}else if(i==this.$store.state.message_window.length-1){
-							this.$store.state.message_window.push({user:this.$store.state.messages.friendlist[bindex].friends[sindex],show:1});
+							this.$store.state.message_window.push({user:this.$store.state.chat.messages.friendlist[bindex].friends[sindex],show:1});
 							return;
 						}
 					}

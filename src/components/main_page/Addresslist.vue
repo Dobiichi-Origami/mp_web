@@ -1,11 +1,11 @@
 <template>
 	<div class="content" >
 		<div class="ajax-loader" v-show="$store.state.loader"></div>
-		<div v-show="$store.state.messages.friendlist.length" class="content_content">
+		<div v-show="$store.state.chat.messages.friendlist.length" class="content_content">
 			<div :class="{tofriend:true,active:act}" @click="check_friend">好友列表<div></div></div>
 			<div :class="{togroup:true,active:!act}" @click="check_group">群组<div></div></div>
 			<div class="classname" v-show="friendorgroup">
-				<div  v-for="(blist,bindex) in this.$store.state.messages.friendlist">
+				<div  v-for="(blist,bindex) in this.$store.state.chat.messages.friendlist">
 
 					<div @click="bianxiao($event)" :data-index="bindex" class="listtitle"><img src="~assets/chat/pull_list.png" alt=""  :data-index="bindex" @click.stop="bianxiao($event)">{{blist.name}}</div>
 					<ul :id="'class'+bindex" class="active classcontent" :style="{height:blist.friends.length*55+'px'}">
@@ -21,7 +21,7 @@
 				</div>
 			</div>
 			<div class="groupname" v-show="!friendorgroup">
-				<div  v-for="(blist,bindex) in this.$store.state.messages.grouplist">
+				<div  v-for="(blist,bindex) in this.$store.state.chat.messages.grouplist">
 					<img :src="blist.headimg" alt="">
 					<div class="friendinfo">
 						<p class="friendname">{{blist.name}}</p>
@@ -46,11 +46,11 @@
 		},
 		mounted: function() {
 			if (this.$store.state.current_user){
-				if(this.$store.state.messages.groupsDetail.length){
+				if(this.$store.state.chat.messages.groupsDetail.length){
 					this.$store.state.friendcenter_mounted(this.$store.state, this);
 				}
 			}
-			console.log(this.$store.state.messages.grouplist)
+			console.log(this.$store.state.chat.messages.grouplist)
 		},
 		methods: {
 			bianxiao: function(event) {
@@ -76,16 +76,16 @@
 			},
 			opengroup: function(event, bindex) {
 				var id = event.target.dataset.index;
-				console.log(this.$store.state.messages.grouplist[bindex])
-				var index = chat.start(this.$store.state.messages.grouplist[bindex]);
+				console.log(this.$store.state.chat.messages.grouplist[bindex])
+				var index = chat.start(this.$store.state.chat.messages.grouplist[bindex]);
 				if (this.$store.state.message_window.length == 0) {
 					this.$store.state.message_window.push({
-						group: this.$store.state.messages.grouplist[bindex],
+						group: this.$store.state.chat.messages.grouplist[bindex],
 						show: 1,
 						index: index,
 					});
 					this.$store.state.message_ball.unshift({
-						group: this.$store.state.messages.grouplist[bindex],
+						group: this.$store.state.chat.messages.grouplist[bindex],
 						show: 1,
 						index: index,
 					});
@@ -111,12 +111,12 @@
 								return;
 							}else if (i == this.$store.state.message_window.length - 1) {
 							this.$store.state.message_window.push({
-								group: this.$store.state.messages.grouplist[bindex],
+								group: this.$store.state.chat.messages.grouplist[bindex],
 								show: 1,
 								index: index,
 							});
 							this.$store.state.message_ball.unshift({
-								group: this.$store.state.messages.grouplist[bindex],
+								group: this.$store.state.chat.messages.grouplist[bindex],
 								show: 1,
 								index: index,
 							});
@@ -125,12 +125,12 @@
 						}
 						 else if (i == this.$store.state.message_window.length - 1) {
 							this.$store.state.message_window.push({
-								group: this.$store.state.messages.grouplist[bindex],
+								group: this.$store.state.chat.messages.grouplist[bindex],
 								show: 1,
 								index: index,
 							});
 							this.$store.state.message_ball.unshift({
-							group: this.$store.state.messages.grouplist[bindex],
+							group: this.$store.state.chat.messages.grouplist[bindex],
 							show: 1,
 							index: index,
 						});
@@ -141,15 +141,15 @@
 			},
 			openwindow: function(event, bindex, sindex) {
 				var id = event.target.dataset.index;
-				var index = chat.start(this.$store.state.messages.friendlist[bindex].friends[sindex]);
+				var index = chat.start(this.$store.state.chat.messages.friendlist[bindex].friends[sindex]);
 				if (this.$store.state.message_window.length == 0) {
 					this.$store.state.message_window.push({
-						user: this.$store.state.messages.friendlist[bindex].friends[sindex],
+						user: this.$store.state.chat.messages.friendlist[bindex].friends[sindex],
 						show: 1,
 						index: index,
 					});
 					this.$store.state.message_ball.unshift({
-						user: this.$store.state.messages.friendlist[bindex].friends[sindex],
+						user: this.$store.state.chat.messages.friendlist[bindex].friends[sindex],
 						show: 1,
 						index: index,
 					});
@@ -175,13 +175,13 @@
 								return;
 							} else if (i == this.$store.state.message_window.length - 1) {
 								this.$store.state.message_window.push({
-									user: this.$store.state.messages.friendlist[bindex].friends[sindex],
+									user: this.$store.state.chat.messages.friendlist[bindex].friends[sindex],
 
 									show: 1,
 									index: index,
 								});
 								this.$store.state.message_ball.unshift({
-									user: this.$store.state.messages.friendlist[bindex].friends[sindex],
+									user: this.$store.state.chat.messages.friendlist[bindex].friends[sindex],
 									show: 1,
 									index: index,
 								});
@@ -189,13 +189,13 @@
 							}
 						}else if (i == this.$store.state.message_window.length - 1) {
 							this.$store.state.message_window.push({
-								user: this.$store.state.messages.friendlist[bindex].friends[sindex],
+								user: this.$store.state.chat.messages.friendlist[bindex].friends[sindex],
 
 								show: 1,
 								index: index,
 							});
 							this.$store.state.message_ball.unshift({
-								user: this.$store.state.messages.friendlist[bindex].friends[sindex],
+								user: this.$store.state.chat.messages.friendlist[bindex].friends[sindex],
 								show: 1,
 								index: index,
 							});

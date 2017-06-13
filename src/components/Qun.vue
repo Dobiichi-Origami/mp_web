@@ -51,7 +51,7 @@
 	export default {
 		data() {
 			return {
-				items: this.$store.state.messages.grouplist,
+				items: this.$store.state.chat.messages.grouplist,
 				cmd_msg: this.$store.state.chat.cmd_msg.groupCmd,
 				/*[{
 						"stat": {
