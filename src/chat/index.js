@@ -49,14 +49,13 @@
         
 **/
 import vm from 'src/main.js'
-import MpIM from './mpIM/mpIM.js'
+import mpIM from './mpIM/mpIM.js'
+import base64 from './mpIM/base64.js'
 // import CmdHandler from './CmdHandler'
-import Extra from './data_structure/Extra'
-import GroupExtra from './data_structure/GroupExtra'
 import Msg from './data_structure/Msg'
 import Conversation from './data_structure/Conversation'
 require('../../static/qiniu.js')
-var mpIM = new MpIM();
+//var mpIM = new MpIM();
 
 //对外暴露的唯一对象。
 var chat = {
@@ -166,8 +165,6 @@ var chat = {
 			//收消息情况下，判断会话类型
 			if (!info.target_type) { //私聊
 				//判断发消息的人是否就是本人, 判断发送方的deviceId是否与当前账户的deviceId相同(该情况出现在多端登录时)
-				// console.log("***********检查current_user对象");
-				//console.log(vm.$store.state.current_user.device._id);
 
 				//sendIsMe = (info.senderUserId == vm.$store.state.current_user.device._id);
 				console.log('收私聊消息时是否是本人发:', info.me);
@@ -243,7 +240,6 @@ var chat = {
 						}
 						return conExist;
 					} else {
-						//console.log(currPi);
 						me.headimg = currPi.headimg;
 						me.name = currPi.name;
 						other.headimg = info.chat_current_head_img;
@@ -397,17 +393,16 @@ var chat = {
 			msg_type: 0,
 			msg_time: new Date().getTime(),
 			msg_content_type: type,
-			msg_content: JSON.stringify({
+			msg_content: base64.toBase64(JSON.stringify({
 				speakType: chat_type,
 				content: content_url,
 				atList: [],
 				defaultContent: defaultcontent,
 				temp: temp
-			}),
+			})),
 			target_type: targetType,
 			target_id: vm.$store.state.chat.conversation[index].other.id,
 			target_no: vm.$store.state.chat.conversation[index].other.no - 0,
-			// group_member_title:title,
 		}
 		console.log(body)
 		mpIM.send(body)
@@ -458,7 +453,7 @@ var chat = {
 				},
 				'UploadProgress': function (up, file) {},
 				'FileUploaded': function (up, file, info) {
-					// 	chat.send(index, type, content_url, chat_type, temp)
+					// chat.send(index, type, content_url, chat_type, temp)
 					// index 发送目标序号
 					// type 发送类型，0为文本，1为图片，2为魔法表情，3为红包，4为礼物。
 					// content_url 发送内容，文本或url

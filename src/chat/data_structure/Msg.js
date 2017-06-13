@@ -2,26 +2,8 @@
 import vm from 'src/main.js'
 class Msg {
 	constructor(index, type, content_url, chat_type, temp, time, me) {
-		// this.content
-		// this.content_type
-		// this.url
-		// this.chat_type
-		// this.temp
-		// this.time
-		// this.revoke
-		// this.extra_content
-		// this.speaker
-		// this.revoke
-		// this.revoke_user
-		// this.atList
 		this.me=me;
 		if (!type) {
-			// //客户端魔法表情type也为TXT
-			// if(content_url=='[骰子]' || content_url=='[猜拳]'){
-			// 	this.content_type = "MAGIC_PIC";
-			// }else{
-			// 	this.content_type = "TXT";
-			// }
 			this.content = content_url;
 			this.content_type = "TXT";
 		}
@@ -67,9 +49,7 @@ class Msg {
 		this.time = time;
 		//响应revoke;
 		this.revoke=false;
-		// if (extra_content)
-		// 	this.extra_content = extra_content;
-		//console.log(this)
+	
 		//存储	
 		vm.$store.state.chat.conversation[index].msg.push(this);
 		console.log(this)
@@ -104,17 +84,7 @@ class Msg {
 	set_atList(atList) {
 		this.atList = atList;
 	}
-// <<<<<<< HEAD
 
-
-// 	//测试@
-// 	// set_atList() {
-// 	// 	this.atList = [{"userNo":"478","deviceId":"58f82e491893be2591b1e057","userId":"55040c10fbe78e5c14de4aad","userName":"马化腾"}];
-// 	// }
-
-// =======
-// 	//设置消息发送超时提示
-// >>>>>>> lizhi_test
 	set_timeout() {
 		this.isTimeout = true;
 	}

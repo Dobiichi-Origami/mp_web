@@ -14,7 +14,9 @@
 /*exported Qiniu */
 /*exported QiniuJsSDK */
 
-;
+var a = document.createElement('script')
+a.src='static/plupload.js'
+document.body.appendChild(a);
 (function (global) {
 
 	/**
