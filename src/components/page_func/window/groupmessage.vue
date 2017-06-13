@@ -33,7 +33,7 @@
 								<div v-else>
 									<img :src="$store.state.chat.conversation[list.index].me.headimg" alt="" class="headimg">
 									<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)" >
-										<span v-html="rong(slist.content)" v-if="slist.content_type=='TXT'"></span>
+										<span v-if="slist.content_type=='TXT'"></span>
 										<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 											<img :src="slist.content.animatedPicUrl" alt="" >
 										</div>
@@ -59,7 +59,7 @@
 									<div class="other_info">
 										<p class="other_name"><span v-if="slist.speaker.speakerTitle" class="group_member_title" :style="{background:title_bg(slist.speaker.memberType)}">{{slist.speaker.speakerTitle}}</span>{{slist.speaker.speakerName}}<span v-show="show_userno_switch">NO.{{slist.speaker.speakerNo}}</span></p>
 										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}"  @click.stop="show_chehui(sindex,true)">
-											<span v-html="rong(slist.content)" v-if="slist.content_type=='TXT'"></span>
+											<span v-if="slist.content_type=='TXT'"></span>
 											<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 												<img :src="slist.content.animatedPicUrl" alt="">
 											</div>
@@ -320,12 +320,7 @@
 				this.$store.state.see_img(this.$store.state,index,photos);
 			},
 			rong: function(str) {
-				var s = str.replace(/</g, '&lt;').
-				replace(/>/g, '&gt;').
-				replace(/"/g, "&quot;").
-				replace(/'/g, "&#039;");
-				s = s.replace(/\n/g, "<br />");
-				return RongIMLib.RongIMEmoji.symbolToHTML(s);
+				
 			},
 			check_emojitype: function(type) {
 				this.emojitype = type;

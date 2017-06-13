@@ -29,7 +29,7 @@
 								<div v-else>
 									<img :src="$store.state.chat.conversation[list.index].me.headimg" alt="" class="headimg">
 									<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)" >
-										<span v-html="rong(slist.content)" v-if="slist.content_type=='TXT'"></span>
+										<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
 										<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 											<img :src="slist.content.animatedPicUrl" alt="" >
 										</div>
@@ -55,7 +55,7 @@
 									<div class="other_info">
 										<p class="other_name">{{$store.state.chat.conversation[list.index].other.name}}<span>NO.{{$store.state.chat.conversation[list.index].other.no}}</span></p>
 										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)">
-											<span v-html="rong(slist.content)" v-if="slist.content_type=='TXT'"></span>
+											<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
 											<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 												<img :src="slist.content.animatedPicUrl" alt="">
 											</div>
@@ -184,13 +184,8 @@
 				console.log(index);
 				this.$store.state.see_img(this.$store.state,index,photos);
 			},
-			rong: function(str) {
-				var s = str.replace(/</g, '&lt;').
-				replace(/>/g, '&gt;').
-				replace(/"/g, "&quot;").
-				replace(/'/g, "&#039;");
-				s = s.replace(/\n/g, "<br />");
-				return RongIMLib.RongIMEmoji.symbolToHTML(s);
+			rong: function() {
+
 			},
 			check_emojitype: function(type) {
 				this.emojitype = type;

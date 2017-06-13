@@ -15,7 +15,7 @@ const Chat = {
 			"count":0//通知总数
 		},
 		emoji:{
-		  "emojis":RongIMLib.RongIMEmoji.emojis, /*获取所有融云的表情 是一个数组,保存span*/
+		  "emojis": null,//RongIMLib.RongIMEmoji.emojis, /*获取所有融云的表情 是一个数组,保存span*/
 		  "yan_emoji": [
 		    "┭┮﹏┭┮",            // 呜呜呜
 		    "ヾ(￣▽￣)Bye~Bye~",    // bye bye
