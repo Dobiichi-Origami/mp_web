@@ -48,6 +48,46 @@
         礼物消息 某某送给你一份礼物  (txt)
         
 **/
+
+//接收消息
+//消息体：
+//////******************属性为零的属性会被省略******************//////
+/*string target_id = 2;
+    int64 target_no = 3;
+    string sender_id = 4;
+    int64 sender_no = 5;
+    string sender_name = 6;
+    string sender_head_img = 7;
+    TargetType target_type:{
+        PRIVATE = 0;
+        GROUP = 1;
+        CHATROOM = 2;
+    }
+    MsgType msg_type:
+    {
+        CHAT = 0;
+        CMD = 1;
+        SYSTEM = 2;
+    }
+    int64 msg_time:new Date().getTime();
+    int32 msg_content_type：
+    {
+        SCMessageContentTypeText,0
+        SCMessageContentTypeImage,1
+        魔法表情
+        SCMessageContentTypeAnimation,2
+        红包
+        SCMessageContentTypeEnvelope,3
+        SCMessageContentTypeGif,4
+    }
+    bytes msg_content：
+    {
+        "speakType"         :SCMessageSpeakType,
+        "content"           :String 原rongmsgcontent的exta中的content字段 可能是json字符串,
+        "atList"            :Array, 
+        "defaultContent"    :String(新的消息类型，解析不了的时候，默认是SCMessageContentTypeText类型，这个类型默认从这个字段读取content)原rongmsgcontent的content字段，用作兼容,
+        "temp"              :Int
+    }*/
 import vm from 'src/main.js'
 import mpIM from './mpIM/mpIM.js'
 import base64 from './mpIM/base64.js'
@@ -59,64 +99,6 @@ require('../../static/qiniu.js')
 
 //对外暴露的唯一对象。
 var chat = {
-	//获取群数据
-	getgroup: function () {
-		var allgroup;
-		//查看所有群信息
-		vm.$http({
-			method: 'get',
-			url: 'http://test.mrpyq.com/api/group/groups_by_me',
-			params: {
-				'access_token': localStorage.getItem('access_token'),
-			},
-			emulateJSON: true,
-		}).then(
-			res => {
-				if (res.body.error) {
-					vm.$store.state.f_error(vm.$store.state, res.body.error);
-				} else if (res.body.items) {
-					// vm.$store.state.messages.grouplist = res.body.items;
-					vm.$store.state.chat.messages.grouplist = res.body.items;
-					allgroup = res.body.items;
-					//console.log(res.body);
-					//获取所有群详细
-					var details = [];
-					if (allgroup) {
-						for (var i = 0, l = allgroup.length; i < l; i++) {
-							//对每个群的群id获取其群详细
-							vm.$http({
-								method: 'get',
-								url: 'http://test.mrpyq.com/api/group/details',
-								params: {
-									'access_token': localStorage.getItem('access_token'),
-									'id': allgroup[i]._id
-								},
-								emulateJSON: true,
-							}).then(
-								res => {
-									if (res.body.error) {
-										vm.$store.state.f_error(vm.$store.state, res.body.error);
-									} else if (res.body.group) {
-										details.push(res.body.group);
-										// if (details.length == vm.$store.state.messages.grouplist.length) {
-										if (details.length == vm.$store.state.chat.messages.grouplist.length) {
-											vm.$store.state.chat.messages.groupsDetail = details;
-											vm.$store.state.friendcenter_mounted(vm.$store.state, vm);
-											vm.$store.state.group_switch = true;
-										}
-									}
-								},
-								res => { //500报错
-									vm.$store.state.f_error(vm.$store.state, "服务器正在开小差。。。");
-								})
-						}
-					}
-				}
-			},
-			res => { //500报错
-				vm.$store.state.f_error(vm.$store.state, "服务器正在开小差。。。");
-			})
-	},
 	deviceInfo: {
 		token: '',
 		type: 'WEB',
@@ -281,7 +263,7 @@ var chat = {
 					var th = this;
 					var time = setInterval(function () {
 						if (vm.$store.state.group_switch) {
-							th.receive(info);
+							th.receivetext(info);
 							clearInterval(time);
 						}
 					}, 300)
@@ -407,10 +389,68 @@ var chat = {
 		console.log(body)
 		mpIM.send(body)
 	},
-	uploaderimg: function (index) {
+	//获取群数据
+	getgroup: function () {
+		var allgroup;
+		//查看所有群信息
+		vm.$http({
+			method: 'get',
+			url: 'http://test.mrpyq.com/api/group/groups_by_me',
+			params: {
+				'access_token': localStorage.getItem('access_token'),
+			},
+			emulateJSON: true,
+		}).then(
+			res => {
+				if (res.body.error) {
+					vm.$store.state.f_error(vm.$store.state, res.body.error);
+				} else if (res.body.items) {
+					// vm.$store.state.messages.grouplist = res.body.items;
+					vm.$store.state.chat.messages.grouplist = res.body.items;
+					allgroup = res.body.items;
+					//console.log(res.body);
+					//获取所有群详细
+					var details = [];
+					if (allgroup) {
+						for (var i = 0, l = allgroup.length; i < l; i++) {
+							//对每个群的群id获取其群详细
+							vm.$http({
+								method: 'get',
+								url: 'http://test.mrpyq.com/api/group/details',
+								params: {
+									'access_token': localStorage.getItem('access_token'),
+									'id': allgroup[i]._id
+								},
+								emulateJSON: true,
+							}).then(
+								res => {
+									if (res.body.error) {
+										vm.$store.state.f_error(vm.$store.state, res.body.error);
+									} else if (res.body.group) {
+										details.push(res.body.group);
+										// if (details.length == vm.$store.state.messages.grouplist.length) {
+										if (details.length == vm.$store.state.chat.messages.grouplist.length) {
+											vm.$store.state.chat.messages.groupsDetail = details;
+											vm.$store.state.friendcenter_mounted(vm.$store.state, vm);
+											vm.$store.state.group_switch = true;
+										}
+									}
+								},
+								res => { //500报错
+									vm.$store.state.f_error(vm.$store.state, "服务器正在开小差。。。");
+								})
+						}
+					}
+				}
+			},
+			res => { //500报错
+				vm.$store.state.f_error(vm.$store.state, "服务器正在开小差。。。");
+			})
+	},
+	uploadeimg: function (index) {
 		var me = this;
 		console.log('运行' + index)
-		var qiniu = Qiniu.uploader({
+		Qiniu.uploader({
 			runtimes: 'html5,flash,html4', //上传模式,依次退化
 			browse_button: 'pickfiles' + index, //上传选择的点选按钮，**必需**
 			uptoken_url: 'http://test.mrpyq.com/api/qiniu', //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
@@ -445,7 +485,7 @@ var chat = {
 					var fileItem = file.getNative(),
 						url = window.URL || window.webkitURL || window.mozURL;
 					var src = url.createObjectURL(fileItem);
-					var msg = new Msg(index, 1, {
+					new Msg(index, 1, {
 						url: src,
 						id: file.id
 					}, 0, 0, new Date().getTime(), true);
@@ -593,59 +633,7 @@ var chat = {
 		}
 
 	},
-	//接收消息
-	//消息体：
-	//////******************属性为零的属性会被省略******************//////
-	/*string target_id = 2;
-    int64 target_no = 3;
-    string sender_id = 4;
-    int64 sender_no = 5;
-    string sender_name = 6;
-    string sender_head_img = 7;
-    TargetType target_type:{
-        PRIVATE = 0;
-        GROUP = 1;
-        CHATROOM = 2;
-    }
-    MsgType msg_type:
-    {
-        CHAT = 0;
-        CMD = 1;
-        SYSTEM = 2;
-    }
-    int64 msg_time:new Date().getTime();
-    int32 msg_content_type：
-    {
-        SCMessageContentTypeText,0
-        SCMessageContentTypeImage,1
-        魔法表情
-        SCMessageContentTypeAnimation,2
-        红包
-        SCMessageContentTypeEnvelope,3
-        SCMessageContentTypeGif,4
-    }
-    bytes msg_content：
-    {
-        "speakType"         :SCMessageSpeakType,
-        "content"           :String 原rongmsgcontent的exta中的content字段 可能是json字符串,
-        "atList"            :Array, 
-        "defaultContent"    :String(新的消息类型，解析不了的时候，默认是SCMessageContentTypeText类型，这个类型默认从这个字段读取content)原rongmsgcontent的content字段，用作兼容,
-        "temp"              :Int
-    }*/
 	receivetext: function (message) {
-		//首先构建一条msg
-		// this.content
-		// this.content_type
-		// this.url
-		// this.chat_type
-		// this.temp
-		// this.time
-		// this.revoke
-		// this.extra_content
-		// this.speaker
-		// this.revoke
-		// this.revoke_user
-		// this.atList
 		var index = this.start(message, 1);
 		console.log('index=' + index);
 		if (index === undefined) {
@@ -653,7 +641,6 @@ var chat = {
 		}
 
 		var msg = new Msg(index, message.msg_content_type, message.msg_content.content, message.msg_content.speakType, message.msg_content.temp, message.msg_time, message.me);
-
 
 		//对收到的消息设置uid
 		msg.set_uid(message.msg_uid);
@@ -712,12 +699,6 @@ var chat = {
 		//  message.content.name == "group_kick" || message.content.name == "admin_cancel" || 
 		//  message.content.name == "admin_setting" || message.content.name == "group_transfer")//群通知
 		//  CmdHandler.R_group(message)
-
-
-
-
-
-
 
 		//      "group_join"
 		//      "group_kick"
