@@ -183,10 +183,8 @@ var chat = {
 				}
 				//判断该会话是否存在
 				conExist = this.conversationExist(me.id, other.id, con, me.no, other.no);
-				console.log(info)
 				if (conExist != undefined) { //
 					//显示消息提示
-					//vm.$store.state.message_window[conExist].show=1;
 					console.log('*****' + vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state))
 					if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
 						vm.$store.state.chat.conversation[conExist].set_unreadCount()
@@ -384,6 +382,14 @@ var chat = {
 			targetType = 1;
 		} else {
 			targetType = 0;
+		}
+		if(type==1){
+			content_url=JSON.stringify({
+				localUrl:'',
+				remoteUrl:content_url
+			})
+		}else if(type==2){
+			content_url=JSON.stringify(content_url)
 		}
 		var body = {
 			sender_id: vm.$store.state.chat.conversation[index].me.id,
