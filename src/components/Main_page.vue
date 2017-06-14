@@ -85,7 +85,7 @@
               </transition>
             </ul>
 
-            <ul  @click="jump_to_Addresslist" class="ul">
+            <ul  @click="addresslist_click" class="ul">
               <div class="func_box" >通讯录
               <img src="../assets/Main_page/identity.png" alt="切换身份" class="func_img" data-arrow='arrow2'>
               </div>
@@ -185,6 +185,10 @@
 					this.$store.state.news_mounted(this.$store.state, this);
 				} else
 					this.$router.push('/Main_page/News');
+			},
+			addresslist_click: function() {
+				this.$router.push('/Main_page/Addresslist');
+				this.$store.state.title = "通讯录";
 			},
 			change_arrow: function(e) {
 				var a = e.target.dataset.arrow,
@@ -320,10 +324,6 @@
 					}
 				)
 			},
-			jump_to_Addresslist: function() {
-				this.$router.push('/Main_page/Addresslist');
-				this.$store.state.title = "通讯录";
-			},
 			level_bgcolor: function() {
 				var me = this,
 					level = document.querySelector("#level"),
@@ -434,25 +434,6 @@
 										})
 										//开启即时通讯
 										chat.login(me.$store.state.current_user.device._id);
-										// me.$http.get('http://test.mrpyq.com/api/account/get_rongcloud_token', {
-										// 	params: {
-										// 		access_token: localStorage.getItem('access_token'),
-										// 	}
-										// }).then(
-										// 	(res) => {
-										// 		if (res.body.token) {
-										// 			me.$store.state.chat.token = res.body.token;
-										// 			me.$store.state.chat.deviceid = me.$store.state.current_user.device._id;
-										// 			//调用login
-										// 			chat.login(me.$store.state.chat.deviceid)
-										// 		} else if (res.body.error) {
-										// 			me.$store.state.f_error(me.$store.state, resmore.body.error);
-										// 		}
-										// 	},
-										// 	(res) => {
-										// 		me.$store.state.f_error(me.$store.state, "服务器正在开小差。。。");
-										// 	}
-										// )
 										//获取后几页的皮
 										if (re1.pagemore) {
 											me.user_page_more(2, re.room._id);

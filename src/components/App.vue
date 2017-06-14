@@ -1,12 +1,12 @@
 <template>
 <div id="app">
 <router-view></router-view>
-<terror></terror>
+<error></error>
 <checkwindow></checkwindow>
 </div>
 </template>
 <script>
-	import terror from "./page_func/error"
+	import error from "./page_func/error"
 	import checkwindow from "./page_func/ball"
 	export default {
 		name: 'app',
@@ -16,7 +16,7 @@
 			}
 		},
 		components: {
-			terror,
+			error,
 			checkwindow
 		},
 		mounted: function() {
@@ -184,6 +184,7 @@
 		}
 	}
 	/*	转转转动画*/
+	
 	.ajax-loader {
 		font-size: 10px;
 		width: 1.5em;
