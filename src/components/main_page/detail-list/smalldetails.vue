@@ -150,7 +150,6 @@
 					break;
 				}
 			}
-			this.$store.state.feed_id = this.$store.state.details.item._id;
 			var con = document.getElementById(this.$store.state.details.item._id + 'lz');
 			this.con_height = parseInt(window.getComputedStyle(con, null)['height']);
 			if (this.con_height > 132) {
