@@ -274,21 +274,36 @@ var chat = {
 			console.log(info)
 			if (!info.description) { //私聊
 				type = 1;
-				me.id = vm.$store.state.current_user._id;
-				me.no = vm.$store.state.current_user.no;
-				other.id = info.user._id;
-				other.no = info.no;
+				if(info.target_id){
+					me.id=info.target_id;
+					me.no=info.target_no;
+					other.id=info.sender_id;
+					other.no=info.sender_no;
+				}else{
+					me.id = vm.$store.state.current_user._id;
+					me.no = vm.$store.state.current_user.no;
+					other.id = info.user._id;
+					other.no = info.no;
+				}
 				conExist = this.conversationExist(me.id, other.id, con, me.no, other.no);
 				if (!isNaN(conExist))
 					return conExist;
 				else {
-					me.headimg = vm.$store.state.current_user.headimg;
-					me.name = vm.$store.state.current_user.name;
-					//me.no = vm.$store.state.current_user.no;
-					other.headimg = info.headimg;
-					other.name = info.name;
-					//other.no = info.no;
-					other.deviceid = info.device._id;
+					if(info.target_id){
+						other.headimg = info.sender_head_img;
+						other.name = info.sender_name;
+						me.headimg = info.chat_current_head_img;
+						me.name = info.chat_current_name;
+					}else{
+						me.headimg = vm.$store.state.current_user.headimg;
+						me.name = vm.$store.state.current_user.name;
+						//me.no = vm.$store.state.current_user.no;
+						other.headimg = info.headimg;
+						other.name = info.name;
+						//other.no = info.no;
+						other.deviceid = info.device._id;
+					}
+
 				}
 				conversation = new Conversation(me, other);
 			} else { //群聊
@@ -347,7 +362,7 @@ var chat = {
 		console.log(conversation, conExist);
 		if (conversation && isreseive) {
 			if (!conversation.isGroup) {
-				vm.$store.state.openfriend(vm.$store.state, other.id, other, chat);
+				vm.$store.state.openfriend(vm.$store.state, info, chat);
 			} else {
 				vm.$store.state.opengroup(vm.$store.state, group_details._id, group_details, chat);
 			}
