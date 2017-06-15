@@ -91,6 +91,7 @@
 		mounted: function() {
 			const _this = this;
 			var con = document.getElementById(this.item._id + 'lzl');
+			console.log(this.$store.state.per_datas[this.itemindex]);
 			this.$store.state.per_datas[this.itemindex].con_height = parseInt(window.getComputedStyle(con, null)['height']);
 			if (this.$store.state.per_datas[this.itemindex].con_height > 132) {
 				this.$store.state.per_datas[this.itemindex].slideup = true;
@@ -98,12 +99,15 @@
 		},
 		updated: function() {
 			var con = document.getElementsByClassName('text_content')[0];
-			if (this.$store.state.per_datas[0].con_height == 0) {
-				this.$store.state.per_datas[0].con_height = parseInt(window.getComputedStyle(con.children[0], null)['height']);
-				if (this.$store.state.per_datas[0].con_height > 132) {
-					this.$store.state.per_datas[0].slideup = true;
-				};
+			if(this.$store.state.per_datas[0]){
+				if (this.$store.state.per_datas[0].con_height == 0) {
+					this.$store.state.per_datas[0].con_height = parseInt(window.getComputedStyle(con.children[0], null)['height']);
+					if (this.$store.state.per_datas[0].con_height > 132) {
+						this.$store.state.per_datas[0].slideup = true;
+					};
+				}
 			}
+			
 		},
 		methods: {
 			f_check_personal: function(user) {

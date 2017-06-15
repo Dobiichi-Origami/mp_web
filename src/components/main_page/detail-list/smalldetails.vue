@@ -17,7 +17,7 @@
 		</div>
 		<seeimg></seeimg>
 		<div>
-			<img :src="this.$store.state.details.item.user.headimg" @click="f_check_personal(this.$store.state.details.item.user)" class="headimg"/>
+			<img :src="this.$store.state.details.item.user.headimg" @click="f_check_personal($store.state.details.item.user)" class="headimg"/>
 			<div class="user_inform">
 				<h3>{{this.$store.state.details.item.user.name}}</h3>
 				<p>{{$store.state.cheTime(this.$store.state.details.item.time.create)}}</p>
@@ -150,7 +150,6 @@
 					break;
 				}
 			}
-			this.$store.state.feed_id = this.$store.state.details.item._id;
 			var con = document.getElementById(this.$store.state.details.item._id + 'lz');
 			this.con_height = parseInt(window.getComputedStyle(con, null)['height']);
 			if (this.con_height > 132) {

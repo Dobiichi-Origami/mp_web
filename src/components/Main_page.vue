@@ -19,7 +19,7 @@
       <div id="left">
         <div id="user_info" class="border_box">
           <p id="headimg">
-            <img data-router='个人主页' v-show='this.$store.state.current_user' :src="$store.state.current_user.headimg" alt="用户头像" @click="personal_click">
+            <img data-router='个人主页' v-show='$store.state.current_user' :src="$store.state.current_user.headimg" alt="用户头像" @click="personal_click">
           </p>
           <div class="user_scroll_box">
             <div class="user_scroll name_s">

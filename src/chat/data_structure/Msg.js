@@ -14,7 +14,7 @@ class Msg {
 				this.url = content_url.url;
 				this.id=content_url.id;
 			}else{
-				this.url=content_url
+				this.url=JSON.parse(content_url).remoteUrl;
 			}
 			this.content_type = "IMAGE"
 			//如果图片已经存在，就删除该消息(不生成此条消息)
@@ -27,7 +27,7 @@ class Msg {
 				}
 			}
 		} else if (type == 2) {
-			this.content = content_url
+			this.content = JSON.parse(content_url)
 			this.content_type = "MAGIC_PIC"
 		} else if (type == 3) {
 			this.content = content_url
