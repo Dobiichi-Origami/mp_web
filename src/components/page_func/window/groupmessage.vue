@@ -209,8 +209,8 @@
 			}
 			console.log(this.list);
 			this.not_open = this.list.not_open ? 'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;top:' + (this.$store.state.pageY + 40) + 'px;' + 'left:' + (this.$store.state.pageX + 40) + 'px;' + 'opacity:0' : '';
-			console.log(chat.uploaderimg)
-			chat.uploaderimg(this.list.index);
+			console.log(chat.uploadeimg)
+			chat.uploadeimg(this.list.index);
 		},
 		methods: {
 			del_msg: function(lindex, sindex) {
