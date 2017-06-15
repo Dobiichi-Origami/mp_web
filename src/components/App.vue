@@ -8,6 +8,7 @@
 <script>
 	import terror from "./page_func/error"
 	import checkwindow from "./page_func/ball"
+	import emoji from 'src/chat/emoji/emoji.js'
 	export default {
 		name: 'app',
 		data() {
@@ -22,6 +23,12 @@
 		mounted: function() {
 			//实时获取消息,看融云更改
 			this.new_message()
+			//加载表情库
+			this.$store.state.chat.emojis=emoji;
+			for(var i=0;i<this.$store.state.chat.emojis.length;i++){
+				this.$store.state.chat.emojis[i].ImageName=require('../assets/emoji/'+this.$store.state.chat.emojis[i].ImageName);
+			}
+			console.log(this.$store.state.chat.emojis)
 		},
 		destroyed: function() {
 			clearInterval(this.news_interval);

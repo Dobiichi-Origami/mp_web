@@ -19,7 +19,7 @@
 					{{chat()}}
 						<div v-if="slist.chat_type=='DESCRIPTION'">
 							<div class="type_description">
-								<p v-html="slist.content"></p>
+								<p>{{slist.content}}</p>
 							</div>
 							<p class="juqing_name"><span>{{slist.me?$store.state.chat.conversation[list.index].me.name:$store.state.chat.conversation[list.index].other.name}}添加了剧情</span></p>
 						</div>
@@ -29,9 +29,7 @@
 								<div v-else>
 									<img :src="$store.state.chat.conversation[list.index].me.headimg" alt="" class="headimg">
 									<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)" >
-
-										<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
-
+										<span  v-if="slist.content_type=='TXT'" v-html="emoji(slist.content)" class="slist_content"></span>
 										<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 											<img :src="slist.content.animatedPicUrl" alt="" >
 										</div>
@@ -57,7 +55,7 @@
 									<div class="other_info">
 										<p class="other_name">{{$store.state.chat.conversation[list.index].other.name}}<span>NO.{{$store.state.chat.conversation[list.index].other.no}}</span></p>
 										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)">
-											<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
+											<span  v-if="slist.content_type=='TXT'" v-html="emoji(slist.content)" class="slist_content"></span>
 											<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 												<img :src="slist.content.animatedPicUrl" alt="">
 											</div>
@@ -88,7 +86,7 @@
 				<div class="emoji_container">
 					<div class="emoji_content">
 						<div class="emoji_tu" v-show="emojitype==0">
-							<p v-for="emo in $store.state.chat.emoji.emojis" v-html="emo.innerHTML" @click="f_check_emoji(emo)"></p>
+							<img v-for="emo in $store.state.chat.emojis" @click="f_check_emoji($event)" :src="emo.ImageName" :data-name="emo.Word" class="emojis">
 						</div>
 						<div class="emoji_yan" v-show="emojitype==1">
 							<span v-for="emo in $store.state.chat.emoji.yan_emoji" @click="add_yan_emoji($event)">{{emo}}</span>
@@ -140,6 +138,7 @@
 			}
 		},
 		mounted: function() {
+			console.log(this.$store.state.chat.emojis)
 			document.querySelector('#win' + this.list.user.user._id).style.left = parseInt(document.body.clientWidth) / 2 - 250 + 'px';
 			var me = this;
 			console.log(this.$store.state.chat.conversation[this.index]);
@@ -158,6 +157,16 @@
 			},
 			chat: function() {
 				console.log(1)
+			},
+			//转换表情
+			emoji:function(content){
+				for(var i=0;i<this.$store.state.chat.emojis.length;i++){
+					if(content.match(this.$store.state.chat.emojis[i].Word)){
+						var ex=new RegExp('\\['+this.$store.state.chat.emojis[i].Word+'\\]');
+						content=content.replace(ex,'<image style="display: inline-block;position:relative;top:-3px;height: 20px;width: 20px;vertical-align: middle;" src="'+this.$store.state.chat.emojis[i].ImageName+'"/>')
+					}
+				}
+				return content
 			},
 			scroll_top: function() {
 				this.chehui_switch = false;
@@ -214,8 +223,8 @@
 			close_emoji: function() {
 				this.emoji_swi = false;
 			},
-			f_check_emoji: function(dom) {
-				var emoji = dom.children[0].getAttribute('name'),
+			f_check_emoji: function(event) {
+				var emoji = '['+event.target.dataset.name+']',
 					d = document.querySelector('#emoji' + this.list.user.user._id);
 				if (d) {
 					d.focus();
@@ -433,7 +442,6 @@
 		display: block;
 		width: 70px;
 	}
-	
 	.ajax-loader-container {
 		position: absolute;
 		height: 100%;
@@ -516,10 +524,12 @@
 		padding: 0 10px;
 	}
 	
-	.emoji_tu>p {
+	.emojis{
 		margin: 5px;
 		float: left;
 		cursor: pointer;
+		width: 30px;
+		height: 30px;
 	}
 	
 	.emoji_type {

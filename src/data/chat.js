@@ -21,6 +21,7 @@ const Chat = {
 			"groupCmd": [],
 			"count": 0 //通知总数
 		},
+		emojis:[],
 		emoji: {
 			"yan_emoji": [
 		    "┭┮﹏┭┮", // 呜呜呜

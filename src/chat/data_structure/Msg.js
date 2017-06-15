@@ -14,7 +14,7 @@ class Msg {
 				this.url = content_url.url;
 				this.id=content_url.id;
 			}else{
-				this.url=JSON.parse(content_url).romoteUrl;
+				this.url=JSON.parse(content_url).remoteUrl;
 			}
 			this.content_type = "IMAGE"
 			//如果图片已经存在，就删除该消息(不生成此条消息)
