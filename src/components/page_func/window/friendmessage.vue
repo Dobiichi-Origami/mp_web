@@ -160,9 +160,14 @@
 			},
 			//转换表情
 			emoji:function(content){
+				var content = content.replace(/</g,'&lt;').
+		        replace(/>/g,'&gt;').
+		        replace(/"/g, "&quot;").
+		        replace(/'/g, "&#039;");
+		      	content = content.replace(/\n/g, "<br />");
 				for(var i=0;i<this.$store.state.chat.emojis.length;i++){
 					if(content.match(this.$store.state.chat.emojis[i].Word)){
-						var ex=new RegExp('\\['+this.$store.state.chat.emojis[i].Word+'\\]');
+						var ex=new RegExp('\\['+this.$store.state.chat.emojis[i].Word+'\\]','g');
 						content=content.replace(ex,'<image style="display: inline-block;position:relative;top:-3px;height: 20px;width: 20px;vertical-align: middle;" src="'+this.$store.state.chat.emojis[i].ImageName+'"/>')
 					}
 				}

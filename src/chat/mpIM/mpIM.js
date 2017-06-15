@@ -67,7 +67,6 @@ var MpIMClient = {
 			console.log(data)
 			data = JSON.parse(data)[0];
 			var msg;
-
 			if (data.op == 14) {
 				console.log('登陆成功');
 				me.heart();
@@ -76,13 +75,13 @@ var MpIMClient = {
 				console.log("您已在其他设备登陆")
 				return;
 			} else if (data.op == 5) {
-				//此处调用消息处理的方法
+				// 此处调用消息处理的方法
 				if (data.body) {
 					if (data.body.msg) {
 						msg = data.body.msg;
 						msg.msg_content = JSON.parse(base64.base64ToString(msg.msg_content));
 						msg.me = true;
-						console.log('发送成功:')
+						console.log('发送成功:op5')
 						console.log(msg)
 						if (!msg.msg_type) {
 							//聊天消息
@@ -107,7 +106,7 @@ var MpIMClient = {
 					msg = data.body;
 					msg.msg_content = JSON.parse(base64.base64ToString(msg.msg_content));
 					msg.me = false;
-					console.log('收到消息:')
+					console.log('收到消息:op9')
 					console.log(msg)
 					if (!msg.msg_type) {
 						//聊天消息
