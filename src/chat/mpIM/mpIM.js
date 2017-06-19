@@ -33,8 +33,15 @@ var MpIMClient = {
 		//重新连接
 		var me = MpIMClient;
 		me.ws.onclose = function () {
-			console.log('已断开连接，正在重新连接')
-			me.connect();
+			console.log('已断开连接，正在重新连接');
+			//关闭重练定时器
+			if(me.reconnect){
+				clearInterval(me.reconnect)
+			}
+			//每五秒重练一次
+			me.reconnect=setInterval(function(){
+				me.connect;
+			},50000);
 		}
 	},
 	login: function () {
@@ -50,16 +57,6 @@ var MpIMClient = {
 		me.ws.send(data)
 		me.receiver();
 	},
-	heart: function () {
-		var me = MpIMClient;
-		setInterval(function () {
-			me.ws.send(JSON.stringify({
-				'ver': 1,
-				'op': 2,
-				'seq': this.seq++
-			}))
-		}, 288000)
-	},
 	receiver: function () {
 		var me = MpIMClient;
 		me.ws.onmessage = function (evt) {
@@ -67,9 +64,24 @@ var MpIMClient = {
 			console.log(data)
 			data = JSON.parse(data)[0];
 			var msg;
-			if (data.op == 14) {
+			if (data.op == 14){
 				console.log('登陆成功');
-				me.heart();
+				//如果是重练，登录成功关闭重练
+				if(me.reconnect){
+					clearInterval(me.reconnect)
+				}
+				//清除上一个心跳
+				if(me.heart){
+					clearInterval(me.heart);
+				}
+				//开启心跳
+				me.heart=setInterval(function () {
+					me.ws.send(JSON.stringify({
+						'ver': 1,
+						'op': 2,
+						'seq': this.seq++
+					}))
+				}, 288000);
 				return;
 			} else if (data.op == 12) {
 				console.log("您已在其他设备登陆")
