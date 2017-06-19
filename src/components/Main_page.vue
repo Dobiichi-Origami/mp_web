@@ -427,6 +427,7 @@
 							}).then(
 								(res1) => {
 									if (res1.body.items) {
+										console.log(res)
 										var re1 = res1.body;
 										me.$store.commit('set', {
 											obj: ['current_user', 'current_room', 'users'],
