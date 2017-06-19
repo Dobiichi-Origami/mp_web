@@ -86,12 +86,16 @@ const store = new Vuex.Store({
 					}
 				}
 			},
-			openfriend: function(state,id,friends,chat2){
-				console.log(Chat)
-				friends.user={_id:friends.id};
-				friends.device={_id:friends.deviced};
-				console.log(friends)
-				var index = chat2.start(friends);
+			openfriend: function(state,info,chat2){
+				var friends={
+					name:info.sender_name,
+					no:info.sender_no,
+					headimg:info.sender_head_img,
+					user:{
+						_id:info.sender_id,
+					}
+				}
+				var index = chat2.start(info);
 				if (state.message_window.length == 0) {
 					state.message_window.push({
 						user: friends,
@@ -108,7 +112,7 @@ const store = new Vuex.Store({
 				} else {
 					for (var i = 0; i < state.message_window.length; i++) {
 						if(state.message_window[i].user){
-							if (id == state.message_window[i].user.user._id) {
+							if (friends.user._id == state.message_window[i].user.user._id) {
 								// var dom = document.querySelector('#win' + id);
 								// var w = parseInt(window.getComputedStyle(dom).width);
 								// dom.style.transition = "width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s";
