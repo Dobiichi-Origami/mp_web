@@ -83,7 +83,7 @@ var MpIMClient = {
 						msg.msg_content = JSON.parse(base64.base64ToString(msg.msg_content));
 						msg.me = true;
 						console.log('发送成功:')
-						console.log(msg)
+						// console.log(msg)
 						if (!msg.msg_type) {
 							//聊天消息
 							chat.receivetext(msg)
@@ -107,7 +107,7 @@ var MpIMClient = {
 					msg = data.body;
 					msg.msg_content = JSON.parse(base64.base64ToString(msg.msg_content));
 					msg.me = false;
-					console.log('收到消息:')
+					console.log('收到服务器的原消息:')
 					console.log(msg)
 					if (!msg.msg_type) {
 						//聊天消息

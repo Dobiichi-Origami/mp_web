@@ -163,6 +163,7 @@ var chat = {
 					other.id = info.sender_id;
 					other.no = info.sender_no;
 				}
+
 				//判断该会话是否存在
 				conExist = this.conversationExist(me.id, other.id, con, me.no, other.no);
 				if (conExist != undefined) { //
@@ -187,6 +188,8 @@ var chat = {
 				}
 				//产生会话
 				conversation = new Conversation(me, other);
+				console.log("本次会话的mename************",me.name);
+				console.log("本次会话的othername***********",other.name);
 				if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
 					conversation.set_unreadCount();
 				}
@@ -229,6 +232,7 @@ var chat = {
 						//添加
 					}
 					conversation = new Conversation(me, other);
+					
 					conversation.set_group(true); //conversation的isGroup为true
 					var selfTitle;
 					console.log(conversation)
@@ -291,6 +295,8 @@ var chat = {
 					other.deviceid = info.device._id;
 				}
 				conversation = new Conversation(me, other);
+				console.log("本次会话的mename************",me.name);
+				console.log("本次会话的othername***********",other.name);
 			} else { //群聊
 				//
 				type = 3;
