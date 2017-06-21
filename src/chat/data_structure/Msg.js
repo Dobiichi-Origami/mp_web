@@ -3,6 +3,7 @@ import vm from 'src/main.js'
 class Msg {
 	constructor(index, type, content_url, chat_type, temp, time, me) {
 		this.me=me;
+		console.log(index, type, content_url, chat_type, temp, time, me);
 		if (!type) {
 			this.content = content_url;
 			this.content_type = "TXT";
