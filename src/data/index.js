@@ -88,11 +88,11 @@ const store = new Vuex.Store({
 			},
 			openfriend: function(state,info,chat2){
 				var friends={
-					name:info.sender_name,
-					no:info.sender_no,
-					headimg:info.sender_head_img,
+					name:info.chat_body.sender.name,
+					no:info.chat_body.sender.no,
+					headimg:info.chat_body.sender.head_img,
 					user:{
-						_id:info.sender_id,
+						_id:info.chat_body.sender.id,
 					}
 				}
 				var index = chat2.start(info);
@@ -182,6 +182,7 @@ const store = new Vuex.Store({
 					}
 				}
 				var dom=document.querySelector('#win'+id);
+				console.log('((((((((((((((((((((((((((('+id)
 				if(dom){
 					var w=parseInt(window.getComputedStyle(dom).width);
 					if(w>0){
