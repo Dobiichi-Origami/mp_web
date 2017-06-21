@@ -401,7 +401,7 @@
 			revoke: function(conversation_index, msg_index, time) {
 				var t = new Date().getTime();
 				if (t - time <= 180000) {
-					chat.cmd_sender("msg_revoke", conversation_index, msg_index, "")
+					chat.send_revoke(conversation_index, msg_index, "")
 				} else {
 					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
@@ -420,7 +420,7 @@
 					this.juqing_tishi = '请输入内容！'
 				} else {
 					var me = this;
-					chat.send(me.list.index, 0, me.juqingval, 3, 0);
+					chat.send(me.list.index, 0, me.juqingval, 3);
 					this.jq_switch = false;
 					this.juqingval = '';
 					this.juqing_tishi = '';
@@ -505,17 +505,17 @@
 				if (this.val == '') {
 					this.tishi = "请输入内容！";
 				} else {
-					var me = this,
-						title;
-					for (var i = 0; i < this.$store.state.chat.messages.grouplist.length; i++) {
-						console.log(this.$store.state.chat.messages.grouplist[i]._id)
-						if (this.$store.state.chat.conversation[this.list.index].other.id == this.$store.state.chat.messages.grouplist[i]._id) {
-							title = this.$store.state.chat.messages.grouplist[i].member.title;
-							console.log(title)
-							break;
-						}
-					}
-					chat.send(me.list.index, 0, me.val, me.myself_say_act, 0, undefined, title);
+					var me = this;
+					//						title;
+					//					for (var i = 0; i < this.$store.state.chat.messages.grouplist.length; i++) {
+					//						console.log(this.$store.state.chat.messages.grouplist[i]._id)
+					//						if (this.$store.state.chat.conversation[this.list.index].other.id == this.$store.state.chat.messages.grouplist[i]._id) {
+					////							title = this.$store.state.chat.messages.grouplist[i].member.title;
+					////							console.log(title)
+					//							break;
+					//						}
+					//					}
+					chat.send(me.list.index, 0, me.val, me.myself_say_act);
 					this.val = '';
 					this.tishi = '';
 					// console.log(this.$store.state.chat.conversation[this.list.index])

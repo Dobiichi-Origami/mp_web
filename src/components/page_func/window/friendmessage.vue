@@ -159,16 +159,16 @@
 				console.log(1)
 			},
 			//转换表情
-			emoji:function(content){
-				var content = content.replace(/</g,'&lt;').
-		        replace(/>/g,'&gt;').
-		        replace(/"/g, "&quot;").
-		        replace(/'/g, "&#039;");
-		      	content = content.replace(/\n/g, "<br />");
-				for(var i=0;i<this.$store.state.chat.emojis.length;i++){
-					if(content.match(this.$store.state.chat.emojis[i].Word)){
-						var ex=new RegExp('\\['+this.$store.state.chat.emojis[i].Word+'\\]','g');
-						content=content.replace(ex,'<image style="display: inline-block;position:relative;top:-3px;height: 20px;width: 20px;vertical-align: middle;" src="'+this.$store.state.chat.emojis[i].ImageName+'"/>')
+			emoji: function(content) {
+				var content = content.replace(/</g, '&lt;').
+				replace(/>/g, '&gt;').
+				replace(/"/g, "&quot;").
+				replace(/'/g, "&#039;");
+				content = content.replace(/\n/g, "<br />");
+				for (var i = 0; i < this.$store.state.chat.emojis.length; i++) {
+					if (content.match(this.$store.state.chat.emojis[i].Word)) {
+						var ex = new RegExp('\\[' + this.$store.state.chat.emojis[i].Word + '\\]', 'g');
+						content = content.replace(ex, '<image style="display: inline-block;position:relative;top:-3px;height: 20px;width: 20px;vertical-align: middle;" src="' + this.$store.state.chat.emojis[i].ImageName + '"/>')
 					}
 				}
 				return content
@@ -229,7 +229,7 @@
 				this.emoji_swi = false;
 			},
 			f_check_emoji: function(event) {
-				var emoji = '['+event.target.dataset.name+']',
+				var emoji = '[' + event.target.dataset.name + ']',
 					d = document.querySelector('#emoji' + this.list.user.user._id);
 				if (d) {
 					d.focus();
@@ -277,9 +277,8 @@
 			},
 			revoke: function(conversation_index, msg_index, time) {
 				var t = new Date().getTime();
-				// console.log(t-(time*1000))
 				if (t - time * 1000 <= 1800000) {
-					chat.cmd_sender("msg_revoke", conversation_index, msg_index, "")
+					chat.send_revoke(conversation_index, msg_index, "")
 				} else {
 					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
@@ -298,7 +297,7 @@
 					this.juqing_tishi = '请输入内容！'
 				} else {
 					var me = this;
-					chat.send(me.list.index, 0, me.juqingval, 3, 0);
+					chat.send(me.list.index, 0, me.juqingval, 3);
 					this.jq_switch = false;
 					this.juqingval = '';
 					this.juqing_tishi = '';
@@ -385,7 +384,7 @@
 					this.tishi = "请输入内容！";
 				} else {
 					var me = this;
-					chat.send(me.list.index, 0, me.val, me.myself_say_act, 0);
+					chat.send(me.list.index, 0, me.val, me.myself_say_act);
 					this.val = '';
 					this.tishi = '';
 					console.log(this.$store.state.chat.conversation[this.list.index])
@@ -447,6 +446,7 @@
 		display: block;
 		width: 70px;
 	}
+	
 	.ajax-loader-container {
 		position: absolute;
 		height: 100%;
@@ -529,7 +529,7 @@
 		padding: 0 10px;
 	}
 	
-	.emojis{
+	.emojis {
 		margin: 5px;
 		float: left;
 		cursor: pointer;
