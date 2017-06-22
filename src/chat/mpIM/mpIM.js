@@ -5,11 +5,12 @@ var MpIMClient = {
 	DeviceInfo: '',
 	ws: {},
 	time: 0,
+	reconnect_: 0,
+	heart_: 0,
 	init: function (DeviceInfo) {
 		var me = MpIMClient;
 		me.DeviceInfo = DeviceInfo;
 		me.connect();
-		me.reconnect();
 	},
 	connect: function () {
 		var me = MpIMClient;
@@ -19,14 +20,19 @@ var MpIMClient = {
 			if (this.readyState == 1) {
 				console.log('链接成功', me.DeviceInfo);
 				me.login(me.DeviceInfo)
+				//如果是重练，登录成功关闭重练
+				if (me.reconnect_) {
+					clearInterval(me.reconnect_)
+				}
 			} else {
 				console.log('链接失败，重新连接中')
-				var time = new Date().getTime();
+				var time = Date.now();
 				if (time - me.time > 1000) {
 					me.connect();
 					me.time = time;
 				}
 			}
+			me.reconnect();
 		}
 	},
 	reconnect: function () {
@@ -34,14 +40,11 @@ var MpIMClient = {
 		var me = MpIMClient;
 		me.ws.onclose = function () {
 			console.log('已断开连接，正在重新连接');
-			//关闭重练定时器
-			if(me.reconnect){
-				clearInterval(me.reconnect)
-			}
-			//每五秒重练一次
-			me.reconnect=setInterval(function(){
-				me.connect;
-			},50000);
+			//每五秒重连一次
+			me.connect();
+			me.reconnect_ = setInterval(function () {
+				me.connect();
+			}, 50000);
 		}
 	},
 	login: function () {
@@ -58,24 +61,19 @@ var MpIMClient = {
 		me.receiver();
 	},
 	receiver: function () {
-		var me = MpIMClient;
+		var me = MpIMClient,
+			msg;
 		me.ws.onmessage = function (evt) {
 			var data = evt.data;
-			console.log(data)
 			data = JSON.parse(data)[0];
-			var msg;
-			if (data.op == 14){
+			if (data.op == 14) {
 				console.log('登陆成功');
-				//如果是重练，登录成功关闭重练
-				if(me.reconnect){
-					clearInterval(me.reconnect)
-				}
 				//清除上一个心跳
-				if(me.heart){
-					clearInterval(me.heart);
+				if (me.heart_) {
+					clearInterval(me.heart_);
 				}
 				//开启心跳
-				me.heart=setInterval(function () {
+				me.heart_ = setInterval(function () {
 					me.ws.send(JSON.stringify({
 						'ver': 1,
 						'op': 2,
@@ -91,20 +89,23 @@ var MpIMClient = {
 				if (data.body) {
 					if (data.body.msg) {
 						msg = data.body.msg;
+<<<<<<< HEAD
 
+=======
+						console.log(msg);
+>>>>>>> yuicer
 						console.log('发送成功:op5')
-						if (!msg.type){
+						if (!msg.type) {
 							//聊天消息
 							msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
 							msg.me = true;
-							console.log(msg)
-							chat.receivetext(msg)
+							chat.handle_text(msg)
 						} else if (msg.type == 1) {
-							//cmd消息
-							chat.receivecmd(msg)
-						} else if (msg.type == 2) {
-							//系统消息
-							chat.receivesystem(msg)
+							//cmd
+							chat.handle_cmd(msg)
+						} else if (msg.type == 3) {
+							//system
+							chat.handle_system(msg)
 						}
 					} else {
 						console.log('数据错误');
@@ -118,19 +119,23 @@ var MpIMClient = {
 				console.log('收到消息:op9')
 				if (data.body) {
 					msg = data.body;
-					if (!msg.msg_type) {
+					console.log(msg);
+					if (!msg.type) {
+						//chat
 						msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
 						msg.me = false;
-						console.log(msg)
-						//聊天消息
-						chat.receivetext(msg)
-					} else if (msg.msg_type == 1) {
-						//cmd消息
-						chat.receivecmd(msg)
-					} else if (msg.msg_type == 2) {
-						//系统消息
-						chat.receivesystem(msg)
+						chat.handle_text(msg)
+					} else if (msg.type == 1) {
+						//cmd
+						chat.handle_cmd(msg)
+					} else if (msg.type == 2) {
+						//rovoke
+						chat.handle_revoke(msg)
+					} else if (msg.type == 3) {
+						//system
+						chat.handle_system(msg)
 					}
+
 				}
 			}
 		}
@@ -142,8 +147,7 @@ var MpIMClient = {
 			'seq': this.seq++,
 			'body': body
 		}
-		console.log('发送消息')
-		console.log(data)
+		console.log('发送消息', body)
 		data = JSON.stringify(data);
 		this.ws.send(data)
 	}

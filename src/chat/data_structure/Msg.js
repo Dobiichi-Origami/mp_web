@@ -1,9 +1,8 @@
 //构造conversation的msg对象结构体
 import vm from 'src/main.js'
 class Msg {
-	constructor(index, type, content_url, chat_type, temp, time, me) {
-		this.me=me;
-		console.log(index, type, content_url, chat_type, temp, time, me);
+	constructor(index, type, content_url, chat_type, temp, time, me, uid) {
+		this.me = me;
 		if (!type) {
 			this.content = content_url;
 			this.content_type = "TXT";
@@ -11,22 +10,20 @@ class Msg {
 		//图片格式没有content，有额外的url
 		else if (type == 1) {
 			//添加本地图片id
-			if(content_url.url){
+			if (content_url.url) {
 				this.url = content_url.url;
-				this.id=content_url.id;
-			}else{
-				this.url=JSON.parse(content_url).remoteUrl;
+				this.id = content_url.id;
+			} else {
+				this.url = JSON.parse(content_url).remoteUrl;
 			}
 			this.content_type = "IMAGE"
 			//如果图片已经存在，就删除该消息(不生成此条消息)
-			if(me){
-				for(var i=0;i<vm.$store.state.chat.conversation[index].msg.length;i++){
-					console.log(vm.$store.state.chat.conversation[index].msg[i].url, this.url)
-					if(vm.$store.state.chat.conversation[index].msg[i].url==this.url){
+			if (me)
+				for (var i = 0; i < vm.$store.state.chat.conversation[index].msg.length; i++) {
+					if (vm.$store.state.chat.conversation[index].msg[i].url == this.url)
 						return;
-					}
 				}
-			}
+
 		} else if (type == 2) {
 			this.content = JSON.parse(content_url)
 			this.content_type = "MAGIC_PIC"
@@ -48,13 +45,14 @@ class Msg {
 		}
 		this.temp = temp;
 		this.time = time;
-		//响应revoke;
-		this.revoke=false;
-	
+		this.uid = uid;
+		//revoke用来判断该消息是否已撤回
+		this.revoke = false;
+
 		//存储	
 		vm.$store.state.chat.conversation[index].msg.push(this);
 		console.log(this)
-		console.log(index,vm.$store.state.chat.conversation)
+		console.log(index, vm.$store.state.chat.conversation)
 	}
 	//谁发的消息
 	set_from(who) {
@@ -64,21 +62,12 @@ class Msg {
 			this.me = true;
 		}
 	}
-	//接受的消息的uid
-	set_uid(uid) {
-		this.uid = uid;
-	}
+
 	//是否撤回
-	set_revoke(user) {
+	set_revoke(sender, content) {
 		this.revoke = true;
-		if (user) {
-			this.revoke_user = {
-				name: user.applyUserName,
-				no: user.applyUserNo,
-				id: user.applyUserId,
-				content: user.applyContent,
-			}
-		}
+		this.revoke_user = sender;
+		this.revoke_content = content ? content : '';
 	}
 
 	//设置此条消息的atList数组

@@ -107,6 +107,7 @@
     <btn id="btn" class="border_box"></btn>
     <message v-for="(list,index) in this.$store.state.message_window" :index="index" :list="list" v-show="list.show"></message>
     <system></system>
+    <checkwindow></checkwindow>
   </div>
 </template>
 <script>
@@ -116,6 +117,8 @@
 	import activity from "./page_func/activity"
 	import btn from "./page_func/btn"
 	import seeimg from "./page_func/seeimg.vue"
+	import checkwindow from "./page_func/ball"
+	import emoji from 'src/chat/emoji/emoji.js'
 	export default {
 		updated: function() {},
 		components: {
@@ -123,7 +126,8 @@
 			btn,
 			message,
 			seeimg,
-			system
+			system,
+			checkwindow,
 		},
 		mounted: function() {
 			this.$http.get("http://test.mrpyq.com/api/qiniu", {}).then(
@@ -140,6 +144,13 @@
 			me.$store.state.no_scroll(ele1);
 			me.$store.state.no_scroll(ele2);
 			me.$store.state.no_scroll(ele3);
+
+			//加载表情库
+			this.$store.state.chat.emojis = emoji;
+			for (var i = 0; i < this.$store.state.chat.emojis.length; i++) {
+				this.$store.state.chat.emojis[i].ImageName = require('../assets/emoji/' + this.$store.state.chat.emojis[i].ImageName);
+			}
+			console.log(this.$store.state.chat.emojis)
 		},
 		name: 'Main_page',
 		data() {
