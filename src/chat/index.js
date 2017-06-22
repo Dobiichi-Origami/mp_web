@@ -143,7 +143,7 @@ var chat = {
 		var type; //标识会话类型，1私聊，3群聊
 		var conversation; //自定义conversation
 		//先判断收发类型
-		if (isreseive) {
+		if (isreseive){
 			//收消息情况下，判断会话类型
 			if (!info.target_type) { //私聊
 				//判断发消息的人是否就是本人, 判断发送方的deviceId是否与当前账户的deviceId相同(该情况出现在多端登录时)
@@ -153,38 +153,39 @@ var chat = {
 				console.log("当前皮ID为:");
 				console.log(vm.$store.state.current_user._id);
 				if (info.me) {
-					me.id = info.sender_id;
-					me.no = info.sender_no;
+					me.id = info.chat_body.sender.id;
+					me.no = info.chat_body.sender.no;
 					other.id = info.target_id;
 					other.no = info.target_no;
 				} else {
 					me.id = info.target_id;
 					me.no = info.target_no;
-					other.id = info.sender_id;
-					other.no = info.sender_no;
+					other.id = info.chat_body.sender.id;
+					other.no = info.chat_body.sender.no;
 				}
 
 				//判断该会话是否存在
 				conExist = this.conversationExist(me.id, other.id, con, me.no, other.no);
 				if (conExist != undefined) { //
 					//显示消息提示
-					console.log('*****' + vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state))
+					console.log(conExist,vm.$store.state.chat.conversation[conExist].other.id)
 					if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
-						vm.$store.state.chat.conversation[conExist].set_unreadCount()
+						vm.$store.state.chat.conversation[conExist].set_unreadCount();
+						console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 					}
 					return conExist;
 				} else {
-					if (info.me) {
-						me.headimg = info.sender_head_img;
-						me.name = info.sender_name;
-						other.headimg = info.chat_current_head_img;
-						other.name = info.chat_current_name;
-					} else {
-						other.headimg = info.sender_head_img;
-						other.name = info.sender_name;
-						me.headimg = info.chat_current_head_img;
-						me.name = info.chat_current_name;
-					}
+					// if (info.me){
+					// 	me.headimg = info.chat_body.sender.head_img;
+					// 	me.name = info.chat_body.sender.name;
+					// 	other.headimg = info.chat_body.chat_head_img;
+					// 	other.name = info.chat_body.chat_name;
+					// } else {
+						other.headimg = info.chat_body.sender.head_img;
+						other.name =info.chat_body.sender.name;
+						me.headimg = info.chat_body.chat_current_user.head_img;
+						me.name = info.chat_body.chat_current_user.name;
+					// }
 				}
 				//产生会话
 				conversation = new Conversation(me, other);
@@ -225,8 +226,8 @@ var chat = {
 					} else {
 						me.headimg = currPi.headimg;
 						me.name = currPi.name;
-						other.headimg = info.chat_current_head_img;
-						other.name = info.chat_current_name;
+						other.headimg = info.chat_body.chat_head_img;
+						other.name = info.chat_body.chat_name;
 						other.no = info.target_no;
 						// other.deviceid = info.targetId;
 						//添加
@@ -281,8 +282,8 @@ var chat = {
 				if(info.target_id){
 					me.id=info.target_id;
 					me.no=info.target_no;
-					other.id=info.sender_id;
-					other.no=info.sender_no;
+					other.id=info.chat_body.sender.id;
+					other.no=info.chat_body.sender.no;
 				}else{
 					me.id = vm.$store.state.current_user._id;
 					me.no = vm.$store.state.current_user.no;
@@ -294,10 +295,10 @@ var chat = {
 					return conExist;
 				else {
 					if(info.target_id){
-						other.headimg = info.sender_head_img;
-						other.name = info.sender_name;
-						me.headimg = info.chat_current_head_img;
-						me.name = info.chat_current_name;
+						other.headimg = info.chat_body.sender.head_img;
+						other.name = info.chat_body.sender.name;
+						me.headimg = info.chat_body.chat_current_user.head_img;
+						me.name = info.chat_body.chat_current_user._name;
 					}else{
 						me.headimg = vm.$store.state.current_user.headimg;
 						me.name = vm.$store.state.current_user.name;
@@ -395,20 +396,24 @@ var chat = {
 			content_url=JSON.stringify(content_url)
 		}
 		var body = {
-			sender_id: vm.$store.state.chat.conversation[index].me.id,
-			sender_no: vm.$store.state.chat.conversation[index].me.no,
-			sender_name: vm.$store.state.chat.conversation[index].me.name,
-			sender_head_img: vm.$store.state.chat.conversation[index].me.headimg,
-			msg_type: 0,
-			msg_time: new Date().getTime(),
-			msg_content_type: type,
-			msg_content: base64.toBase64(JSON.stringify({
-				speakType: chat_type,
-				content: content_url,
-				atList: [],
-				defaultContent: defaultcontent,
-				temp: temp
-			})),
+			chat_body:{
+				sender:{
+					id: vm.$store.state.chat.conversation[index].me.id,
+					no: vm.$store.state.chat.conversation[index].me.no,
+					name: vm.$store.state.chat.conversation[index].me.name,
+					head_img: vm.$store.state.chat.conversation[index].me.headimg
+				},
+				content_type: type,
+				content: base64.toBase64(JSON.stringify({
+					speakType: chat_type,
+					content: content_url,
+					atList: [],
+					defaultContent: defaultcontent,
+					temp: temp
+				})),
+			},
+			type: 0,
+			time: new Date().getTime(),
 			target_type: targetType,
 			target_id: vm.$store.state.chat.conversation[index].other.id,
 			target_no: vm.$store.state.chat.conversation[index].other.no - 0,
@@ -666,20 +671,18 @@ var chat = {
 		if (index === undefined) {
 			return;
 		}
-
-		var msg = new Msg(index, message.msg_content_type, message.msg_content.content, message.msg_content.speakType, message.msg_content.temp, message.msg_time, message.me);
-
+		var msg = new Msg(index, message.chat_body.content_type, message.chat_body.content.content, message.chat_body.content.speakType, message.chat_body.content.temp, message.time, message.me);
 		//对收到的消息设置uid
 		msg.set_uid(message.msg_uid);
 
 		//群消息需要设置发言人
 		if (message.target_type == 1) { //为群会话消息，需要在msg中添加发言人信息
 			var speaker = {
-				speakerName: message.sender_name,
-				speakerHeadimg: message.sender_head_img,
-				speakerId: message.sender_id,
-				speakerNo: message.sender_no,
-				speakerTitle: message.group_member_title,
+				speakerName: message.chat_body.sender.name,
+				speakerHeadimg: message.chat_body.sender.head_img,
+				speakerId: message.chat_body.sender.id,
+				speakerNo: message.chat_body.sender.no,
+				speakerTitle: message.chat_body.group_member_title,
 			}
 
 			speaker.memberType = this.checkMemberType(message.target_id, message.sender_id);

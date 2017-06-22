@@ -91,19 +91,18 @@ var MpIMClient = {
 				if (data.body) {
 					if (data.body.msg) {
 						msg = data.body.msg;
-						msg.msg_content = JSON.parse(base64.base64ToString(msg.msg_content));
-						msg.me = true;
 
 						console.log('发送成功:op5')
-						console.log(msg)
-
-						if (!msg.msg_type) {
+						if (!msg.type){
 							//聊天消息
+							msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
+							msg.me = true;
+							console.log(msg)
 							chat.receivetext(msg)
-						} else if (msg.msg_type == 1) {
+						} else if (msg.type == 1) {
 							//cmd消息
 							chat.receivecmd(msg)
-						} else if (msg.msg_type == 2) {
+						} else if (msg.type == 2) {
 							//系统消息
 							chat.receivesystem(msg)
 						}
@@ -116,15 +115,13 @@ var MpIMClient = {
 					return;
 				}
 			} else if (data.op == 9) {
+				console.log('收到消息:op9')
 				if (data.body) {
 					msg = data.body;
-					msg.msg_content = JSON.parse(base64.base64ToString(msg.msg_content));
-					msg.me = false;
-
-					console.log('收到消息:op9')
-
-					console.log(msg)
 					if (!msg.msg_type) {
+						msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
+						msg.me = false;
+						console.log(msg)
 						//聊天消息
 						chat.receivetext(msg)
 					} else if (msg.msg_type == 1) {
