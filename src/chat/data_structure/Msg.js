@@ -1,7 +1,7 @@
 //构造conversation的msg对象结构体
 import vm from 'src/main.js'
 class Msg {
-	constructor(index, type, content_url, chat_type, temp, time, me, uid) {
+	constructor(index, type, content_url, chat_type, time, me, temp, uid) {
 		this.me = me;
 		if (!type) {
 			this.content = content_url;
@@ -43,15 +43,13 @@ class Msg {
 		else if (chat_type == 3) {
 			this.chat_type = "DESCRIPTION"
 		}
-		this.temp = temp;
 		this.time = time;
 		this.uid = uid;
-		//revoke用来判断该消息是否已撤回
+		this.temp = temp;
 		this.revoke = false;
 
 		//存储	
 		vm.$store.state.chat.conversation[index].msg.push(this);
-		console.log(this)
 		console.log(index, vm.$store.state.chat.conversation)
 	}
 	//谁发的消息

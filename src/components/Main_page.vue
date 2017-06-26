@@ -130,17 +130,12 @@
 			checkwindow,
 		},
 		mounted: function() {
-			this.$http.get("http://test.mrpyq.com/api/qiniu", {}).then(
-				(res) => {
-					console.log(res.body)
-				})
 			var me = this,
 				ele1 = document.getElementById("li1"),
 				ele2 = document.getElementById("li2"),
 				ele3 = document.getElementsByClassName("des_s")[0];
 			//获取当前皮，专区等信息
 			me.get_info();
-			//me.level_bgcolor(); 重复
 			me.$store.state.no_scroll(ele1);
 			me.$store.state.no_scroll(ele2);
 			me.$store.state.no_scroll(ele3);
@@ -158,10 +153,8 @@
 				level: 0,
 				arrow1: false,
 				arrow2: false,
-
 				li1: false,
 				li2: false,
-
 			}
 		},
 
@@ -170,10 +163,10 @@
 				_czc.push(["_trackEvent", "功能", "登出"]);
 				TDAPP.onEvent("功能", "登出");
 				localStorage.clear();
-				this.$router.push('/Login');
 				chat.logout();
+				this.$router.push('/Login');
 				//强制刷新页面
-				window.location.reload();
+				//				window.location.reload();
 			},
 			logo_click: function() {
 				_czc.push(["_trackEvent", "功能", "名朋logo点击"]);

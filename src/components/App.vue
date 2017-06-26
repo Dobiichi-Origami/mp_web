@@ -136,6 +136,9 @@
 	
 	textarea {
 		resize: none;
+		-moz-user-select: text;
+		-webkit-user-select: text;
+		-ms-user-select: text;
 	}
 	
 	li {

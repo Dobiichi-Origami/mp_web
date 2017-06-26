@@ -1,5 +1,6 @@
 import chat from '../index.js'
 import base64 from './base64.js'
+import vm from 'src/main.js'
 var MpIMClient = {
 	seq: 1,
 	DeviceInfo: '',
@@ -24,6 +25,17 @@ var MpIMClient = {
 				if (me.reconnect_) {
 					clearInterval(me.reconnect_)
 				}
+				//主动关闭连接
+				window.onbeforeunload = function () {
+					me.ws.close();
+				}
+				//错误代码
+				me.ws.onerror = function (res) {
+					console.log('websocket错误代码：')
+					console.log(res)
+					vm.$store.state.f_error(vm.$store.state, "您的设备链接异常，请刷新尝试重新连接");
+					vm.$store.state.IM_switch = false;
+				}
 			} else {
 				console.log('链接失败，重新连接中')
 				var time = Date.now();
@@ -38,14 +50,17 @@ var MpIMClient = {
 	reconnect: function () {
 		//重新连接
 		var me = MpIMClient;
+		vm.$store.state.chat.close_by_me = false;
 		me.ws.onclose = function () {
-			alert(1)
-			console.log('已断开连接，正在重新连接');
+			if (!vm.$store.state.chat.close_by_me) {
+				console.log('已断开连接，正在重新连接');
+				vm.$store.state.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
+				vm.$store.state.IM_switch = false;
+			}
 			//每五秒重连一次
-			//			me.connect();
-			me.reconnect_ = setInterval(function () {
-				me.connect();
-			}, 50000);
+			// me.reconnect_ = setInterval(function () {
+			// 	me.connect();
+			// }, 50000);
 		}
 	},
 	login: function () {
@@ -73,7 +88,10 @@ var MpIMClient = {
 		this.ws.send(data)
 	},
 	close: function () {
-		this.ws.close();
+		if (this.ws) {
+			this.ws.close();
+			vm.$store.state.chat.close_by_me = true;
+		}
 	},
 	receiver: function () {
 		var me = MpIMClient,
@@ -83,6 +101,7 @@ var MpIMClient = {
 			data = JSON.parse(data)[0];
 			if (data.op == 14) {
 				console.log('登陆成功');
+				vm.$store.state.IM_switch = true;
 				//清除上一个心跳
 				if (me.heart_) {
 					clearInterval(me.heart_);
@@ -109,7 +128,6 @@ var MpIMClient = {
 						if (!msg.type) {
 							//聊天消息
 							msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
-							msg.me = true;
 							chat.handle_text(msg)
 						} else if (msg.type == 1) {
 							//cmd
@@ -134,7 +152,6 @@ var MpIMClient = {
 					if (!msg.type) {
 						//chat
 						msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
-						msg.me = false;
 						chat.handle_text(msg)
 					} else if (msg.type == 1) {
 						//cmd

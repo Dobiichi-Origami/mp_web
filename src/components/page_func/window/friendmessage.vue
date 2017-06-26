@@ -109,7 +109,7 @@
 				<p class="face" @click="show_emoji"><img src="~assets/chat/add_face.png" alt=""></p>
 			</div>
 			<div class="messageval">
-				<textarea v-model="val" @input="jianting($event)" :placeholder="tishi" :id="'emoji'+list.user.user._id"></textarea>
+				<textarea v-model="val" @input="jianting($event)" :placeholder="tishi" :id="'emoji'+list.user.user._id"@keydown.enter.shift = "sendmessage($event)"></textarea>
 				<div class="sendmessage" @click="sendmessage">发送</div>
 			</div> 
 		</div>
@@ -278,7 +278,11 @@
 			revoke: function(conversation_index, msg_index, time) {
 				var t = new Date().getTime();
 				if (t - time * 1000 <= 1800000) {
-					chat.send_revoke(conversation_index, msg_index, "")
+					if (navigator.onLine && this.$store.state.IM_switch) {
+						chat.send_revoke(conversation_index, msg_index, "")
+					} else {
+						this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
+					}
 				} else {
 					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
@@ -373,26 +377,29 @@
 					dom.style.top = b + 'px';
 				}
 			},
-			sendmessage: function() {
-				// 	chat.send(index, type, content_url, chat_type, temp)
-				// index 发送目标序号
-				// type 发送类型，0为文本，1为图片，2为魔法表情，3为红包，4为礼物。
-				// content_url 发送内容，文本或url
-				// chat_type 聊天类型 0为角色说，1为本人说，2为剧情
-				// temp 0 普通消息 1 临时消息
+			sendmessage: function(e) {
+				if (e.code == 'Enter' && e.shiftKey == true)
+					e.preventDefault()
 				if (this.val == '') {
 					this.tishi = "请输入内容！";
 				} else {
 					var me = this;
-					chat.send(me.list.index, 0, me.val, me.myself_say_act);
-					this.val = '';
-					this.tishi = '';
-					console.log(this.$store.state.chat.conversation[this.list.index])
+					if (navigator.onLine && this.$store.state.IM_switch) {
+						chat.send(me.list.index, 0, me.val, me.myself_say_act);
+						this.val = '';
+						this.tishi = '';
+					} else {
+						this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
+					}
 				}
 			},
 			send_magicimg(index, type) {
-				chat.send_magicimg(index, type);
-				this.emoji_swi = false;
+				if (navigator.onLine && this.$store.state.IM_switch) {
+					chat.send_magicimg(index, type);
+					this.emoji_swi = false;
+				} else {
+					this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
+				}
 			},
 		},
 	})
@@ -706,6 +713,9 @@
 		padding: 5px;
 		line-height: 18px;
 		height: 58px;
+		-moz-user-select: text;
+		-webkit-user-select: text;
+		-ms-user-select: text;
 	}
 	
 	.get_height {
@@ -781,9 +791,12 @@
 		max-width: 300px;
 		text-align: left;
 		position: relative;
-		/*white-space: pre-wrap;*/
+		white-space: pre-wrap;
 		word-break: break-word;
 		cursor: pointer;
+		-moz-user-select: text;
+		-webkit-user-select: text;
+		-ms-user-select: text;
 	}
 	
 	div.wordcontent.active {

@@ -1,28 +1,9 @@
 /**
     2017-4-14 yuicer
     undo:
-        系统消息
-        
-    example:
-        import chat from "src/chat"
-        //文本,图片发送
-        chat.send(index, type, content_url, chat_type, temp)
-            index 发送目标序号
-            type 发送类型，0为文本，1为图片，2为魔法表情，3为红包，4为礼物。
-            content_url 发送内容，文本或url
-            chat_type 聊天类型 0为角色说，1为本人说，2为剧情
-            temp 0 普通消息 1 临时消息
-            
-        //魔法表情
-        chat.send_magicimg(index,type)
-            index 发送目标序号
-            type 0 骰子 1猜拳
-            
-        
-        //礼物这版本不做，只接收提示
-        
-        //红包当前版本不做，只接收提示    
-
+        CMD message
+        gift message
+		redpack message
     //通知
     好友通知：
         某某想加你为好友
@@ -54,7 +35,7 @@ import base64 from './mpIM/base64.js'
 import Msg from './data_structure/Msg'
 import Conversation from './data_structure/Conversation'
 require('../../static/qiniu.js')
-//var mpIM = new MpIM();
+
 
 //对外暴露的唯一对象。
 var chat = {
@@ -71,6 +52,7 @@ var chat = {
 	},
 	logout: function () {
 		mpIM.close();
+		console.log('关闭')
 	},
 	conversationExist: function (meId, otherId, con, meno, otherno) {
 		var flag = false;
@@ -110,8 +92,7 @@ var chat = {
 			if (!info.target_type) { //私聊
 				//判断发消息的人是否就是本人, 判断发送方的deviceId是否与当前账户的deviceId相同(该情况出现在多端登录时)
 
-				//sendIsMe = (info.senderUserId == vm.$store.state.current_user.device._id);
-				if (info.me) {
+				if (!info.chat_body.direction) {
 					me.id = info.chat_body.sender.id;
 					me.no = info.chat_body.sender.no;
 					other.id = info.target_id;
@@ -131,17 +112,10 @@ var chat = {
 					}
 					return conExist;
 				} else {
-					// if (info.me){
-					// 	me.headimg = info.chat_body.sender.head_img;
-					// 	me.name = info.chat_body.sender.name;
-					// 	other.headimg = info.chat_body.chat_head_img;
-					// 	other.name = info.chat_body.chat_name;
-					// } else {
 					other.headimg = info.chat_body.sender.head_img;
 					other.name = info.chat_body.sender.name;
 					me.headimg = info.chat_body.chat_current_user.head_img;
 					me.name = info.chat_body.chat_current_user.name;
-					// }
 				}
 				//产生会话
 				conversation = new Conversation(me, other);
@@ -165,8 +139,6 @@ var chat = {
 							break;
 						}
 					}
-					/*me.id = extra.selfId;
-					me.no = extra.selfNo;*/
 					other.id = info.target_id;
 					//判断该会话是否存在
 					conExist = this.conversationExist(me.id, other.id, con, me.no);
@@ -441,7 +413,9 @@ var chat = {
 		if (index === undefined) {
 			return;
 		}
-		var msg = new Msg(index, message.chat_body.content_type, message.chat_body.content.content, message.chat_body.content.speakType, message.chat_body.content.temp, message.time, message.me, message.uid);
+
+		var is_me_speak = message.chat_body.direction ? false : true;
+		var msg = new Msg(index, message.chat_body.content_type, message.chat_body.content.content, message.chat_body.content.speakType, message.time, is_me_speak, message.chat_body.chat_is_friend, message.uid);
 
 		//群消息需要设置发言人
 		if (message.target_type == 1) { //为群会话消息，需要在msg中添加发言人信息
@@ -592,33 +566,40 @@ var chat = {
 					// });
 				},
 				'BeforeUpload': function (up, file) {
-					var fileItem = file.getNative(),
-						url = window.URL || window.webkitURL || window.mozURL;
-					var src = url.createObjectURL(fileItem);
-					new Msg(index, 1, {
-						url: src,
-						id: file.id
-					}, 0, 0, new Date().getTime(), true);
+					if (navigator.onLine) {
+						var fileItem = file.getNative(),
+							url = window.URL || window.webkitURL || window.mozURL;
+						var src = url.createObjectURL(fileItem);
+						for (var i = 0; i < vm.$store.state.chat.conversation[index].msg.length; i++) {
+							if (vm.$store.state.chat.conversation[index].msg[i].id == file.id) {
+								return;
+							}
+						}
+						new Msg(index, 1, {
+							url: src,
+							id: file.id
+						}, 0, 0, new Date().getTime(), true);
+					} else {
+						vm.$store.state.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
+					}
 				},
 				'UploadProgress': function (up, file) {},
 				'FileUploaded': function (up, file, info) {
-					// chat.send(index, type, content_url, chat_type, temp)
-					// index 发送目标序号
-					// type 发送类型，0为文本，1为图片，2为魔法表情，3为红包，4为礼物。
-					// content_url 发送内容，文本或url
-					// chat_type 聊天类型 0为角色说，1为本人说，2为剧情
-					// temp 0 普通消息 1 临时消息
-					for (var i = 0; i < vm.$store.state.chat.conversation[index].msg.length; i++) {
-						if (vm.$store.state.chat.conversation[index].msg[i].id == file.id) {
-							var message = vm.$store.state.chat.conversation[index].msg[i];
-							message.send_success = true;
-							message.url = 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key;
-							vm.$store.state.chat.conversation[index].msg.splice(i, 1, message);
-							break;
+					if (navigator.onLine) {
+						for (var i = 0; i < vm.$store.state.chat.conversation[index].msg.length; i++) {
+							if (vm.$store.state.chat.conversation[index].msg[i].id == file.id) {
+								var message = vm.$store.state.chat.conversation[index].msg[i];
+								message.send_success = true;
+								message.url = 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key;
+								vm.$store.state.chat.conversation[index].msg.splice(i, 1, message);
+								break;
+							}
 						}
-					}
 
-					me.send(index, 1, 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key, 0, 0)
+						me.send(index, 1, 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key, 0, 0)
+					} else {
+						vm.$store.state.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
+					}
 				},
 				'Error': function (up, err, errTip) {
 					console.log(err)
@@ -635,40 +616,6 @@ var chat = {
 			}
 		})
 	},
-
-	//		//      "group_join"
-	//		//      "group_kick"
-	//		//      "group_quit"
-	//		//      "group_invite"
-	//		//      "admin_setting" 
-	//		//      "admin_cancel"
-	//		//      "group_transfer"
-	//		//      "friend_apply"
-	//		//      "friend_delete"
-	//		//      "couple_apply"
-	//		//      "couple_divorce"
-	//		//      "group_silenced" //
-	//		//      "group_title"
-	//		//      "group_admin_changed"
-	//		//      "msg_transmit"
-
-	//	//需要接口
-	//	get_gift: function () {
-	//		var gift = {
-	//			count: 1,
-	//			gid: "583ceb995b5eac57aa0846ee",
-	//			name: "棒棒糖",
-	//			senderDeviceID: "58252d066e998f6bfd67f783",
-	//			senderHeadimg: "http://7x2wk4.com2.z0.glb.qiniucdn.com/Fq6Uxh4S3SkNlEcAEsTLPs08QlcW-head",
-	//			senderName: "折原临也",
-	//			senderUserID: "551d812efbe78e6ec27b1049",
-	//			senderUserNo: 230,
-	//			type: 0,
-	//			url: "http://7x2wk4.com1.z0.glb.clouddn.com/gift/002.png",
-	//		}
-	//		return gift;
-	//	},
-	//	//需要动态更改
 	get_magicimg: function (type) {
 		if (!type) {
 			//点数

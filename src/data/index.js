@@ -341,6 +341,7 @@ const store = new Vuex.Store({
 			play_user: false,
 			comments: false,
 		},
+		IM_switch:false,
 		//内部滑动，外部不滑动
 		no_scroll: function (a) {
 			var ff = window.navigator.userAgent,
