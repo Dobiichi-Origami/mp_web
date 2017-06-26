@@ -74,13 +74,6 @@ class Msg {
 	set_atList(atList) {
 		this.atList = atList;
 	}
-
-	set_timeout() {
-		this.isTimeout = true;
-	}
-	set_send_success() {
-		this.send_success = true;
-	}
 }
 
 

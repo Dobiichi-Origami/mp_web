@@ -171,6 +171,7 @@
 				TDAPP.onEvent("功能", "登出");
 				localStorage.clear();
 				this.$router.push('/Login');
+				chat.logout();
 				//强制刷新页面
 				window.location.reload();
 			},

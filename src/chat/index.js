@@ -69,6 +69,9 @@ var chat = {
 		mpIM.init(this.deviceInfo);
 		this.getgroup();
 	},
+	logout: function () {
+		mpIM.close();
+	},
 	conversationExist: function (meId, otherId, con, meno, otherno) {
 		var flag = false;
 		//判断该会话是否存在
@@ -614,8 +617,7 @@ var chat = {
 							break;
 						}
 					}
-					// var msg=new Msg(index,1,'http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key,0, 0,new Date().getTime(),true);
-					// msg.set_send_success();
+
 					me.send(index, 1, 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key, 0, 0)
 				},
 				'Error': function (up, err, errTip) {

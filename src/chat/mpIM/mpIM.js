@@ -39,9 +39,10 @@ var MpIMClient = {
 		//重新连接
 		var me = MpIMClient;
 		me.ws.onclose = function () {
+			alert(1)
 			console.log('已断开连接，正在重新连接');
 			//每五秒重连一次
-			me.connect();
+			//			me.connect();
 			me.reconnect_ = setInterval(function () {
 				me.connect();
 			}, 50000);
@@ -59,6 +60,20 @@ var MpIMClient = {
 		data = JSON.stringify(data);
 		me.ws.send(data)
 		me.receiver();
+	},
+	send: function (body) {
+		var data = {
+			'ver': 1,
+			'op': 4,
+			'seq': this.seq++,
+			'body': body
+		}
+		console.log('发送消息', body)
+		data = JSON.stringify(data);
+		this.ws.send(data)
+	},
+	close: function () {
+		this.ws.close();
 	},
 	receiver: function () {
 		var me = MpIMClient,
@@ -136,17 +151,6 @@ var MpIMClient = {
 			}
 		}
 	},
-	send: function (body) {
-		var data = {
-			'ver': 1,
-			'op': 4,
-			'seq': this.seq++,
-			'body': body
-		}
-		console.log('发送消息', body)
-		data = JSON.stringify(data);
-		this.ws.send(data)
-	}
 }
 
 export default MpIMClient;
