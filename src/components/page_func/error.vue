@@ -17,9 +17,9 @@
 		methods: {
 			confirm: function() {
 				_czc.push(["_trackEvent", "功能", "出错弹窗"]);
-				TDAPP.onEvent("功能", "出错弹窗");
 				this.$store.state.show_error = false;
 				this.$store.state.loader = false;
+				TDAPP.onEvent("功能", "出错弹窗");
 			},
 			no_scroll: function() {
 				var ele = document.getElementsByClassName("error")[0];

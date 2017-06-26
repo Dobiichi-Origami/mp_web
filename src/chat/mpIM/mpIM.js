@@ -1,5 +1,7 @@
 import chat from '../index.js'
 import base64 from './base64.js'
+import vm from 'src/main.js'
+console.log(vm)
 var MpIMClient = {
 	seq: 1,
 	DeviceInfo: '',
@@ -24,6 +26,17 @@ var MpIMClient = {
 				if (me.reconnect_) {
 					clearInterval(me.reconnect_)
 				}
+				//主动关闭连接
+				window.onbeforeunload = function () {
+	        		me.ws.close();
+	  			}
+	  			//错误代码
+	  			me.ws.onerror=function(res){
+	  				console.log('websocket错误代码：')
+	  				console.log(res)
+	  				vm.$store.state.f_error(vm.$store.state, "您的设备链接异常，请刷新尝试重新连接");
+	  				vm.$store.state.IM_switch=false;
+	  			}
 			} else {
 				console.log('链接失败，重新连接中')
 				var time = Date.now();
@@ -40,11 +53,12 @@ var MpIMClient = {
 		var me = MpIMClient;
 		me.ws.onclose = function () {
 			console.log('已断开连接，正在重新连接');
+			vm.$store.state.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
+			vm.$store.state.IM_switch=false;
 			//每五秒重连一次
-			me.connect();
-			me.reconnect_ = setInterval(function () {
-				me.connect();
-			}, 50000);
+			// me.reconnect_ = setInterval(function () {
+			// 	me.connect();
+			// }, 50000);
 		}
 	},
 	login: function () {
@@ -68,6 +82,7 @@ var MpIMClient = {
 			data = JSON.parse(data)[0];
 			if (data.op == 14) {
 				console.log('登陆成功');
+				vm.$store.state.IM_switch=true;
 				//清除上一个心跳
 				if (me.heart_) {
 					clearInterval(me.heart_);

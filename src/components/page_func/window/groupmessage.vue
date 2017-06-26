@@ -401,7 +401,11 @@
 			revoke: function(conversation_index, msg_index, time) {
 				var t = new Date().getTime();
 				if (t - time <= 180000) {
-					chat.send_revoke(conversation_index, msg_index, "")
+					if(navigator.onLine && this.$store.state.IM_switch){
+						chat.send_revoke(conversation_index, msg_index, "")
+					}else{
+						this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
+					}
 				} else {
 					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
@@ -515,15 +519,23 @@
 					//							break;
 					//						}
 					//					}
-					chat.send(me.list.index, 0, me.val, me.myself_say_act);
-					this.val = '';
-					this.tishi = '';
+					if(navigator.onLine && this.$store.state.IM_switch){
+						chat.send(me.list.index, 0, me.val, me.myself_say_act);
+						this.val = '';
+						this.tishi = '';
+					}else{
+						this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
+					}
 					// console.log(this.$store.state.chat.conversation[this.list.index])
 				}
 			},
 			send_magicimg(index, type) {
-				chat.send_magicimg(index, type);
-				this.emoji_swi = false;
+				if(navigator.onLine && this.$store.state.IM_switch){
+					chat.send_magicimg(index, type);
+					this.emoji_swi = false;
+				}else{
+					this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
+				}
 			},
 			//进入个人中心
 			f_check_personal: function(user) {

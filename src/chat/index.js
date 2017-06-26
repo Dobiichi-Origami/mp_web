@@ -589,13 +589,22 @@ var chat = {
 					// });
 				},
 				'BeforeUpload': function (up, file) {
-					var fileItem = file.getNative(),
+					if(navigator.onLine){
+						var fileItem = file.getNative(),
 						url = window.URL || window.webkitURL || window.mozURL;
-					var src = url.createObjectURL(fileItem);
-					new Msg(index, 1, {
-						url: src,
-						id: file.id
-					}, 0, 0, new Date().getTime(), true);
+						var src = url.createObjectURL(fileItem);
+						for(var i=0;i<vm.$store.state.chat.conversation[index].msg.length;i++){
+							if(vm.$store.state.chat.conversation[index].msg[i].id==file.id){
+								return;
+							}
+						}
+						new Msg(index, 1, {
+							url: src,
+							id: file.id
+						}, 0, 0, new Date().getTime(), true);
+					}else{
+						vm.$store.state.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
+					}
 				},
 				'UploadProgress': function (up, file) {},
 				'FileUploaded': function (up, file, info) {
@@ -605,18 +614,22 @@ var chat = {
 					// content_url 发送内容，文本或url
 					// chat_type 聊天类型 0为角色说，1为本人说，2为剧情
 					// temp 0 普通消息 1 临时消息
-					for (var i = 0; i < vm.$store.state.chat.conversation[index].msg.length; i++) {
-						if (vm.$store.state.chat.conversation[index].msg[i].id == file.id) {
-							var message = vm.$store.state.chat.conversation[index].msg[i];
-							message.send_success = true;
-							message.url = 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key;
-							vm.$store.state.chat.conversation[index].msg.splice(i, 1, message);
-							break;
+					if(navigator.onLine){
+						for (var i = 0; i < vm.$store.state.chat.conversation[index].msg.length; i++) {
+							if (vm.$store.state.chat.conversation[index].msg[i].id == file.id) {
+								var message = vm.$store.state.chat.conversation[index].msg[i];
+								message.send_success = true;
+								message.url = 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key;
+								vm.$store.state.chat.conversation[index].msg.splice(i, 1, message);
+								break;
+							}
 						}
+						// var msg=new Msg(index,1,'http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key,0, 0,new Date().getTime(),true);
+						// msg.set_send_success();
+						me.send(index, 1, 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key, 0, 0)
+					}else{
+						vm.$store.state.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
 					}
-					// var msg=new Msg(index,1,'http://7x2wk4.com2.z0.glb.qiniucdn.com/'+JSON.parse(info).key,0, 0,new Date().getTime(),true);
-					// msg.set_send_success();
-					me.send(index, 1, 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key, 0, 0)
 				},
 				'Error': function (up, err, errTip) {
 					console.log(err)
