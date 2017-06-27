@@ -17,6 +17,11 @@ const store = new Vuex.Store({
 		unread:0,
 		//获取群数据开关
 		group_switch:false,
+		show_at:false,
+		//atid
+		group_id:'',
+		// //群at成员
+		// at_list:[],
 		//创建聊天窗口
 		opengroup: function(state,id,grouplist,chat2){
 				var index = chat2.start(grouplist);

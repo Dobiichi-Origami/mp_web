@@ -1,9 +1,17 @@
 const Chat = {
 	state: {
+		//连接融云，main_page页面赋值
+		token: '',
 		//自己的账号id，main_page页面赋值
 		deviceid: '',
 		//每一个消息有一个conversation，如果有插入，没有新建
 		conversation: [], //eval(localStorage.getItem(localStorage.getItem('access_token')))
+		//当前选择的图片
+		selected_img: "",
+		// //群@选皮标识
+		// show_at_pi: false,
+		//用户@时处于的当前会话index
+		at_current_con_index: "",
 		//好友中心数据
 		messages: {
 			friendlist: [],
@@ -55,3 +63,18 @@ const Chat = {
 	}
 }
 export default Chat;
+
+//					headimg: "http://7x2wk4.com2.z0.glb.qiniucdn.com/Fn1WCby4LcrZgFgc-AWimeh5lQ0d-head",
+//					id: "550cade1fbe78e19d5f868ab",
+//					name: "王俊凯",
+//					no: 1059,
+//					//device id    15207185099 123456   皮：王俊凯
+//					deviceid: "58b6204f1893be3ab01aa5a0",
+
+
+//					headimg: "http://7x2wk4.com2.z0.glb.qiniucdn.com/FjSVAW5sjDmeort4fXB6OZ5JLlJ7-head",
+//					id: "550d6af6fbe78e1ec58b95ca",
+//					name: "蒙奇·D·路飞",
+//					no: 219,
+//					//device id     18851661055  123456   皮：路飞
+//					deviceid: "58298c1e6e998f25af9c4cc6",

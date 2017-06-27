@@ -2,10 +2,12 @@
 <div id="app">
 <router-view></router-view>
 <error></error>
+<atlist v-if="$store.state.show_at"></atlist>
 </div>
 </template>
 <script>
 	import error from "./page_func/error"
+	import atlist from "./page_func/window/at_pi"
 	export default {
 		name: 'app',
 		data() {
@@ -15,6 +17,7 @@
 		},
 		components: {
 			error,
+			atlist
 		},
 		mounted: function() {
 			//实时获取消息,看融云更改
@@ -159,6 +162,7 @@
 	
 	html {
 		overflow-y: scroll;
+		min-height:100%;
 	}
 	
 	:root {
@@ -173,6 +177,7 @@
 	body {
 		width: 100vw;
 		overflow: hidden;
+		min-height: 100%;
 	}
 	
 	@keyframes ajax-loader-rotate {
