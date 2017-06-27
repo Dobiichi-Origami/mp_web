@@ -8,6 +8,10 @@ const Chat = {
 		conversation: [], //eval(localStorage.getItem(localStorage.getItem('access_token')))
 		//当前选择的图片
 		selected_img: "",
+		// //群@选皮标识
+		// show_at_pi: false,
+		//用户@时处于的当前会话index
+		at_current_con_index: "",
 		//好友中心数据
 		messages: {
 			friendlist: [],

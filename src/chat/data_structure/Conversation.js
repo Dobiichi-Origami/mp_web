@@ -16,6 +16,7 @@ class Conversation {
 			deviceid: other.deviceid, //发送方设备id
 		}
 		this.msg = [];
+		this.tempAtList = [];//会话里面的暂存atList数组，仅用于at成员显示
 		this.unreadCount=0;
 	}
 	set_title(title, group_member_type) {//设置本人的群头衔(和成员类型)
@@ -33,5 +34,8 @@ class Conversation {
 	set_silenced(status) {
 		this.silenced = status;//会话中是否处于禁言状态(群组，管理员不需要禁言) ,0 未禁言，1 禁言中
 	}
+	// set_tempAtList(atList){//会话里面的暂存atList数组，只用于at成员显示
+	// 	this.atList = atList;
+	// }
 }
 export default Conversation;

@@ -325,7 +325,7 @@ var chat = {
 		}
 		return (con.length - 1); //创建新对话后返回对话数组最后一个索引值，此处需要修正
 	},
-	send: function (index, type, content_url, chat_type, atList, defaultcontent) {
+	send: function (index, type, content_url, chat_type, group_at_users, defaultcontent) {
 		var targetType = con[index].isGroup ? 1 : 0;
 		if (type == 1) {
 			content_url = JSON.stringify({
@@ -344,10 +344,10 @@ var chat = {
 					head_img: con[index].me.headimg
 				},
 				content_type: type,
+				group_at_users: group_at_users,
 				content: base64.toBase64(JSON.stringify({
 					speakType: chat_type,
 					content: content_url,
-					atList: [],
 					defaultContent: defaultcontent,
 				})),
 			},
@@ -357,7 +357,7 @@ var chat = {
 			target_id: con[index].other.id,
 			target_no: con[index].other.no - 0,
 		}
-		mpIM.send(body)
+		mpIM.send(body);
 	},
 	//根据以后接口改参数，礼物类型等等
 	send_gift: function (index) {
@@ -458,9 +458,11 @@ var chat = {
 
 			speaker.memberType = this.checkMemberType(message.target_id, message.sender_id);
 			msg.set_from(speaker);
+			if(message.chat_body.group_at_users){
+				msg.set_atList(message.chat_body.group_at_users);
+			}
 		}
 		console.log('本地會話数组:', vm.$store.state.chat.conversation);
-
 	},
 	handle_revoke: function (message) {
 		var uid = message.revoke_body.msg_uid,
