@@ -6,30 +6,33 @@
 </template>
 <script>
 	import smallDetails from './detail-list/smalldetails'
-	export default({
-		data(){
-			return{
+	export default ({
+		data() {
+			return {
 
 			}
 		},
-		mounted:function(){
+		mounted: function() {
 			this.$store.state.title = "帖子详情";
-			this.$store.state.detail_mounted(this.$store.state,this);
+			this.$store.state.mounted.detail_mounted(this.$store.state, this);
 		},
-		components:{
+		components: {
 			smallDetails,
 		}
 	})
+
 </script>
 <style>
-	div.contentdetail{
-		width:660px;
-		min-height:100px;
+	div.contentdetail {
+		width: 660px;
+		min-height: 100px;
 	}
+	
 	button {
 		border: none;
 		background: transparent;
 		overflow: visible;
 		font-size: 14px;
 	}
+
 </style>

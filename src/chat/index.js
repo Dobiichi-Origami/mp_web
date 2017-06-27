@@ -120,8 +120,8 @@ var chat = {
 				}
 				//产生会话
 				conversation = new Conversation(me, other);
-				console.log("本次会话的mename************",me.name);
-				console.log("本次会话的othername***********",other.name);
+				console.log("本次会话的mename************", me.name);
+				console.log("本次会话的othername***********", other.name);
 				if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
 					conversation.set_unreadCount();
 				}
@@ -161,7 +161,7 @@ var chat = {
 						//添加
 					}
 					conversation = new Conversation(me, other);
-					
+
 					conversation.set_group(true); //conversation的isGroup为true
 					var selfTitle;
 					console.log(conversation)
@@ -238,8 +238,8 @@ var chat = {
 
 				}
 				conversation = new Conversation(me, other);
-				console.log("本次会话的mename************",me.name);
-				console.log("本次会话的othername***********",other.name);
+				console.log("本次会话的mename************", me.name);
+				console.log("本次会话的othername***********", other.name);
 			} else { //群聊
 				//
 				type = 3;
@@ -435,7 +435,7 @@ var chat = {
 
 			speaker.memberType = this.checkMemberType(message.target_id, message.sender_id);
 			msg.set_from(speaker);
-			if(message.chat_body.group_at_users){
+			if (message.chat_body.group_at_users) {
 				msg.set_atList(message.chat_body.group_at_users);
 			}
 		}
@@ -488,7 +488,7 @@ var chat = {
 		//查看所有群信息
 		vm.$http({
 			method: 'get',
-			url: 'http://test.mrpyq.com/api/group/groups_by_me',
+			url: vm.$store.state.domain + '/group/groups_by_me',
 			params: {
 				'access_token': localStorage.getItem('access_token'),
 			},
@@ -496,7 +496,7 @@ var chat = {
 		}).then(
 			res => {
 				if (res.body.error) {
-					vm.$store.state.f_error(vm.$store.state, res.body.error);
+					vm.$store.state.plugin.f_error(vm.$store.state, res.body.error);
 				} else if (res.body.items) {
 					// vm.$store.state.messages.grouplist = res.body.items;
 					vm.$store.state.chat.messages.grouplist = res.body.items;
@@ -509,7 +509,7 @@ var chat = {
 							//对每个群的群id获取其群详细
 							vm.$http({
 								method: 'get',
-								url: 'http://test.mrpyq.com/api/group/details',
+								url: vm.$store.state.domain + '/group/details',
 								params: {
 									'access_token': localStorage.getItem('access_token'),
 									'id': allgroup[i]._id
@@ -518,26 +518,26 @@ var chat = {
 							}).then(
 								res => {
 									if (res.body.error) {
-										vm.$store.state.f_error(vm.$store.state, res.body.error);
+										vm.$store.state.plugin.f_error(vm.$store.state, res.body.error);
 									} else if (res.body.group) {
 										details.push(res.body.group);
 										// if (details.length == vm.$store.state.messages.grouplist.length) {
 										if (details.length == vm.$store.state.chat.messages.grouplist.length) {
 											vm.$store.state.chat.messages.groupsDetail = details;
-											vm.$store.state.friendcenter_mounted(vm.$store.state, vm);
+											vm.$store.state.mounted.friendcenter_mounted(vm.$store.state, vm);
 											vm.$store.state.group_switch = true;
 										}
 									}
 								},
 								res => { //500报错
-									vm.$store.state.f_error(vm.$store.state, "服务器正在开小差。。。");
+									vm.$store.state.plugin.f_error(vm.$store.state, "服务器正在开小差。。。");
 								})
 						}
 					}
 				}
 			},
 			res => { //500报错
-				vm.$store.state.f_error(vm.$store.state, "服务器正在开小差。。。");
+				vm.$store.state.plugin.f_error(vm.$store.state, "服务器正在开小差。。。");
 			})
 	},
 	uploadeimg: function (index) {
@@ -545,7 +545,7 @@ var chat = {
 		Qiniu.uploader({
 			runtimes: 'html5,flash,html4', //上传模式,依次退化
 			browse_button: 'pickfiles' + index, //上传选择的点选按钮，**必需**
-			uptoken_url: 'http://test.mrpyq.com/api/qiniu', //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
+			uptoken_url: vm.$store.state.domain + '/qiniu', //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
 			// uptoken : 'TUo-Zhi8ICQGKqHVuIzL1rYdb5itNEF4F6fQzJjr:kgY7N3pZmmaSISiqDa-5Z1K694s=:eyJzY29wZSI6Im1yd2VjaGF0IiwiZGVhZGxpbmUiOjE0OTU1MzA4OTV9', //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
 			// unique_names: true, 					   // 默认 false，key为文件名。若开启该选项，SDK为自动生成上传成功后的key（文件名）。
 			// save_key: true,   					  // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK会忽略对key的处理
@@ -588,7 +588,7 @@ var chat = {
 							id: file.id
 						}, 0, 0, new Date().getTime(), true);
 					} else {
-						vm.$store.state.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
+						vm.$store.state.plugin.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
 					}
 				},
 				'UploadProgress': function (up, file) {},
@@ -606,7 +606,7 @@ var chat = {
 
 						me.send(index, 1, 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key, 0, 0)
 					} else {
-						vm.$store.state.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
+						vm.$store.state.plugin.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
 					}
 				},
 				'Error': function (up, err, errTip) {

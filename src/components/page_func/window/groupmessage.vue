@@ -284,7 +284,7 @@
 			get_all_members: function() {
 				this.$http({
 					method: 'get',
-					url: 'http://test.mrpyq.com/api/group/members_in_group',
+					url: this.$store.state.domain + 'group/members_in_group',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'id': this.list.group._id,
@@ -325,7 +325,7 @@
 			getgroupinfo: function() {
 				this.$http({
 					method: 'get',
-					url: 'http://test.mrpyq.com/api/group/details',
+					url: this.$store.state.domain + 'group/details',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'id': this.list.group._id,
@@ -368,7 +368,7 @@
 				}
 				console.log(index);
 
-				this.$store.state.see_img(this.$store.state, index, photos);
+				this.$store.state.plugin.see_img(this.$store.state.plugin, index, photos);
 
 			},
 			check_emojitype: function(type) {
@@ -446,7 +446,7 @@
 				if (t - time <= 180000) {
 					chat.send_revoke(conversation_index, msg_index, "")
 				} else {
-					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
+					this.$store.state.plugin.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
 			},
 			//取消剧情
@@ -563,7 +563,7 @@
 			//进入个人中心
 			f_check_personal: function(user) {
 				this.$store.state.current_user_pe = user;
-				this.$store.state.personal_mounted(this.$store.state, this);
+				this.$store.state.mounted.personal_mounted(this.$store.state, this);
 				this.$router.push('/Main_page/Personal');
 			},
 		},

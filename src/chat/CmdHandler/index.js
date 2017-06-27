@@ -102,7 +102,7 @@ var CmdHandler = {
 		}).then(
 			res => {
 				if (res.body.error) {
-					vm.$store.state.f_error(vm.$store.state, res.body.error);
+					vm.$store.state.plugin.f_error(vm.$store.state, res.body.error);
 				}
 				//服务器数据已改，发通知
 				else if (res.body.result) {
@@ -115,7 +115,7 @@ var CmdHandler = {
 				}
 			},
 			res => {
-				vm.$store.state.f_error(vm.$store.state, "服务器正在开小差。。。");
+				vm.$store.state.plugin.f_error(vm.$store.state, "服务器正在开小差。。。");
 			}
 		)
 	},

@@ -45,9 +45,9 @@
 			}
 		},
 		mounted: function() {
-			if (this.$store.state.current_user){
-				if(this.$store.state.chat.messages.groupsDetail.length){
-					this.$store.state.friendcenter_mounted(this.$store.state, this);
+			if (this.$store.state.current_user) {
+				if (this.$store.state.chat.messages.groupsDetail.length) {
+					this.$store.state.mounted.friendcenter_mounted(this.$store.state, this);
 				}
 			}
 			console.log(this.$store.state.chat.messages.grouplist)
@@ -91,7 +91,7 @@
 					});
 				} else {
 					for (var i = 0; i < this.$store.state.message_window.length; i++) {
-						if(this.$store.state.message_window[i].group){
+						if (this.$store.state.message_window[i].group) {
 							if (id == this.$store.state.message_window[i].group._id) {
 								var dom = document.querySelector('#win' + id);
 								var w = parseInt(window.getComputedStyle(dom).width);
@@ -109,7 +109,20 @@
 								a.show = 1;
 								this.$store.state.message_window.splice(i, 1, a);
 								return;
-							}else if (i == this.$store.state.message_window.length - 1) {
+							} else if (i == this.$store.state.message_window.length - 1) {
+								this.$store.state.message_window.push({
+									group: this.$store.state.chat.messages.grouplist[bindex],
+									show: 1,
+									index: index,
+								});
+								this.$store.state.message_ball.unshift({
+									group: this.$store.state.chat.messages.grouplist[bindex],
+									show: 1,
+									index: index,
+								});
+								return;
+							}
+						} else if (i == this.$store.state.message_window.length - 1) {
 							this.$store.state.message_window.push({
 								group: this.$store.state.chat.messages.grouplist[bindex],
 								show: 1,
@@ -120,20 +133,6 @@
 								show: 1,
 								index: index,
 							});
-							return;
-						}
-						}
-						 else if (i == this.$store.state.message_window.length - 1) {
-							this.$store.state.message_window.push({
-								group: this.$store.state.chat.messages.grouplist[bindex],
-								show: 1,
-								index: index,
-							});
-							this.$store.state.message_ball.unshift({
-							group: this.$store.state.chat.messages.grouplist[bindex],
-							show: 1,
-							index: index,
-						});
 							return;
 						}
 					}
@@ -155,7 +154,7 @@
 					});
 				} else {
 					for (var i = 0; i < this.$store.state.message_window.length; i++) {
-						if(this.$store.state.message_window[i].user){
+						if (this.$store.state.message_window[i].user) {
 							if (id == this.$store.state.message_window[i].user.user._id) {
 								var dom = document.querySelector('#win' + id);
 								var w = parseInt(window.getComputedStyle(dom).width);
@@ -187,7 +186,7 @@
 								});
 								return;
 							}
-						}else if (i == this.$store.state.message_window.length - 1) {
+						} else if (i == this.$store.state.message_window.length - 1) {
 							this.$store.state.message_window.push({
 								user: this.$store.state.chat.messages.friendlist[bindex].friends[sindex],
 
@@ -287,7 +286,7 @@
 	}
 	
 	ul>li>img,
-	.groupname img{
+	.groupname img {
 		float: left;
 		width: 34px;
 		height: 34px;
@@ -393,12 +392,12 @@
 		background: url('~assets/chat/grouplist1.png') 120px center no-repeat #fff;
 		color: #333238;
 	}
+	
 	.tofriend.active>div,
 	.togroup.active>div {
 		display: block;
 	}
-	.groupname>div {
-
-	}
+	
+	.groupname>div {}
 
 </style>

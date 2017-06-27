@@ -33,7 +33,7 @@ var MpIMClient = {
 				me.ws.onerror = function (res) {
 					console.log('websocket错误代码：')
 					console.log(res)
-					vm.$store.state.f_error(vm.$store.state, "您的设备链接异常，请刷新尝试重新连接");
+					vm.$store.state.plugin.f_error(vm.$store.state, "您的设备链接异常，请刷新尝试重新连接");
 					vm.$store.state.IM_switch = false;
 				}
 			} else {
@@ -54,7 +54,7 @@ var MpIMClient = {
 		me.ws.onclose = function () {
 			if (!vm.$store.state.chat.close_by_me) {
 				console.log('已断开连接，正在重新连接');
-				vm.$store.state.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
+				vm.$store.state.plugin.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
 				vm.$store.state.IM_switch = false;
 			}
 			//每五秒重连一次

@@ -35,7 +35,7 @@
 				//时间过期
 				if (new_time - old_time > expire) {
 					if (!(location.hash == '#/' || location.href.match('/Login') != null)) {
-						this.$store.state.f_error(this.$store.state, "用户信息失效，请重新登录");
+						this.$store.state.plugin.f_error(this.$store.state, "用户信息失效，请重新登录");
 						me.$router.push('/Login')
 					}
 				} else {
@@ -47,7 +47,7 @@
 			else {
 				//不在登录页面
 				if (!(location.hash == '#/' || location.href.match('/Login') != null)) {
-					this.$store.state.f_error(this.$store.state, "用户信息失效，请重新登录");
+					this.$store.state.plugin.f_error(this.$store.state, "用户信息失效，请重新登录");
 					me.$router.push('/Login')
 				}
 				//在登录页面就不做操作
@@ -64,7 +64,7 @@
 					} else if (location.hash == '#/Main_page/News') {
 						me.$store.state.news = 0;
 					} else {
-						me.$http.get("http://test.mrpyq.com/api/feed/unread_count", {
+						me.$http.get(me.$store.state.domain + "feed/unread_count", {
 							params: {
 								access_token: localStorage.getItem('access_token'),
 							}
@@ -77,10 +77,10 @@
 									else
 										me.$store.state.news = re.count;
 								} else
-									this.$store.state.f_error(this.$store.state, res.body.error);
+									this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 
 							}, (res) => {
-								this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+								this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 							}
 						)
 					}
@@ -162,7 +162,7 @@
 	
 	html {
 		overflow-y: scroll;
-		min-height:100%;
+		min-height: 100%;
 	}
 	
 	:root {

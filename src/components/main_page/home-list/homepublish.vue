@@ -27,7 +27,7 @@
 				//发帖
 				this.$http({
 					method: 'post',
-					url: 'http://test.mrpyq.com/api/feed/create',
+					url: this.$store.state.domain + 'feed/create',
 					body: {
 						'access_token': localStorage.getItem('access_token'),
 						'userid': this.$store.state.current_user._id,
@@ -72,10 +72,10 @@
 						this.$store.state.home_datas.unshift(da);
 						this.publicVal = '';
 					} else if (res.body.error) {
-						this.$store.state.f_error(this.$store.state, res.body.error);
+						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					}
 				}, (res) => {
-					this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+					this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 				})
 			}
 		},

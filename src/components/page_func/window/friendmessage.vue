@@ -202,7 +202,7 @@
 				}
 				console.log(index);
 
-				this.$store.state.see_img(this.$store.state, index, photos);
+				this.$store.state.plugin.see_img(this.$store.state.plugin, index, photos);
 
 			},
 			check_emojitype: function(type) {
@@ -281,10 +281,10 @@
 					if (navigator.onLine && this.$store.state.IM_switch) {
 						chat.send_revoke(conversation_index, msg_index, "")
 					} else {
-						this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
+						this.$store.state.plugin.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
 					}
 				} else {
-					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
+					this.$store.state.plugin.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
 			},
 			//取消剧情
@@ -389,7 +389,7 @@
 						this.val = '';
 						this.tishi = '';
 					} else {
-						this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
+						this.$store.state.plugin.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
 					}
 				}
 			},
@@ -398,7 +398,7 @@
 					chat.send_magicimg(index, type);
 					this.emoji_swi = false;
 				} else {
-					this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
+					this.$store.state.plugin.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
 				}
 			},
 		},

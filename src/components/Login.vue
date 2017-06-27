@@ -50,7 +50,7 @@
 				//传数据判断用户输入的信息是否正确，正确后执行下面函数
 				//返回id，设置id
 				var me = this;
-				me.$http.get('http://test.mrpyq.com/api/account/login', {
+				me.$http.get(me.$store.state.domain + 'account/login', {
 					params: {
 						phone: me.phone_number,
 						password: me.password,

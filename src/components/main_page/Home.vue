@@ -19,7 +19,7 @@
 		},
 		mounted: function() {
 			if (this.$store.state.current_user)
-				this.$store.state.home_mounted(this.$store.state, this);
+				this.$store.state.mounted.home_mounted(this.$store.state, this);
 		},
 		methods: {
 			f_get_more: function() {
@@ -76,11 +76,11 @@
 							}
 							//this.$store.state.add_number = 0;
 						} else if (res.body.error)
-							this.$store.state.f_error(this.$store.state, res.body.error);
+							this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 
 						this.$store.state.loader = false;
 					}, (res) => {
-						this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+						this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 					})
 				}
 			},
@@ -98,6 +98,7 @@
 		width: 660px;
 		padding-bottom: 25px;
 	}
+	
 	button {
 		height: 35px;
 		line-height: 35px;

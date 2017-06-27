@@ -91,7 +91,7 @@
 					if(res.body.result==1){
 						this.$store.state.chat.cmd_msg.groupCmd[index].data.state=1;
 					}else{
-						this.$store.state.f_error(this.$store.state, res.body.error);
+						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					}
 				})
 			},
