@@ -110,11 +110,20 @@
 				</div>
 			</div>
 			<div class="windowfooter_func">
+				<div class="atlist_container">
+					<div class="atlist_content">
+						<div class="at_list"  :style="'width:'+$store.state.chat.conversation[list.index].tempAtList.length*131+'px'" @mousedown.stop="downat($event)" >
+							<div v-for="(list, index) in $store.state.chat.conversation[list.index].tempAtList">{{list.name}}<div class="delete_at" @click="delete_at(index)">x</div></div>
+						</div>
+					</div>
+				</div>
 				<div :class="{wordsay:true,border_left:true,active:!myself_say_act}" @click="f_me_say($event)">角色说</div>
 				<div :class="{wordsay:true,border_right:true,active:myself_say_act}" @click="f_me_say($event)">本人说</div>
+				
 				<p class="addjuqing_switch" @click="start_juqing">添加剧情</p>
 				<p class="select_img" :id="'container'+list.index"><input type="file" accept="image/jpeg,image/jpg,image/png"  :id="'pickfiles'+list.index"><img src="~assets/chat/add_img.png" alt=""></p>
 				<p class="face" @click="show_emoji"><img src="~assets/chat/add_face.png" alt=""></p>
+				<p class="qun_at" @click.stop="qun_at">@</p>
 			</div>
 			<div class="messageval">
 				<textarea v-model="val" @input="jianting($event)" :placeholder="tishi" :id="'emoji'+list.group._id"></textarea>
@@ -175,6 +184,7 @@
 		props: ['index', 'list'],
 		data() {
 			return {
+				atlist:[],
 				myself_say_act: 0,
 				juqing: 0,
 				val: '',
@@ -196,9 +206,11 @@
 				show_userno_string: '已关闭',
 				show_userno_switch: false,
 				not_open: this.list.not_open ? 'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;' + 'opacity:0' : '',
+				scrollLeft:0,
 			}
 		},
 		mounted: function() {
+
 			console.log(this.$store.state.chat.cmd_msg)
 			document.querySelector('#win' + this.list.group._id).style.left = parseInt(document.body.clientWidth) / 2 - 250 + 'px';
 			var me = this;
@@ -213,6 +225,37 @@
 			chat.uploadeimg(this.list.index);
 		},
 		methods: {
+			qun_at:function(){
+				this.$store.state.show_at=true;
+				console.log("测试group:", this.list.group);
+				//全局设置当前进行的群会话index
+				console.log("this.list.index**********,", this.list.index);
+				this.$store.state.chat.at_current_con_index= this.list.index;
+				this.$store.state.group_id=this.list.group._id;
+			},
+			delete_at:function(index){
+				//找到索引对应的@项并删除
+				var con = this.$store.state.chat.conversation[this.list.index];
+				con.tempAtList.splice(index,1);
+				console.log("tempAtList:",con.tempAtList);
+			},
+			downat:function(event){
+			 var dom2=event.currentTarget.parentNode,
+			 left=event.clientX;
+			 console.log(left)
+			 // dom=querySelector('#win'+this.list.group._id')
+			 // left1=parseInt(window.getComputedStyle(dom).left);
+			 var that=this;
+			 document.onmousemove=function(event){
+			 	var evt=event || window.event,
+			 	left2=event.clientX;
+			 	dom2.scrollLeft=left-left2+that.scrollLeft;
+			 }
+			 document.onmouseup=function(){
+			 	that.scrollLeft=dom2.scrollLeft;
+			 	document.onmousemove=null;
+			 }
+			},
 			del_msg: function(lindex, sindex) {
 				this.$store.state.chat.conversation[lindex].msg.splice(sindex, 1);
 			},
@@ -401,11 +444,7 @@
 			revoke: function(conversation_index, msg_index, time) {
 				var t = new Date().getTime();
 				if (t - time <= 180000) {
-					if(navigator.onLine && this.$store.state.IM_switch){
-						chat.send_revoke(conversation_index, msg_index, "")
-					}else{
-						this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
-					}
+					chat.send_revoke(conversation_index, msg_index, "")
 				} else {
 					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
@@ -510,32 +549,21 @@
 					this.tishi = "请输入内容！";
 				} else {
 					var me = this;
-					//						title;
-					//					for (var i = 0; i < this.$store.state.chat.messages.grouplist.length; i++) {
-					//						console.log(this.$store.state.chat.messages.grouplist[i]._id)
-					//						if (this.$store.state.chat.conversation[this.list.index].other.id == this.$store.state.chat.messages.grouplist[i]._id) {
-					////							title = this.$store.state.chat.messages.grouplist[i].member.title;
-					////							console.log(title)
-					//							break;
-					//						}
-					//					}
-					if(navigator.onLine && this.$store.state.IM_switch){
-						chat.send(me.list.index, 0, me.val, me.myself_say_act);
-						this.val = '';
-						this.tishi = '';
-					}else{
-						this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
+					var val=me.val;
+					var group_at_users = this.$store.state.chat.conversation[me.list.index].tempAtList;
+					for(var i=0;i<group_at_users.length;i++){
+						val+=' @'+group_at_users[i].name;
 					}
+					chat.send(me.list.index, 0, val, me.myself_say_act, group_at_users);
+					this.val = '';
+					this.tishi = '';
+					this.$store.state.chat.conversation[me.list.index].tempAtList = [];
 					// console.log(this.$store.state.chat.conversation[this.list.index])
 				}
 			},
 			send_magicimg(index, type) {
-				if(navigator.onLine && this.$store.state.IM_switch){
-					chat.send_magicimg(index, type);
-					this.emoji_swi = false;
-				}else{
-					this.$store.state.f_error(this.$store.state, "您的设备已断开连接，请检查网络");
-				}
+				chat.send_magicimg(index, type);
+				this.emoji_swi = false;
 			},
 			//进入个人中心
 			f_check_personal: function(user) {
@@ -1066,7 +1094,54 @@
 	.windowfooter_func {
 		height: 40px;
 	}
-	
+	.atlist_container{
+		position: absolute;
+		left:0;
+		top:-24px;
+		height:24px;
+		width:100%;
+		overflow:hidden;
+	}
+	.atlist_content{
+		width:100%;
+		height:100px;
+		overflow-x: scroll;
+		overflow-y: hidden;
+	}
+	.at_list{
+		height:2224px;
+		cursor: pointer;
+	}
+	.delete_at{
+		position: absolute;
+		height:14px;
+		font-size:12px;
+		line-height: 14px;
+		top:3px;
+		width:14px;
+		right:0px;
+		border-radius:50%;
+		border:1px solid #999;
+		background: #fff;
+		text-align:center;
+
+
+	}
+	.at_list>div{
+		max-width: 100px;
+		text-overflow:ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+		float:left;
+		height:22px;
+		border:#333 1px solid;
+		line-height: 22px;
+		margin-right:6px;
+		background: #fff;
+		border-radius:5px;
+		padding:0 20px 0 5px;
+		position: relative;
+	}
 	.wordsay {
 		height: 22px;
 		color: #333;
@@ -1332,6 +1407,12 @@
 		color: #f09a9a;
 	}
 	
+	p.qun_at {
+		float:right;
+		line-height:40px;
+		margin-right:20px;
+	}
+
 	p.addjuqing_switch {
 		float: right;
 		line-height: 40px;

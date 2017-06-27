@@ -119,6 +119,7 @@ var chat = {
 					other.id = info.chat_body.sender.id;
 					other.no = info.chat_body.sender.no;
 				}
+
 				//判断该会话是否存在
 				conExist = this.conversationExist(me.id, other.id, con, me.no, other.no);
 				if (conExist != undefined) { //
@@ -142,6 +143,8 @@ var chat = {
 				}
 				//产生会话
 				conversation = new Conversation(me, other);
+				console.log("本次会话的mename************",me.name);
+				console.log("本次会话的othername***********",other.name);
 				if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
 					conversation.set_unreadCount();
 				}
@@ -183,6 +186,7 @@ var chat = {
 						//添加
 					}
 					conversation = new Conversation(me, other);
+					
 					conversation.set_group(true); //conversation的isGroup为true
 					var selfTitle;
 					console.log(conversation)
@@ -259,6 +263,8 @@ var chat = {
 
 				}
 				conversation = new Conversation(me, other);
+				console.log("本次会话的mename************",me.name);
+				console.log("本次会话的othername***********",other.name);
 			} else { //群聊
 				//
 				type = 3;
@@ -319,7 +325,7 @@ var chat = {
 		}
 		return (con.length - 1); //创建新对话后返回对话数组最后一个索引值，此处需要修正
 	},
-	send: function (index, type, content_url, chat_type, atList, defaultcontent) {
+	send: function (index, type, content_url, chat_type, group_at_users, defaultcontent) {
 		var targetType = con[index].isGroup ? 1 : 0;
 		if (type == 1) {
 			content_url = JSON.stringify({
@@ -338,10 +344,10 @@ var chat = {
 					head_img: con[index].me.headimg
 				},
 				content_type: type,
+				group_at_users: group_at_users,
 				content: base64.toBase64(JSON.stringify({
 					speakType: chat_type,
 					content: content_url,
-					atList: [],
 					defaultContent: defaultcontent,
 				})),
 			},
@@ -351,7 +357,7 @@ var chat = {
 			target_id: con[index].other.id,
 			target_no: con[index].other.no - 0,
 		}
-		mpIM.send(body)
+		mpIM.send(body);
 	},
 	//根据以后接口改参数，礼物类型等等
 	send_gift: function (index) {
@@ -452,9 +458,11 @@ var chat = {
 
 			speaker.memberType = this.checkMemberType(message.target_id, message.sender_id);
 			msg.set_from(speaker);
+			if(message.chat_body.group_at_users){
+				msg.set_atList(message.chat_body.group_at_users);
+			}
 		}
 		console.log('本地會話数组:', vm.$store.state.chat.conversation);
-
 	},
 	handle_revoke: function (message) {
 		var uid = message.revoke_body.msg_uid,

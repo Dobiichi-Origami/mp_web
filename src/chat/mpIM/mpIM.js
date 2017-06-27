@@ -104,8 +104,9 @@ var MpIMClient = {
 				if (data.body) {
 					if (data.body.msg) {
 						msg = data.body.msg;
-						console.log(msg);
 						console.log('发送成功:op5')
+						console.log(msg);
+						
 						if (!msg.type) {
 							//聊天消息
 							msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
