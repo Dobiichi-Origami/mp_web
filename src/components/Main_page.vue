@@ -166,7 +166,7 @@
 				chat.logout();
 				this.$router.push('/Login');
 				//强制刷新页面
-				//				window.location.reload();
+				window.location.reload();
 			},
 			logo_click: function() {
 				_czc.push(["_trackEvent", "功能", "名朋logo点击"]);

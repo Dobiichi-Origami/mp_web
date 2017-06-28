@@ -322,9 +322,20 @@
 				dom.style.left = this.$store.state.pageX + 40 + 'px';
 				console.log(this.$store.state.pageX)
 				dom.style.opacity = '0';
-				var a = this.$store.state.message_window[this.index];
+				var a = this.$store.state.message_window[this.index],
+					index = this.$store.state.message_window[this.index].index;
 				a.show = 0;
 				this.$store.state.message_window.splice(this.index, 1, a);
+				console.log(index)
+				for (var j = 0; j < this.$store.state.message_ball.length; j++) {
+					if (this.$store.state.message_ball[j].index == index) {
+						var b = this.$store.state.message_ball[j];
+						b.show = 0;
+						this.$store.state.message_ball.splice(j, 1, b);
+						break;
+					}
+				}
+
 			},
 			f_me_say: function(event) {
 				var val = event.target.innerHTML;

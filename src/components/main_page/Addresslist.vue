@@ -104,10 +104,20 @@
 									dom.style.left = document.body.clientWidth / 2 - 250 + 'px';
 									dom.style.opacity = 1;
 								}
-								dom.style.zIndex = ++this.$store.state.message_window_index;
-								var a = this.$store.state.message_window[i];
+								var a = this.$store.state.message_window[i],
+									index = this.$store.state.message_window[i].index;
 								a.show = 1;
 								this.$store.state.message_window.splice(i, 1, a);
+								for (var j = 0; j < this.$store.state.message_ball.length; j++) {
+									if (this.$store.state.message_ball[j].index == index) {
+										var b = this.$store.state.message_ball[j];
+										b.show = 1;
+										console.log(this.$store.state.message_ball)
+										this.$store.state.message_ball.splice(j, 1);
+										this.$store.state.message_ball.unshift(b);
+										break;
+									}
+								}
 								return;
 							} else if (i == this.$store.state.message_window.length - 1) {
 								this.$store.state.message_window.push({
@@ -168,9 +178,20 @@
 									dom.style.opacity = 1;
 								}
 								dom.style.zIndex = ++this.$store.state.message_window_index;
-								var a = this.$store.state.message_window[i];
+								var a = this.$store.state.message_window[i],
+									index = this.$store.state.message_window[i].index;
 								a.show = 1;
 								this.$store.state.message_window.splice(i, 1, a);
+								for (var j = 0; j < this.$store.state.message_ball.length; j++) {
+									if (this.$store.state.message_ball[j].index == index) {
+										var b = this.$store.state.message_ball[j];
+										b.show = 1;
+										console.log(this.$store.state.message_ball)
+										this.$store.state.message_ball.splice(j, 1);
+										this.$store.state.message_ball.unshift(b);
+										break;
+									}
+								}
 								return;
 							} else if (i == this.$store.state.message_window.length - 1) {
 								this.$store.state.message_window.push({
