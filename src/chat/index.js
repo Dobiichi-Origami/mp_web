@@ -629,24 +629,24 @@ var chat = {
 			//点数
 			var random_dice = Math.ceil(Math.random() * 6),
 				dice = {
-					animatedPicLocalUri: "asset:///magic_pic/dice/dice_anim_" + random_dice + ".webp",
-					animatedPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/dice/dice_anim_" + random_dice + ".webp",
+					animatedPicLocalUri: "asset:///magic_pic/dice/dice_anim_" + random_dice + ".gif",
+					animatedPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/dice/dice_anim_" + random_dice + ".gif",
 					magicPicDesc: "[骰子]",
 					magicPicType: "DICE",
-					staticPicLocalUri: "asset:///magic_pic/dice/dice_" + random_dice + ".webp",
-					staticPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/dice/dice_" + random_dice + ".webp",
+					staticPicLocalUri: "asset:///magic_pic/dice/dice_" + random_dice + ".gif",
+					staticPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/dice/dice_" + random_dice + ".gif",
 				}
 			return dice;
 		} else {
 			//1石头2剪刀3布
 			var random_roshambo = Math.ceil(Math.random() * 3),
 				roshambo = {
-					animatedPicLocalUri: "asset:///magic_pic/roshambo/roshambo_anim_" + random_roshambo + ".webp",
-					animatedPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/roshambo/roshambo_anim_" + random_roshambo + ".webp",
+					animatedPicLocalUri: "asset:///magic_pic/roshambo/roshambo_anim_" + random_roshambo + ".gif",
+					animatedPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/roshambo/roshambo_anim_" + random_roshambo + ".gif",
 					magicPicDesc: "[猜拳]",
 					magicPicType: "ROSHAMBO",
-					staticPicLocalUri: "asset:///magic_pic/roshambo/roshambo_" + random_roshambo + ".webp",
-					staticPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/roshambo/roshambo_" + random_roshambo + ".webp",
+					staticPicLocalUri: "asset:///magic_pic/roshambo/roshambo_" + random_roshambo + ".gif",
+					staticPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/roshambo/roshambo_" + random_roshambo + ".gif",
 				}
 			return roshambo;
 		}
