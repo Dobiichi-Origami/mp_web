@@ -179,8 +179,7 @@ var chat = {
 					//设置群头衔
 					conversation.set_title(selfTitle, currPi.group_member_type);
 					//
-					//设置会话禁言状态,取当前会话对应的群组的禁言状态进行设置
-					this.setSilenced(conversation);
+
 					for (var i = 0; i < vm.$store.state.chat.messages.grouplist.length; i++) {
 						if (other.id == vm.$store.state.chat.messages.grouplist[i]._id) {
 							group_details = vm.$store.state.chat.messages.grouplist[i];
@@ -261,20 +260,6 @@ var chat = {
 				conversation = new Conversation(me, other);
 				conversation.set_group(true);
 
-				//设置会话群禁言状态,取当前会话对应的群组的禁言状态进行设置
-				// console.log('我的当前身份类型:',this.checkMemberType(other.id, me.id))
-				// if (this.checkMemberType(other.id, me.id) == 1) {//我的当前身份为普通用户
-				// 	if (this.findGroupDetail(other.id).silenced) {//群处于禁言状态
-				// 		conversation.set_silenced(1);
-				// 	} else {
-				// 		conversation.set_silenced(0);
-				// 	}
-				// } else {
-				// 	conversation.set_silenced(0);
-				// }
-				// conversation.set_silenced(this.findGroupDetail(other.id).silenced);	
-
-				this.setSilenced(conversation);
 
 				console.log(info.member.group_member_type);
 				switch (info.member.group_member_type) {
@@ -382,38 +367,7 @@ var chat = {
 		return memberType;
 	},
 
-	setSilenced: function (con, status) {
-		var conversation = con;
-		var otherId = con.other.id;
-		var meId = con.me.id;
-		//设置会话禁言状态,取当前会话对应的群组的禁言状态进行设置
-		if (status === undefined) { //status不存在时，属于取群详细设置会话禁言的情形
-			if (this.checkMemberType(otherId, meId) == 1) { //我的当前身份为普通用户
-				if (this.findGroupDetail(otherId)) {
-					if (this.findGroupDetail(otherId).silenced) { //群处于禁言状态
-						conversation.set_silenced(1);
-					} else {
-						conversation.set_silenced(0);
-					}
-				} else {}
-			} else { //群主，管理员不受影响
-				conversation.set_silenced(0);
-			}
-		} else { //status存在时，属于消息通知的情形
-			if (this.checkMemberType(otherId, meId) == 1) { //我的当前身份为普通用户
 
-				// if (status) {//群处于禁言状态
-				// 	conversation.set_silenced(1);
-				// } else {
-				// 	conversation.set_silenced(0);
-				// }
-				conversation.set_silenced(status);
-			} else { //群主，管理员不受影响
-				conversation.set_silenced(0);
-			}
-		}
-
-	},
 	handle_text: function (message) {
 		var index = this.start(message, 1);
 		if (index === undefined) {

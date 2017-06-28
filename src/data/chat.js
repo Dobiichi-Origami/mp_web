@@ -15,7 +15,6 @@ const Chat = {
 			friendlist: [],
 			grouplist: [], //群列表，存储我的所有群(含有我在群中的身份信息)
 			groupsDetail: [], //所有群的详细信息(方便查看成员类型)
-			group_cmds: ["group_join", "group_quit", "group_invite", "group_kick", "admin_cancel", "admin_setting", "group_transfer", "group_silenced", "group_admin_changed"], //群通知
 		},
 		//系统消息
 		cmd_msg: {

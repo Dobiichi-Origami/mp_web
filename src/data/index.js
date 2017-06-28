@@ -45,17 +45,6 @@ const store = new Vuex.Store({
 				for (var i = 0; i < state.message_window.length; i++) {
 					if (state.message_window[i].group) {
 						if (id == state.message_window[i].group._id) {
-							// var dom = document.querySelector('#win' + id);
-							// var w = parseInt(window.getComputedStyle(dom).width);
-							// dom.style.transition = "width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s";
-							// dom.style.height = '0';
-							// dom.style.width = '0';
-							// dom.style.borderRadius = "50%";
-							// dom.style.top = this.$store.state.pageY + 40 + 'px';
-							// dom.style.left = this.$store.state.pageX + 40 + 'px';
-							// console.log(this.$store.state.pageX)
-							// dom.style.opacity = '0';
-							// dom.style.zIndex = ++state.message_window_index;
 							var a = state.message_window[i];
 							a.show = 1;
 							state.message_window.splice(i, 1, a);
@@ -120,17 +109,6 @@ const store = new Vuex.Store({
 				for (var i = 0; i < state.message_window.length; i++) {
 					if (state.message_window[i].user) {
 						if (friends.user._id == state.message_window[i].user.user._id) {
-							// var dom = document.querySelector('#win' + id);
-							// var w = parseInt(window.getComputedStyle(dom).width);
-							// dom.style.transition = "width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s";
-							// dom.style.height = '0';
-							// dom.style.width = '0';
-							// dom.style.borderRadius = "50%";
-							// dom.style.top = this.$store.state.pageY + 40 + 'px';
-							// dom.style.left = this.$store.state.pageX + 40 + 'px';
-							// console.log(this.$store.state.pageX)
-							// dom.style.opacity = '0';
-							// dom.style.zIndex = ++state.message_window_index;
 							var a = state.message_window[i];
 							a.show = 1;
 							state.message_window.splice(i, 1, a);
