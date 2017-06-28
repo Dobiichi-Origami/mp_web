@@ -322,9 +322,18 @@
 				dom.style.left = this.$store.state.pageX + 40 + 'px';
 				console.log(this.$store.state.pageX)
 				dom.style.opacity = '0';
-				var a = this.$store.state.message_window[this.index];
+				var a = this.$store.state.message_window[this.index],index=this.$store.state.message_window[this.index].index;
 				a.show = 0;
 				this.$store.state.message_window.splice(this.index, 1, a);
+				console.log(index)
+				for(var j=0;j<this.$store.state.message_ball.length;j++){
+					if(this.$store.state.message_ball[j].index==index){
+						var b = this.$store.state.message_ball[j];
+						b.show = 0;
+						this.$store.state.message_ball.splice(j, 1, b);
+						break;
+					}
+				}
 			},
 			f_me_say: function(event) {
 				var val = event.target.innerHTML;
@@ -382,7 +391,7 @@
 				// index 发送目标序号
 				// type 发送类型，0为文本，1为图片，2为魔法表情，3为红包，4为礼物。
 				// content_url 发送内容，文本或url
-				// chat_type 聊天类型 0为角色说，1为本人说，2为剧情
+				// chat_type 聊天类型 0为角色说，1为本人说，2为系统，3为剧情
 				// temp 0 普通消息 1 临时消息
 				if (this.val == '') {
 					this.tishi = "请输入内容！";
