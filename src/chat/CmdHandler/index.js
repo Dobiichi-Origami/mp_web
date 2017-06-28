@@ -9,14 +9,12 @@ var CmdHandler = {
 	//  通知消息数目自增
 	cmd_count_add: function () {
 		//判断通知是否已读
-		if(!vm.$store.state.unread_msg('system',vm.$store.state)){
+		if (!vm.$store.state.unread_msg('system', vm.$store.state)) {
 			vm.$store.state.chat.cmd_msg.count++;
 			vm.$store.state.unread++;
-			console.log('通知消息数目:',vm.$store.state.chat.cmd_msg.count);
-		}		
+			console.log('通知消息数目:', vm.$store.state.chat.cmd_msg.count);
+		}
 	},
-	
-
 
 	//	msg_revoke
 	R_revoke: function (message) {
@@ -67,12 +65,11 @@ var CmdHandler = {
 		if (flag) {
 			vm.$store.state.chat.cmd_msg.friendCmd.splice(i, 1);
 			vm.$store.state.chat.cmd_msg.friendCmd.unshift(msg);
-		}
-		else {//不存在重的情况下添加的新通知需要使count加1
+		} else { //不存在重的情况下添加的新通知需要使count加1
 			vm.$store.state.chat.cmd_msg.friendCmd.unshift(msg);
 			this.cmd_count_add();
 		}
-		console.log('好友通知数组:',vm.$store.state.chat.cmd_msg.friendCmd);
+		console.log('好友通知数组:', vm.$store.state.chat.cmd_msg.friendCmd);
 
 		// //判断通知是否已读
 		// if(!vm.$store.state.unread_msg('system',vm.$store.state)){
@@ -119,16 +116,16 @@ var CmdHandler = {
 			}
 		)
 	},
-// <<<<<<< HEAD
-// 	//同意拒绝离婚请求,index为cmd_msg的序号协议离婚
-// 	couple_divorce: function (index, status, reject_reason) {
-// 	},
+	// <<<<<<< HEAD
+	// 	//同意拒绝离婚请求,index为cmd_msg的序号协议离婚
+	// 	couple_divorce: function (index, status, reject_reason) {
+	// 	},
 	//通过群id查到会话数组中的属于该群的会话index
 	findGroupCon: function (groupId) {
 		var conversations = vm.$store.state.chat.conversation;
 		var conversation;
 		var index;
-		for (var i = 0,l = conversations.length; i < l;i++) {
+		for (var i = 0, l = conversations.length; i < l; i++) {
 			//只判断群会话中other.id是否与groupId相同
 			if (conversations[i].isGroup && conversations[i].other.id == groupId) {
 				// conversation = conversations[i];
@@ -146,27 +143,25 @@ var CmdHandler = {
 			data: message.content.data,
 			name: message.content.name
 		};
-		var flag = 0;//0为不在，1为在
+		var flag = 0; //0为不在，1为在
 		//判断群通知在cmd_msg数组中是否存在
-		for (var i = 0,l = cmd_msg.length;i < l;i++) {
+		for (var i = 0, l = cmd_msg.length; i < l; i++) {
 			if (content.name == "group_join" || content.name == "group_quit") {
 				if (content.name == cmd_msg[i].name && content.data.applyUserId == cmd_msg[i].data.applyUserId && content.data.applyUserNo == cmd_msg[i].data.applyUserNo && content.data.groupNo == cmd_msg[i].data.groupNo) {
 					flag = 1;
 					break;
 				}
-			}
-			else if (content.name == "group_invite") {
-				if (content.name == cmd_msg[i].name && content.data.applyUserId == cmd_msg[i].data.applyUserId && 
+			} else if (content.name == "group_invite") {
+				if (content.name == cmd_msg[i].name && content.data.applyUserId == cmd_msg[i].data.applyUserId &&
 					content.data.applyUserNo == cmd_msg[i].data.applyUserNo && content.data.groupNo == cmd_msg[i].data.groupNo &&
 					content.data.targetUserId == cmd_msg[i].data.targetUserId && content.data.targetUserNo == cmd_msg[i].data.targetUserNo) {
 					flag = 1;
 					break;
 				}
-			}
-			else if (content.name == "group_kick" || content.name == "admin_cancel" || content.name == "admin_setting" || content.name == "group_transfer") {
+			} else if (content.name == "group_kick" || content.name == "admin_cancel" || content.name == "admin_setting" || content.name == "group_transfer") {
 				if (content.name == cmd_msg[i].name && content.data.groupNo == cmd_msg[i].data.groupNo &&
 					content.data.targetUserId == cmd_msg[i].data.targetUserId && content.data.targetUserNo == cmd_msg[i].data.targetUserNo) {
-					flag = 1;	
+					flag = 1;
 					break;
 				}
 			}
@@ -182,10 +177,10 @@ var CmdHandler = {
 			// 	}
 			// }
 		}
-		if (flag) {//存在的话替换
-			cmd_msg.splice(i,1);
+		if (flag) { //存在的话替换
+			cmd_msg.splice(i, 1);
 			cmd_msg.unshift(content)
-		} else {//不在的话添加
+		} else { //不在的话添加
 			cmd_msg.unshift(content);
 			this.cmd_count_add();
 		}
@@ -196,7 +191,7 @@ var CmdHandler = {
 			var index = this.findGroupCon(content.data.groupId);
 			var conversation = vm.$store.state.chat.conversation[index];
 			if (conversation) {
-				console.log('全员禁言的状态',content.data.silenced);
+				console.log('全员禁言的状态', content.data.silenced);
 				chat.setSilenced(conversation, content.data.silenced);
 				//在该会话中的msg数组中存入一条msg消息(系统)
 				var time = new Date().getTime();
@@ -211,7 +206,7 @@ var CmdHandler = {
 
 		//对群主或管理员的邀请加群消息做处理
 		if (content.name == "group_invite") {
-			content.data.state = 0;//0未处理，1同意，2忽略
+			content.data.state = 0; //0未处理，1同意，2忽略
 		}
 
 		// //判断通知是否已读

@@ -60,20 +60,19 @@
 		props: ['index', 'list'],
 		data() {
 			return {
-				tongzhi_act:true,
+				tongzhi_act: true,
 			}
 		},
-		mounted: function(){
-			this.change();
+		mounted: function() {
 			console.log(this.$store.state.chat.cmd_msg)
 		},
 		methods: {
 			//同意入群
-			agree_join:function(data,index,event){
-				this.$store.state.chat.cmd_msg.groupCmd[index].data.state=1;
-				var d=event.target.parentNode.nextElementSibling;
-				event.target.parentNode.style.display='none'
-				d.style.display='block';
+			agree_join: function(data, index, event) {
+				this.$store.state.chat.cmd_msg.groupCmd[index].data.state = 1;
+				var d = event.target.parentNode.nextElementSibling;
+				event.target.parentNode.style.display = 'none'
+				d.style.display = 'block';
 				this.$http({
 					method: 'get',
 					url: 'http://test.mrpyq.com/api/group/agree_join',
@@ -88,18 +87,18 @@
 					},
 					emulateJSON: true,
 				}).then(res => {
-					if(res.body.result==1){
-						this.$store.state.chat.cmd_msg.groupCmd[index].data.state=1;
-					}else{
+					if (res.body.result == 1) {
+						this.$store.state.chat.cmd_msg.groupCmd[index].data.state = 1;
+					} else {
 						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					}
 				})
 			},
-			change_tongzhi:function(s){
-				if(s){
-					this.tongzhi_act=true;
-				}else{
-					this.tongzhi_act=false;
+			change_tongzhi: function(s) {
+				if (s) {
+					this.tongzhi_act = true;
+				} else {
+					this.tongzhi_act = false;
 				}
 			},
 			change: function(event) {
@@ -149,83 +148,104 @@
 
 </script>
 <style scoped>
-.agree_join_success,.agree_join_fail{
-	float: left;
-	width:58px;
-	height:24px;
-	float:left;
-	font-size:12px;
-	background: #8fc9f5;
-	color:#fff;
-	border-radius:3px;
-	text-align:center;
-	line-height: 24px;
-	margin:18px 0 0 40px;
-}
-div.agree_join_fail{
-	background: #bbb;
-}
-.tongzhi_group_list{
-	height:min-60px;
-	width:100%;
-	background:#fff;
-	overflow:hidden;
-	margin:5px 0;
-	border:1px solid #ddd;
-}
-.tongzhi_group_list img{
-	float:left;
-	width:50px;
-	height:50px;
-	margin:5px 10px;
-	border-radius:50%;
-}
-.group_apply>p{
-	line-height: 20px;
-	font-size:14px;
-	margin-top:6px;
-}
-.tongzhi_group_name{
-	font-size:16px!important;
-}
-.group_apply{
-	float:left;
-	width:280px;
-}
-.group_api_apply{
-	float:left;
-	width:130px;
-	margin-top:18px;
-	margin-left: 6px;
-}
-.group_api_apply>button{
-	width:58px;
-	height:24px;
-	float:left;
-	border:none;
-	font-size:12px;
-	cursor:pointer;
-	transition: all .3s;
-	position: relative;
-	top:0;
-	left:0;
-	border-radius:3px;
-}
-.group_api_apply>button:hover{
-	top:-2px;
-	box-shadow: 0 0 3px 0 #999;
-}
-.group_api_apply>button:nth-child(1){
-	background: #8fc9f5;
-	color:#fff;
-}
-.group_api_apply>button:nth-child(2){
-	margin-left:10px;
-	background: #bbb;
-	color:#fff;
-	padding-bottom: 8px;
-}
-	.content{
+	#system_msg {
+		right: 150px;
+		bottom: 50px;
+		width: 0;
+		height: 0;
+		transition: width 1s, height 1s, top 1s, left 1s, border-radius 1s, opacity 1s;
+	}
+	
+	.agree_join_success,
+	.agree_join_fail {
+		float: left;
+		width: 58px;
+		height: 24px;
+		float: left;
+		font-size: 12px;
+		background: #8fc9f5;
+		color: #fff;
+		border-radius: 3px;
+		text-align: center;
+		line-height: 24px;
+		margin: 18px 0 0 40px;
+	}
+	
+	div.agree_join_fail {
+		background: #bbb;
+	}
+	
+	.tongzhi_group_list {
+		height: min-60px;
+		width: 100%;
+		background: #fff;
+		overflow: hidden;
+		margin: 5px 0;
+		border: 1px solid #ddd;
+	}
+	
+	.tongzhi_group_list img {
+		float: left;
+		width: 50px;
+		height: 50px;
+		margin: 5px 10px;
+		border-radius: 50%;
+	}
+	
+	.group_apply>p {
+		line-height: 20px;
+		font-size: 14px;
+		margin-top: 6px;
+	}
+	
+	.tongzhi_group_name {
+		font-size: 16px!important;
+	}
+	
+	.group_apply {
+		float: left;
+		width: 280px;
+	}
+	
+	.group_api_apply {
+		float: left;
+		width: 130px;
+		margin-top: 18px;
+		margin-left: 6px;
+	}
+	
+	.group_api_apply>button {
+		width: 58px;
+		height: 24px;
+		float: left;
+		border: none;
+		font-size: 12px;
+		cursor: pointer;
+		transition: all .3s;
+		position: relative;
+		top: 0;
+		left: 0;
+		border-radius: 3px;
+	}
+	
+	.group_api_apply>button:hover {
+		top: -2px;
+		box-shadow: 0 0 3px 0 #999;
+	}
+	
+	.group_api_apply>button:nth-child(1) {
+		background: #8fc9f5;
+		color: #fff;
+	}
+	
+	.group_api_apply>button:nth-child(2) {
+		margin-left: 10px;
+		background: #bbb;
+		color: #fff;
+		padding-bottom: 8px;
+	}
+	
+	.content {
 		position: fixed;
 		top: 100px;
 		z-index: 999;
@@ -237,6 +257,7 @@ div.agree_join_fail{
 		box-shadow: 1px 1px 6px #333;
 		height: 611px;
 	}
+	
 	.windowheader {
 		background: #333;
 		height: 55px;
@@ -246,92 +267,109 @@ div.agree_join_fail{
 		line-height: 55px;
 		position: relative;
 	}
+	
 	.windowheader>p {
 		position: absolute;
 		color: #fff;
-		height:100%;
+		height: 100%;
 		right: 12px;
 		top: 0;
 		cursor: pointer;
 	}
-	.windowheader>p>img{
+	
+	.windowheader>p>img {
 		display: block;
-		width:16px;
-		margin-top:26px;
+		width: 16px;
+		margin-top: 26px;
 	}
-	.tongzhi_nav{
-		width:100%;
-		overflow:hidden;
+	
+	.tongzhi_nav {
+		width: 100%;
+		overflow: hidden;
 	}
-	.tongzhi_nav>p{
+	
+	.tongzhi_nav>p {
 		float: left;
-		width:50%;
-		background:#fff;
+		width: 50%;
+		background: #fff;
 		position: relative;
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
 		box-sizing: border-box;
-		text-align:center;
+		text-align: center;
 		line-height: 50px;
-		font-size:14px;
-		border-bottom:1px solid #ededed;
-		color:#b3b3b3;
+		font-size: 14px;
+		border-bottom: 1px solid #ededed;
+		color: #b3b3b3;
 		text-indent: 20px;
 	}
-	.tongzhi_nav>p:nth-child(1){
-		border-right:1px solid #ededed;
+	
+	.tongzhi_nav>p:nth-child(1) {
+		border-right: 1px solid #ededed;
 		background: url(~assets/chat/friendlist2.png) 78px center no-repeat #fff;
-		background-size:20px;
+		background-size: 20px;
 	}
-	.tongzhi_nav>p:nth-child(1).active{
+	
+	.tongzhi_nav>p:nth-child(1).active {
 		background: url(~assets/chat/friendlist1.png) 78px center no-repeat #fff;
-		background-size:20px;
+		background-size: 20px;
 	}
-	.tongzhi_nav>p:nth-child(1):hover{
+	
+	.tongzhi_nav>p:nth-child(1):hover {
 		background: url(~assets/chat/friendlist1.png) 78px center no-repeat #fff;
-		background-size:20px;
+		background-size: 20px;
 	}
-	.tongzhi_nav>p:nth-child(2){
+	
+	.tongzhi_nav>p:nth-child(2) {
 		text-indent: 24px;
 		background: url(~assets/chat/grouplist2.png) 82px center no-repeat #fff;
-		background-size:26px;
+		background-size: 26px;
 	}
-	.tongzhi_nav>p:nth-child(2):hover{
+	
+	.tongzhi_nav>p:nth-child(2):hover {
 		text-indent: 24px;
 		background: url(~assets/chat/grouplist1.png) 82px center no-repeat #fff;
-		background-size:26px;
+		background-size: 26px;
 	}
-	.tongzhi_nav>p:nth-child(2).active{
+	
+	.tongzhi_nav>p:nth-child(2).active {
 		background: url(~assets/chat/grouplist1.png) 82px center no-repeat #fff;
-		background-size:26px;
+		background-size: 26px;
 	}
-	.tongzhi_nav>p>span{
+	
+	.tongzhi_nav>p>span {
 		background: #132b4d;
 		height: 2px;
 		position: absolute;
 		bottom: 0;
-		width:40px;
-		left:105px;
+		width: 40px;
+		left: 105px;
 		display: none;
 	}
-	.tongzhi_nav>p.active{
-		color:#333;
+	
+	.tongzhi_nav>p.active {
+		color: #333;
 	}
-	.tongzhi_nav>p.active>span{
+	
+	.tongzhi_nav>p.active>span {
 		display: block;
 	}
-	.tongzhi_nav>p:hover{
-		color:#333;
-		cursor:pointer;
+	
+	.tongzhi_nav>p:hover {
+		color: #333;
+		cursor: pointer;
 	}
-	.gift_sender_name{
+	
+	.gift_sender_name {
 		margin: 0 5px;
 		color: #c89191;
 		font-size: 14px;
 	}
-	.gift{
+	
+	.gift {
 		margin: 0 5px;
 		color: #c89191;
 		font-size: 16px;
 	}
+
 </style>

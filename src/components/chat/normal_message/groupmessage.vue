@@ -34,7 +34,7 @@
 									<img :src="$store.state.chat.conversation[list.index].me.headimg" alt="" class="headimg">
 									<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)" >
 
-										<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
+										<span  v-if="slist.content_type=='TXT'" v-html="emoji(slist.content)" class="slist_content"></span>
 
 										<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 											<img :src="slist.content.animatedPicUrl" alt="" >
@@ -62,7 +62,7 @@
 										<p class="other_name"><span v-if="slist.speaker.speakerTitle" class="group_member_title" :style="{background:title_bg(slist.speaker.memberType)}">{{slist.speaker.speakerTitle}}</span>{{slist.speaker.speakerName}}<span v-show="show_userno_switch">NO.{{slist.speaker.speakerNo}}</span></p>
 										
 										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}"  @click.stop="show_chehui(sindex,true)">
-											<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
+											<span  v-if="slist.content_type=='TXT'" v-html="emoji(slist.content)" class="slist_content"></span>
 											<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 												<img :src="slist.content.animatedPicUrl" alt="">
 											</div>
@@ -94,7 +94,7 @@
 				<div class="emoji_container">
 					<div class="emoji_content">
 						<div class="emoji_tu" v-show="emojitype==0">
-							<p v-for="emo in $store.state.chat.emoji.emojis" v-html="emo.innerHTML" @click="f_check_emoji(emo)"></p>
+							<img v-for="emo in $store.state.chat.emojis" @click="f_check_emoji($event)" :src="emo.ImageName" :data-name="emo.Word" class="emojis">
 						</div>
 						<div class="emoji_yan" v-show="emojitype==1">
 							<span v-for="emo in $store.state.chat.emoji.yan_emoji" @click="add_yan_emoji($event)">{{emo}}</span>
@@ -119,7 +119,6 @@
 				</div>
 				<div :class="{wordsay:true,border_left:true,active:!myself_say_act}" @click="f_me_say($event)">角色说</div>
 				<div :class="{wordsay:true,border_right:true,active:myself_say_act}" @click="f_me_say($event)">本人说</div>
-				
 				<p class="addjuqing_switch" @click="start_juqing">添加剧情</p>
 				<p class="select_img" :id="'container'+list.index"><input type="file" accept="image/jpeg,image/jpg,image/png"  :id="'pickfiles'+list.index"><img src="~assets/chat/add_img.png" alt=""></p>
 				<p class="face" @click="show_emoji"><img src="~assets/chat/add_face.png" alt=""></p>
@@ -233,6 +232,20 @@
 				this.$store.state.chat.at_current_con_index = this.list.index;
 				this.$store.state.group_id = this.list.group._id;
 			},
+			emoji: function(content) {
+				var content = content.replace(/</g, '&lt;').
+				replace(/>/g, '&gt;').
+				replace(/"/g, "&quot;").
+				replace(/'/g, "&#039;");
+				content = content.replace(/\n/g, "<br />");
+				for (var i = 0; i < this.$store.state.chat.emojis.length; i++) {
+					if (content.match(this.$store.state.chat.emojis[i].Word)) {
+						var ex = new RegExp('\\[' + this.$store.state.chat.emojis[i].Word + '\\]', 'g');
+						content = content.replace(ex, '<image style="display: inline-block;position:relative;top:-3px;height: 20px;width: 20px;vertical-align: middle;" src="' + this.$store.state.chat.emojis[i].ImageName + '"/>')
+					}
+				}
+				return content
+			},
 			delete_at: function(index) {
 				//找到索引对应的@项并删除
 				var con = this.$store.state.chat.conversation[this.list.index];
@@ -242,9 +255,6 @@
 			downat: function(event) {
 				var dom2 = event.currentTarget.parentNode,
 					left = event.clientX;
-				console.log(left)
-				// dom=querySelector('#win'+this.list.group._id')
-				// left1=parseInt(window.getComputedStyle(dom).left);
 				var that = this;
 				document.onmousemove = function(event) {
 					var evt = event || window.event,
@@ -284,7 +294,7 @@
 			get_all_members: function() {
 				this.$http({
 					method: 'get',
-					url: this.$store.state.domain + 'group/members_in_group',
+					url: 'http://test.mrpyq.com/api/group/members_in_group',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'id': this.list.group._id,
@@ -325,7 +335,7 @@
 			getgroupinfo: function() {
 				this.$http({
 					method: 'get',
-					url: this.$store.state.domain + 'group/details',
+					url: 'http://test.mrpyq.com/api/group/details',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'id': this.list.group._id,
@@ -368,7 +378,7 @@
 				}
 				console.log(index);
 
-				this.$store.state.plugin.see_img(this.$store.state.plugin, index, photos);
+				this.$store.state.see_img(this.$store.state, index, photos);
 
 			},
 			check_emojitype: function(type) {
@@ -394,8 +404,8 @@
 			close_emoji: function() {
 				this.emoji_swi = false;
 			},
-			f_check_emoji: function(dom) {
-				var emoji = dom.children[0].getAttribute('name'),
+			f_check_emoji: function(event) {
+				var emoji = '[' + event.target.dataset.name + ']',
 					d = document.querySelector('#emoji' + this.list.group._id);
 				if (d) {
 					d.focus();
@@ -446,7 +456,7 @@
 				if (t - time <= 180000) {
 					chat.send_revoke(conversation_index, msg_index, "")
 				} else {
-					this.$store.state.plugin.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
+					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
 			},
 			//取消剧情
@@ -496,7 +506,6 @@
 						break;
 					}
 				}
-
 			},
 			f_me_say: function(event) {
 				var val = event.target.innerHTML;
@@ -574,7 +583,7 @@
 			//进入个人中心
 			f_check_personal: function(user) {
 				this.$store.state.current_user_pe = user;
-				this.$store.state.mounted.personal_mounted(this.$store.state, this);
+				this.$store.state.personal_mounted(this.$store.state, this);
 				this.$router.push('/Main_page/Personal');
 			},
 		},
@@ -1427,7 +1436,6 @@
 		float: right;
 		line-height: 40px;
 		margin-right: 20px;
-		cursor: pointer;
 	}
 	
 	p.addjuqing_switch {
@@ -1511,6 +1519,14 @@
 	
 	.messageshow {
 		position: relative;
+	}
+	
+	.emojis {
+		margin: 5px;
+		float: left;
+		cursor: pointer;
+		width: 30px;
+		height: 30px;
 	}
 
 </style>

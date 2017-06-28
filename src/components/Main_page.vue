@@ -105,29 +105,34 @@
       <activity id="right" class="border_box"></activity>
     </div>
     <btn id="btn" class="border_box"></btn>
-    <message v-for="(list,index) in this.$store.state.message_window" :index="index" :list="list" v-show="list.show"></message>
-    <system></system>
-    <checkwindow></checkwindow>
+    <normal_message v-for="(list,index) in this.$store.state.message_window" :index="index" :list="list" v-show="list.show"></normal_message>
+    <system_message></system_message>
+    <ball></ball>
+    <atlist v-if="$store.state.show_at"></atlist>
   </div>
 </template>
 <script>
-	import message from "./page_func/message"
-	import system from "./page_func/system_message"
-	import chat from 'src/chat'
 	import activity from "./page_func/activity"
 	import btn from "./page_func/btn"
 	import seeimg from "./page_func/seeimg.vue"
-	import checkwindow from "./page_func/ball"
+
+	import chat from 'src/chat'
+	import ball from "./page_func/ball"
+	import normal_message from "./chat/normal_message"
+	import system_message from "./chat/system_message"
 	import emoji from 'src/chat/emoji/emoji.js'
+	import atlist from "./chat/atlist"
+
 	export default {
 		updated: function() {},
 		components: {
 			activity,
 			btn,
-			message,
 			seeimg,
-			system,
-			checkwindow,
+			ball,
+			normal_message,
+			system_message,
+			atlist,
 		},
 		mounted: function() {
 			var me = this,
@@ -166,6 +171,8 @@
 				chat.logout();
 				this.$router.push('/Login');
 				//强制刷新页面
+				window.location.reload();
+				window.location.reload();
 				window.location.reload();
 			},
 			logo_click: function() {

@@ -7,8 +7,6 @@ Vue.use(VueRouter);
 
 //路由懒加载，进入main_page之后进行，提高login页面的打开速度
 const Login = resolve => require(['components/Login'], resolve)
-const Demo = resolve => require(['components/Demo'], resolve)
-const Qun = resolve =>require(['components/Qun'], resolve)
 const Not_found = resolve => require(['components/Not_found'], resolve)
 const Main_page = resolve => require(['components/Main_page'], resolve)
 const Personal = resolve => require(['components/main_page/Personal'], resolve)
@@ -39,12 +37,6 @@ const router = new VueRouter({
 					path: 'Addresslist',
 					component: Addresslist
 			}, {
-					path: 'Demo',
-					component: Demo
-			},	{
-					path: 'Qun',
-					component: Qun
-			},	{
 					path: 'Personal',
 					component: Personal
 			}, {

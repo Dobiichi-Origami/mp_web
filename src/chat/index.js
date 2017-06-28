@@ -343,7 +343,7 @@ var chat = {
 		//0骰子1猜拳
 		var magicimg = this.get_magicimg(type)
 		// this.send(index, 2, magicimg.magicPicDesc, 0, 0, magicimg);
-		this.send(index, 2, magicimg, 0, 0, undefined, magicimg.magicPicDesc);
+		this.send(index, 2, magicimg, 0, [], magicimg.magicPicDesc);
 	},
 
 	//找到群详细数组中指定群ID的群详细项
