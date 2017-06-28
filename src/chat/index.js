@@ -31,7 +31,6 @@ import vm from 'src/main.js'
 var con = vm.$store.state.chat.conversation
 import mpIM from './mpIM/mpIM.js'
 import base64 from './mpIM/base64.js'
-// import CmdHandler from './CmdHandler'
 import Msg from './data_structure/Msg'
 import Conversation from './data_structure/Conversation'
 require('../../static/qiniu.js')
@@ -111,6 +110,7 @@ var chat = {
 					if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
 						vm.$store.state.chat.conversation[conExist].set_unreadCount();
 					}
+					vm.$store.state.openfriend(vm.$store.state, info, chat);
 					return conExist;
 				} else {
 					other.headimg = info.chat_body.sender.head_img;
@@ -145,11 +145,18 @@ var chat = {
 					other.id = info.target_id;
 					//判断该会话是否存在
 					conExist = this.conversationExist(me.id, other.id, con, me.no);
+					for (var i = 0; i < vm.$store.state.chat.messages.grouplist.length; i++) {
+						if (other.id == vm.$store.state.chat.messages.grouplist[i]._id) {
+							group_details = vm.$store.state.chat.messages.grouplist[i];
+							break;
+						}
+					}
 					if (conExist != undefined) {
 						vm.$store.state.message_window[conExist].show = 1;
 						if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
 							vm.$store.state.chat.conversation[conExist].set_unreadCount()
 						}
+						vm.$store.state.opengroup(vm.$store.state, group_details._id, group_details, chat);
 						return conExist;
 					} else {
 						me.headimg = currPi.headimg;
@@ -157,7 +164,6 @@ var chat = {
 						other.headimg = info.chat_body.chat_head_img;
 						other.name = info.chat_body.chat_name;
 						other.no = info.target_no;
-						// other.deviceid = info.targetId;
 						//添加
 					}
 					conversation = new Conversation(me, other);
@@ -180,12 +186,6 @@ var chat = {
 					conversation.set_title(selfTitle, currPi.group_member_type);
 					//
 
-					for (var i = 0; i < vm.$store.state.chat.messages.grouplist.length; i++) {
-						if (other.id == vm.$store.state.chat.messages.grouplist[i]._id) {
-							group_details = vm.$store.state.chat.messages.grouplist[i];
-							break;
-						}
-					}
 					if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
 						conversation.set_unreadCount();
 					}
@@ -203,6 +203,7 @@ var chat = {
 			//type = info.conversationType;
 		} else {
 			//发消息情况下，判断会话类型
+			console.log(info)
 			if (!info.description) { //私聊
 				type = 1;
 				if (info.target_id) {
@@ -374,8 +375,9 @@ var chat = {
 			return;
 		}
 
-		var is_me_speak = message.chat_body.direction ? false : true;
-		var msg = new Msg(index, message.chat_body.content_type, message.chat_body.content.content, message.chat_body.content.speakType, message.time, is_me_speak, message.chat_body.chat_is_friend, message.uid);
+		var is_me_speak = message.chat_body.direction ? false : true,
+			temp = message.chat_body.chat_is_friend ? 0 : 1;
+		var msg = new Msg(index, message.chat_body.content_type, message.chat_body.content.content, message.chat_body.content.speakType, message.time, is_me_speak, temp, message.uid);
 
 		//群消息需要设置发言人
 		if (message.target_type == 1) { //为群会话消息，需要在msg中添加发言人信息

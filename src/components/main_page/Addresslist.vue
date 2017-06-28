@@ -76,7 +76,7 @@
 			},
 			opengroup: function(event, bindex) {
 				var id = event.target.dataset.index;
-				console.log(this.$store.state.chat.messages.grouplist[bindex])
+				console.log(this.$store.state.chat.messages.grouplist[bindex] + '11111111')
 				var index = chat.start(this.$store.state.chat.messages.grouplist[bindex]);
 				if (this.$store.state.message_window.length == 0) {
 					this.$store.state.message_window.push({

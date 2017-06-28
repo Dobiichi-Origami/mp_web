@@ -82,7 +82,7 @@
 				{{scroll_top()}}
 			</div>
 		</div>
-		<div class="windowfooter"  v-if="$store.state.chat.conversation[list.index].silenced==0">
+		<div class="windowfooter"  v-if="!$store.state.chat.conversation[list.index].silenced">
 			<div class="emoji_box" v-show="emoji_swi">
 				<div class="emoji_type">
 					<span :class="{active:emojitype==0}" @click="check_emojitype(0)"><img src="~assets/chat/face1.png" alt=""></span>

@@ -48,6 +48,16 @@ const store = new Vuex.Store({
 							var a = state.message_window[i];
 							a.show = 1;
 							state.message_window.splice(i, 1, a);
+							for (var j = 0; j < state.message_ball.length; j++) {
+								if (state.message_ball[j].index == index) {
+									var b = state.message_ball[j];
+									b.show = 1;
+
+									state.message_ball.splice(j, 1);
+									state.message_ball.unshift(b);
+									break;
+								}
+							}
 							return;
 						} else if (i == state.message_window.length - 1) {
 							state.message_window.push({
@@ -108,10 +118,21 @@ const store = new Vuex.Store({
 			} else {
 				for (var i = 0; i < state.message_window.length; i++) {
 					if (state.message_window[i].user) {
+
 						if (friends.user._id == state.message_window[i].user.user._id) {
 							var a = state.message_window[i];
 							a.show = 1;
 							state.message_window.splice(i, 1, a);
+							for (var j = 0; j < state.message_ball.length; j++) {
+								if (state.message_ball[j].index == index) {
+									var b = state.message_ball[j];
+									b.show = 1;
+
+									state.message_ball.splice(j, 1);
+									state.message_ball.unshift(b);
+									break;
+								}
+							}
 							return;
 						} else if (i == state.message_window.length - 1) {
 							state.message_window.push({
