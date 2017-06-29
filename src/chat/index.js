@@ -31,7 +31,6 @@ import vm from 'src/main.js'
 var con = vm.$store.state.chat.conversation
 import mpIM from './mpIM/mpIM.js'
 import base64 from './mpIM/base64.js'
-// import CmdHandler from './CmdHandler'
 import Msg from './data_structure/Msg'
 import Conversation from './data_structure/Conversation'
 require('../../static/qiniu.js')
@@ -84,7 +83,6 @@ var chat = {
 			other = {},
 			group_details = {};
 		var conExist; //标识会话是否在会话数组中存在，在的话为对应索引index,不在的话为undefined
-		var type; //标识会话类型，1私聊，3群聊
 		var conversation; //自定义conversation
 		//先判断收发类型
 		if (isreseive) {
@@ -127,10 +125,7 @@ var chat = {
 				}
 			} else if (info.target_type == 1) { //群聊
 				if (vm.$store.state.group_switch) {
-					//console.log(vm.$store.state.messages.grouplist)
-					// var groupList = vm.$store.state.messages.grouplist;
 					var groupList = vm.$store.state.chat.messages.grouplist;
-					//console.log(groupList);
 					var currPi;
 					//遍历用户的所有群信息，找到和收到的群消息对应的群
 					for (var gindex = 0, glength = groupList.length; gindex < glength; gindex++) {
@@ -157,8 +152,6 @@ var chat = {
 						other.headimg = info.chat_body.chat_head_img;
 						other.name = info.chat_body.chat_name;
 						other.no = info.target_no;
-						// other.deviceid = info.targetId;
-						//添加
 					}
 					conversation = new Conversation(me, other);
 
@@ -179,7 +172,6 @@ var chat = {
 					//设置群头衔
 					conversation.set_title(selfTitle, currPi.group_member_type);
 					//
-
 					for (var i = 0; i < vm.$store.state.chat.messages.grouplist.length; i++) {
 						if (other.id == vm.$store.state.chat.messages.grouplist[i]._id) {
 							group_details = vm.$store.state.chat.messages.grouplist[i];
@@ -197,14 +189,13 @@ var chat = {
 							clearInterval(time);
 						}
 					}, 300)
-					return conExist;
+					return conExist;//检查
 				}
 			}
-			//type = info.conversationType;
 		} else {
 			//发消息情况下，判断会话类型
 			if (!info.description) { //私聊
-				type = 1;
+				
 				if (info.target_id) {
 					me.id = info.target_id;
 					me.no = info.target_no;
@@ -228,10 +219,8 @@ var chat = {
 					} else {
 						me.headimg = vm.$store.state.current_user.headimg;
 						me.name = vm.$store.state.current_user.name;
-						//me.no = vm.$store.state.current_user.no;
 						other.headimg = info.headimg;
 						other.name = info.name;
-						//other.no = info.no;
 						other.deviceid = info.device._id;
 					}
 
@@ -240,8 +229,6 @@ var chat = {
 				console.log("本次会话的mename************", me.name);
 				console.log("本次会话的othername***********", other.name);
 			} else { //群聊
-				//
-				type = 3;
 				me.id = info.member._id;
 				me.no = info.member.no;
 				other.id = info._id;
@@ -251,7 +238,6 @@ var chat = {
 				else {
 					me.headimg = info.member.headimg;
 					me.name = info.member.name;
-					//me.no = info.member.no;
 					other.headimg = info.headimg;
 					other.name = info.name;
 					other.no = info.no;
@@ -259,7 +245,6 @@ var chat = {
 				}
 				conversation = new Conversation(me, other);
 				conversation.set_group(true);
-
 
 				console.log(info.member.group_member_type);
 				switch (info.member.group_member_type) {
@@ -327,7 +312,6 @@ var chat = {
 	send_magicimg: function (index, type) {
 		//0骰子1猜拳
 		var magicimg = this.get_magicimg(type)
-		// this.send(index, 2, magicimg.magicPicDesc, 0, 0, magicimg);
 		this.send(index, 2, magicimg, 0, [], magicimg.magicPicDesc);
 	},
 
@@ -452,10 +436,8 @@ var chat = {
 				if (res.body.error) {
 					vm.$store.state.plugin.f_error(vm.$store.state, res.body.error);
 				} else if (res.body.items) {
-					// vm.$store.state.messages.grouplist = res.body.items;
 					vm.$store.state.chat.messages.grouplist = res.body.items;
 					allgroup = res.body.items;
-					//console.log(res.body);
 					//获取所有群详细
 					var details = [];
 					if (allgroup) {
@@ -475,7 +457,6 @@ var chat = {
 										vm.$store.state.plugin.f_error(vm.$store.state, res.body.error);
 									} else if (res.body.group) {
 										details.push(res.body.group);
-										// if (details.length == vm.$store.state.messages.grouplist.length) {
 										if (details.length == vm.$store.state.chat.messages.grouplist.length) {
 											vm.$store.state.chat.messages.groupsDetail = details;
 											vm.$store.state.mounted.friendcenter_mounted(vm.$store.state, vm);
