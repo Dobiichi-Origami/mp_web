@@ -47,7 +47,7 @@
 		mounted: function() {
 			if (this.$store.state.current_user) {
 				if (this.$store.state.chat.messages.groupsDetail.length) {
-					this.$store.state.mounted.friendcenter_mounted(this.$store.state, this);
+					this.$store.state.mounted.addresslist_mounted(this.$store.state, this);
 				}
 			}
 			console.log(this.$store.state.chat.messages.grouplist)

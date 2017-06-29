@@ -1,6 +1,6 @@
 const Plugin = {
 	state: {
-		friendcenter_mounted: function (state, th) {
+		addresslist_mounted: function (state, th) {
 			state.chat.messages.friendlist = [];
 			state.title = '通讯录';
 			state.loader = true;

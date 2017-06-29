@@ -465,7 +465,7 @@
 											//this.$store.state.detail_mounted(this.$store.state, this);
 										} else if (location.href.match(/Main_page\/Addresslist/i) != null) {
 											if (this.$store.state.chat.messages.groupsDetail.length) {
-												this.$store.state.mounted.friendcenter_mounted(this.$store.state, this);
+												this.$store.state.mounted.addresslist_mounted(this.$store.state, this);
 											}
 										} else {
 											this.$store.state.mounted.home_mounted(this.$store.state, this);

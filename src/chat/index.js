@@ -46,8 +46,7 @@ var chat = {
 	login: function (deviceid) {
 		this.deviceInfo.token = localStorage.getItem('access_token');
 		this.mac = deviceid;
-		mpIM.init(this.deviceInfo);
-		this.getgroup();
+		this.getgroup(mpIM.init, this.deviceInfo);
 	},
 	logout: function () {
 		mpIM.close();
@@ -78,13 +77,12 @@ var chat = {
 	},
 
 	start: function (info, isreseive) {
-		var con = vm.$store.state.chat.conversation;
-		var me = {},
+		var con = vm.$store.state.chat.conversation,
+			me = {},
 			other = {},
-			group_details = {};
-		var conExist; //标识会话是否在会话数组中存在，在的话为对应索引index,不在的话为undefined
-		var type; //标识会话类型，1私聊，3群聊
-		var conversation; //自定义conversation
+			group_details = {},
+			conExist, //标识会话是否在会话数组中存在，在的话为对应索引index,不在的话为undefined
+			conversation; //自定义conversation
 		//先判断收发类型
 		if (isreseive) {
 			//收消息情况下，判断会话类型
@@ -120,92 +118,72 @@ var chat = {
 				}
 				//产生会话
 				conversation = new Conversation(me, other);
-				console.log("本次会话的mename************", me.name);
-				console.log("本次会话的othername***********", other.name);
 				if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
 					conversation.set_unreadCount();
 				}
 			} else if (info.target_type == 1) { //群聊
-				if (vm.$store.state.group_switch) {
-					//console.log(vm.$store.state.messages.grouplist)
-					// var groupList = vm.$store.state.messages.grouplist;
-					var groupList = vm.$store.state.chat.messages.grouplist;
-					//console.log(groupList);
-					var currPi;
-					//遍历用户的所有群信息，找到和收到的群消息对应的群
-					for (var gindex = 0, glength = groupList.length; gindex < glength; gindex++) {
-						if (info.target_id == groupList[gindex]._id) {
-							//找到后取该群中对应的当前皮信息
-							currPi = groupList[gindex].member;
-							me.id = currPi._id;
-							me.no = currPi.no;
-							break;
-						}
+				var groupList = vm.$store.state.chat.messages.grouplist;
+				var currPi;
+				//遍历用户的所有群信息，找到和收到的群消息对应的群
+				for (var gindex = 0, glength = groupList.length; gindex < glength; gindex++) {
+					if (info.target_id == groupList[gindex]._id) {
+						//找到后取该群中对应的当前皮信息
+						currPi = groupList[gindex].member;
+						me.id = currPi._id;
+						me.no = currPi.no;
+						break;
 					}
-					other.id = info.target_id;
-					//判断该会话是否存在
-					conExist = this.conversationExist(me.id, other.id, con, me.no);
-					for (var i = 0; i < vm.$store.state.chat.messages.grouplist.length; i++) {
-						if (other.id == vm.$store.state.chat.messages.grouplist[i]._id) {
-							group_details = vm.$store.state.chat.messages.grouplist[i];
-							break;
-						}
+				}
+				other.id = info.target_id;
+				//判断该会话是否存在
+				conExist = this.conversationExist(me.id, other.id, con, me.no);
+				for (var i = 0; i < vm.$store.state.chat.messages.grouplist.length; i++) {
+					if (other.id == vm.$store.state.chat.messages.grouplist[i]._id) {
+						group_details = vm.$store.state.chat.messages.grouplist[i];
+						break;
 					}
-					if (conExist != undefined) {
-						vm.$store.state.message_window[conExist].show = 1;
-						if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
-							vm.$store.state.chat.conversation[conExist].set_unreadCount()
-						}
-						vm.$store.state.opengroup(vm.$store.state, group_details._id, group_details, chat);
-						return conExist;
-					} else {
-						me.headimg = currPi.headimg;
-						me.name = currPi.name;
-						other.headimg = info.chat_body.chat_head_img;
-						other.name = info.chat_body.chat_name;
-						other.no = info.target_no;
-						//添加
+				}
+				if (conExist != undefined) {
+					vm.$store.state.message_window[conExist].show = 1;
+					if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
+						vm.$store.state.chat.conversation[conExist].set_unreadCount()
 					}
-					conversation = new Conversation(me, other);
-
-					conversation.set_group(true); //conversation的isGroup为true
-					var selfTitle;
-					console.log(conversation)
-					switch (currPi.group_member_type) {
-						case 10:
-							selfTitle = "管理员";
-							break;
-						case 20:
-							selfTitle = "群主";
-							break;
-						default:
-							selfTitle = "";
-							break;
-					}
-					//设置群头衔
-					conversation.set_title(selfTitle, currPi.group_member_type);
-					//
-
-					if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
-						conversation.set_unreadCount();
-					}
-				} else {
-					var th = this;
-					var time = setInterval(function () {
-						if (vm.$store.state.group_switch) {
-							th.handle_text(info);
-							clearInterval(time);
-						}
-					}, 300)
+					vm.$store.state.opengroup(vm.$store.state, group_details._id, group_details, chat);
 					return conExist;
+				} else {
+					me.headimg = currPi.headimg;
+					me.name = currPi.name;
+					other.headimg = info.chat_body.chat_head_img;
+					other.name = info.chat_body.chat_name;
+					other.no = info.target_no;
+					//添加
+				}
+				conversation = new Conversation(me, other);
+				conversation.set_group(true);
+				var selfTitle;
+				console.log(conversation)
+				switch (currPi.group_member_type) {
+					case 10:
+						selfTitle = "管理员";
+						break;
+					case 20:
+						selfTitle = "群主";
+						break;
+					default:
+						selfTitle = "";
+						break;
+				}
+				//设置群头衔
+				conversation.set_title(selfTitle, currPi.group_member_type);
+
+
+				if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
+					conversation.set_unreadCount();
 				}
 			}
-			//type = info.conversationType;
 		} else {
 			//发消息情况下，判断会话类型
-			console.log(info)
 			if (!info.description) { //私聊
-				type = 1;
 				if (info.target_id) {
 					me.id = info.target_id;
 					me.no = info.target_no;
@@ -229,20 +207,13 @@ var chat = {
 					} else {
 						me.headimg = vm.$store.state.current_user.headimg;
 						me.name = vm.$store.state.current_user.name;
-						//me.no = vm.$store.state.current_user.no;
 						other.headimg = info.headimg;
 						other.name = info.name;
-						//other.no = info.no;
 						other.deviceid = info.device._id;
 					}
-
 				}
 				conversation = new Conversation(me, other);
-				console.log("本次会话的mename************", me.name);
-				console.log("本次会话的othername***********", other.name);
 			} else { //群聊
-				//
-				type = 3;
 				me.id = info.member._id;
 				me.no = info.member.no;
 				other.id = info._id;
@@ -252,7 +223,6 @@ var chat = {
 				else {
 					me.headimg = info.member.headimg;
 					me.name = info.member.name;
-					//me.no = info.member.no;
 					other.headimg = info.headimg;
 					other.name = info.name;
 					other.no = info.no;
@@ -261,8 +231,6 @@ var chat = {
 				conversation = new Conversation(me, other);
 				conversation.set_group(true);
 
-
-				console.log(info.member.group_member_type);
 				switch (info.member.group_member_type) {
 					case 1:
 						conversation.set_title("", 1);
@@ -439,7 +407,7 @@ var chat = {
 		con[conversation_index].msg[msg_index].set_revoke(body.revoke_body.sender, body.revoke_body.content)
 	},
 	//获取群数据
-	getgroup: function () {
+	getgroup: function (callback, param) {
 		var allgroup;
 		//查看所有群信息
 		vm.$http({
@@ -454,14 +422,13 @@ var chat = {
 				if (res.body.error) {
 					vm.$store.state.plugin.f_error(vm.$store.state, res.body.error);
 				} else if (res.body.items) {
-					// vm.$store.state.messages.grouplist = res.body.items;
 					vm.$store.state.chat.messages.grouplist = res.body.items;
 					allgroup = res.body.items;
-					//console.log(res.body);
 					//获取所有群详细
 					var details = [];
 					if (allgroup) {
 						for (var i = 0, l = allgroup.length; i < l; i++) {
+							console.log(1)
 							//对每个群的群id获取其群详细
 							vm.$http({
 								method: 'get',
@@ -477,11 +444,9 @@ var chat = {
 										vm.$store.state.plugin.f_error(vm.$store.state, res.body.error);
 									} else if (res.body.group) {
 										details.push(res.body.group);
-										// if (details.length == vm.$store.state.messages.grouplist.length) {
 										if (details.length == vm.$store.state.chat.messages.grouplist.length) {
 											vm.$store.state.chat.messages.groupsDetail = details;
-											vm.$store.state.mounted.friendcenter_mounted(vm.$store.state, vm);
-											vm.$store.state.group_switch = true;
+											callback(param);
 										}
 									}
 								},

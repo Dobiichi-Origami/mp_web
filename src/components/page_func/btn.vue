@@ -55,7 +55,7 @@
 				else if (location.href.match('/Main_page/Detail') != null)
 					this.$store.state.mounted.detail_mounted(this.$store.state, this);
 				else if (location.href.match('/Main_page/Addresslist') != null)
-					this.$store.state.mounted.friendcenter_mounted(this.$store.state, this)
+					this.$store.state.mounted.addresslist_mounted(this.$store.state, this)
 				else
 					this.$store.state.mounted.home_mounted(this.$store.state, this);
 			},

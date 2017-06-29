@@ -18,8 +18,6 @@ const store = new Vuex.Store({
 		domain: "http://test.mrpyq.com/api/",
 		AwesomeMessage: false,
 		unread: 0,
-		//获取群数据开关
-		group_switch: false,
 		show_at: false,
 		//atid
 		group_id: '',
@@ -310,13 +308,6 @@ const store = new Vuex.Store({
 				result = "刚刚";
 			}
 			return result;
-		},
-		//error组件
-		show_error: false,
-		error: '',
-		f_error: function (state, data) {
-			state.error = data;
-			state.show_error = true;
 		},
 		//帖子详情
 		details: {
