@@ -41,7 +41,7 @@
 				<a href="javascript:;" v-if="slideup" @click="f_slideup">{{swi?'展开':'收起'}}</a>
 			</div>
 			<div v-if="$store.state.details.item.photos">
-				<img v-for="(photo_item,photo_index) in $store.state.details.item.photos" :src="photo_item.thumbnail" @click.stop="$store.state.see_img($store.state,$event.target.dataset.index,$store.state.details.item.photos)" :data-index="photo_index" class="toBigger">
+				<img v-for="(photo_item,photo_index) in $store.state.details.item.photos" :src="photo_item.thumbnail" @click.stop="$store.state.plugin.see_img($store.state.plugin,$event.target.dataset.index,$store.state.details.item.photos)" :data-index="photo_index" class="toBigger">
 			</div>
 		</div>
 		<div class="result">
@@ -118,7 +118,7 @@
 				myself_say: 0,
 				replyuserid: '',
 				replyusername: '',
-				replyuserno:'',
+				replyuserno: '',
 				comments_page: 2,
 				comments: this.$store.state.details.comments,
 				slideup: false,
@@ -146,7 +146,7 @@
 			for (var j = 0; j < this.like_inform.length; j++) {
 				if (this.like_inform[j]._id == this.play_user._id) {
 					this.my_pi_like = true;
-					this.like_inform[j].is_me=true;
+					this.like_inform[j].is_me = true;
 					break;
 				}
 			}
@@ -217,7 +217,7 @@
 				} else {
 					this.$http({
 						method: 'get',
-						url: 'http://test.mrpyq.com/api/feed/plays_by_feed',
+						url: this.$store.state.domain + 'feed/plays_by_feed',
 						params: {
 							'access_token': localStorage.getItem('access_token'),
 							'id': this.$store.state.details.item._id,
@@ -225,13 +225,13 @@
 						emulateJSON: true,
 					}).then((res) => {
 						if (res.body.error) {
-							this.$store.state.f_error(this.$store.state, res.body.error);
+							this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 						} else {
 							this.feed_items = res.body;
 							this.pi_show = true;
 						}
 					}, (res) => {
-						this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+						this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 					})
 				}
 			},
@@ -240,7 +240,7 @@
 				var userid = event.target.dataset.id;
 				this.$http({
 					method: 'get',
-					url: 'http://test.mrpyq.com/api/feed/change_default_play',
+					url: this.$store.state.domain + 'feed/change_default_play',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'userid': userid,
@@ -262,20 +262,20 @@
 						}
 						this.pi_show = false;
 					} else if (res.body.error) {
-						this.$store.state.f_error(this.$store.state, res.body.error);
+						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					}
 				}, (res) => {
-					this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+					this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 				})
 			},
-			change_like: function(event){
+			change_like: function(event) {
 				var con = document.getElementById(this.$store.state.details.item._id + 'lz');
 				this.con_height = parseInt(window.getComputedStyle(con, null)['height']);
 				let _this = event.target,
 					_id = _this.dataset.id;
 				this.$http({
 					method: 'get',
-					url: 'http://test.mrpyq.com/api/feed/like',
+					url: this.$store.state.domain + 'feed/like',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'userid': this.play_user._id,
@@ -305,7 +305,7 @@
 						}
 						//this.addl--;
 					} else if (res.body.error) {
-						this.$store.state.f_error(this.$store.state, res.body.error);
+						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					}
 					for (var j = 0; j < this.like_inform.length; j++) {
 						this.like_inform[j].is_me = this.like_inform[j]._id == this.play_user._id;
@@ -317,7 +317,7 @@
 						}
 					}
 				}, (res) => {
-					this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+					this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 				})
 			},
 			for_ie_key: function(event) {
@@ -333,19 +333,19 @@
 				var ob = event.target;
 				var co_val = ob.innerText;
 				this.dis = co_val ? false : true;
-				if (ob.childNodes.length >= 2 && ob.childNodes[1].nodeType==1) {
+				if (ob.childNodes.length >= 2 && ob.childNodes[1].nodeType == 1) {
 					if (ob.childNodes[1].tagName.match(/^button$/i)) {
 						ob.removeChild(ob.firstChild);
 					}
 				}
-				if(ob.childNodes.length>=1 && ob.firstChild.nodeType==1){
+				if (ob.childNodes.length >= 1 && ob.firstChild.nodeType == 1) {
 					if (!ob.firstChild.tagName.match(/^button$/i)) {
 						this.replyuserid = '';
-						this.replyusername='';
+						this.replyusername = '';
 					}
-				}else if(ob.childNodes.length>=1 && ob.firstChild.nodeType!=1){
-						this.replyuserid = '';
-						this.replyusername='';
+				} else if (ob.childNodes.length >= 1 && ob.firstChild.nodeType != 1) {
+					this.replyuserid = '';
+					this.replyusername = '';
 				}
 				var reg = new RegExp("^<button.{0,}<\/button>$", 'i'),
 					reg01 = new RegExp("^<button.{0,}<\/button><br>$", 'i');
@@ -396,7 +396,7 @@
 			f_sure_add: function(index) {
 				this.$http({
 					method: 'get',
-					url: 'http://test.mrpyq.com/api/feed/add_play',
+					url: this.$store.state.domain + 'feed/add_play',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'id': this.$store.state.details.item._id,
@@ -426,16 +426,16 @@
 							vm.is_pi_show = false;
 						}, 500)
 					} else if (res.body.error) {
-						this.$store.state.f_error(this.$store.state, res.body.error);
+						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					};
 				}, (res) => {
-					this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+					this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 				})
 			},
 			f_commit_reply: function() {
 				this.$http({
 					method: 'post',
-					url: 'http://test.mrpyq.com/api/feed/comment',
+					url: this.$store.state.domain + 'feed/comment',
 					body: {
 						'access_token': localStorage.getItem('access_token'),
 						'userid': this.play_user._id,
@@ -443,7 +443,7 @@
 						'content': this.me_co_con,
 						'b': this.myself_say,
 						'replyuserid': this.replyuserid,
-						'replyuserno': this.replyuserid?this.replyuserno:'',
+						'replyuserno': this.replyuserid ? this.replyuserno : '',
 						// 1) access_token
 						// 2) userid  
 						// 3) id    //帖子id   feed下的
@@ -485,10 +485,10 @@
 							val[i].innerHTML = '';
 						}
 					} else if (res.body.error) {
-						this.$store.state.f_error(this.$store.state, res.body.error);
+						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					}
 				}, (res) => {
-					this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+					this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 				})
 			},
 			f_slideup: function(event) {
@@ -519,7 +519,7 @@
 					comment_index = event.target.dataset.index;
 				this.$http({
 					method: 'get',
-					url: 'http://test.mrpyq.com/api/feed/delcomment',
+					url: this.$store.state.domain + 'feed/delcomment',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'commentid': commentid,
@@ -531,10 +531,10 @@
 						TDAPP.onEvent("帖子详情", "删除回复");
 						this.comments.splice(comment_index, 1);
 					} else if (res.body.error) {
-						this.$store.state.f_error(this.$store.state, res.body.error);
+						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					}
 				}, (res) => {
-					this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+					this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 				})
 			},
 
@@ -548,7 +548,7 @@
 			f_get_more_co: function(i) {
 				this.$http({
 					method: 'get',
-					url: 'http://test.mrpyq.com/api/feed/comments_by_feed',
+					url: this.$store.state.domain + 'feed/comments_by_feed',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'id': this.$store.state.details.item._id,
@@ -568,7 +568,7 @@
 							this.comments_pagemore = res.body.pagemore;
 							this.$http({
 								method: 'get',
-								url: 'http://test.mrpyq.com/api/feed/comments_by_feed',
+								url: this.$store.state.domain + 'feed/comments_by_feed',
 								params: {
 									'access_token': localStorage.getItem('access_token'),
 									'id': this.$store.state.details.item._id,
@@ -578,22 +578,21 @@
 								if (res.body.feed) {
 									this.$store.state.details.item.stat = res.body.feed.stat;
 								} else if (res.body.error)
-									this.$store.state.f_error(this.$store.state, res.body.error);
+									this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 							}, (res) => {
-								this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+								this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 							})
 						}
 					} else if (res.body.error)
-						this.$store.state.f_error(this.$store.state, res.body.error);
+						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 				}, (res) => {
-					this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+					this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 				})
 			},
 			f_sure_demytitle: function() {
-				// http://test.mrpyq.com/api/feed/delete?access_token=58252d066e998f6bfd67f783.1509590666.1b63e9e2c7c73059a51be94e04b8d59c&id=582573146e998f550fc3001b
 				this.$http({
 					method: 'get',
-					url: 'http://test.mrpyq.com/api/feed/delete',
+					url: this.$store.state.domain + 'feed/delete',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'id': this.$store.state.details.item._id,
@@ -615,10 +614,10 @@
 						localStorage.setItem('details', JSON.stringify(i));
 						this.$router.push('/Main_page/News');
 					} else if (res.body.error) {
-						this.$store.state.f_error(this.$store.state, res.body.error);
+						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					}
 				}, (res) => {
-					this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+					this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 				})
 			},
 		}
@@ -632,6 +631,7 @@
 		-moz-box-sizing: border-box;
 		-webkit-box-sizing: border-box;
 	}
+	
 	#outer_box {
 		width: 660px;
 		min-height: 500px;

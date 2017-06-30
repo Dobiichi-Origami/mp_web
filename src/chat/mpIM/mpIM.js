@@ -1,7 +1,6 @@
 import chat from '../index.js'
 import base64 from './base64.js'
 import vm from 'src/main.js'
-console.log(vm)
 var MpIMClient = {
 	seq: 1,
 	DeviceInfo: '',
@@ -21,6 +20,8 @@ var MpIMClient = {
 		me.ws.onopen = function () {
 			if (this.readyState == 1) {
 				console.log('链接成功', me.DeviceInfo);
+				vm.$store.state.mounted.addresslist_mounted(vm.$store.state, vm);
+
 				me.login(me.DeviceInfo)
 				//如果是重练，登录成功关闭重练
 				if (me.reconnect_) {
@@ -28,15 +29,15 @@ var MpIMClient = {
 				}
 				//主动关闭连接
 				window.onbeforeunload = function () {
-	        		me.ws.close();
-	  			}
-	  			//错误代码
-	  			me.ws.onerror=function(res){
-	  				console.log('websocket错误代码：')
-	  				console.log(res)
-	  				vm.$store.state.f_error(vm.$store.state, "您的设备链接异常，请刷新尝试重新连接");
-	  				vm.$store.state.IM_switch=false;
-	  			}
+					me.ws.close();
+				}
+				//错误代码
+				me.ws.onerror = function (res) {
+					console.log('websocket错误代码：')
+					console.log(res)
+					vm.$store.state.plugin.f_error(vm.$store.state, "您的设备链接异常，请刷新尝试重新连接");
+					vm.$store.state.IM_switch = false;
+				}
 			} else {
 				console.log('链接失败，重新连接中')
 				var time = Date.now();
@@ -51,10 +52,13 @@ var MpIMClient = {
 	reconnect: function () {
 		//重新连接
 		var me = MpIMClient;
+		vm.$store.state.chat.close_by_me = false;
 		me.ws.onclose = function () {
-			console.log('已断开连接，正在重新连接');
-			vm.$store.state.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
-			vm.$store.state.IM_switch=false;
+			if (!vm.$store.state.chat.close_by_me) {
+				console.log('已断开连接，正在重新连接');
+				vm.$store.state.plugin.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
+				vm.$store.state.IM_switch = false;
+			}
 			//每五秒重连一次
 			// me.reconnect_ = setInterval(function () {
 			// 	me.connect();
@@ -74,6 +78,23 @@ var MpIMClient = {
 		me.ws.send(data)
 		me.receiver();
 	},
+	send: function (body) {
+		var data = {
+			'ver': 1,
+			'op': 4,
+			'seq': this.seq++,
+			'body': body
+		}
+		console.log('发送消息', body)
+		data = JSON.stringify(data);
+		this.ws.send(data)
+	},
+	close: function () {
+		if (this.ws) {
+			this.ws.close();
+			vm.$store.state.chat.close_by_me = true;
+		}
+	},
 	receiver: function () {
 		var me = MpIMClient,
 			msg;
@@ -82,7 +103,7 @@ var MpIMClient = {
 			data = JSON.parse(data)[0];
 			if (data.op == 14) {
 				console.log('登陆成功');
-				vm.$store.state.IM_switch=true;
+				vm.$store.state.IM_switch = true;
 				//清除上一个心跳
 				if (me.heart_) {
 					clearInterval(me.heart_);
@@ -106,11 +127,10 @@ var MpIMClient = {
 						msg = data.body.msg;
 						console.log('发送成功:op5')
 						console.log(msg);
-						
+
 						if (!msg.type) {
 							//聊天消息
 							msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
-							msg.me = true;
 							chat.handle_text(msg)
 						} else if (msg.type == 1) {
 							//cmd
@@ -135,7 +155,6 @@ var MpIMClient = {
 					if (!msg.type) {
 						//chat
 						msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
-						msg.me = false;
 						chat.handle_text(msg)
 					} else if (msg.type == 1) {
 						//cmd
@@ -152,17 +171,6 @@ var MpIMClient = {
 			}
 		}
 	},
-	send: function (body) {
-		var data = {
-			'ver': 1,
-			'op': 4,
-			'seq': this.seq++,
-			'body': body
-		}
-		console.log('发送消息', body)
-		data = JSON.stringify(data);
-		this.ws.send(data)
-	}
 }
 
 export default MpIMClient;

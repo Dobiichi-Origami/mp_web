@@ -49,15 +49,15 @@
 				_czc.push(["_trackEvent", "功能", "按钮-刷新-点击"]);
 				TDAPP.onEvent("功能", "按钮-刷新-点击");
 				if (location.href.match('/Main_page/News') != null)
-					this.$store.state.news_mounted(this.$store.state, this);
+					this.$store.state.mounted.news_mounted(this.$store.state, this);
 				else if (location.href.match('/Main_page/Personal') != null)
-					this.$store.state.personal_mounted(this.$store.state, this);
-				else if (location.href.match('/Main_page/Detail') != null) 
-					this.$store.state.detail_mounted(this.$store.state, this);
-				else if(location.href.match('/Main_page/Addresslist') != null)
-					this.$store.state.friendcenter_mounted(this.$store.state, this)
+					this.$store.state.mounted.personal_mounted(this.$store.state, this);
+				else if (location.href.match('/Main_page/Detail') != null)
+					this.$store.state.mounted.detail_mounted(this.$store.state, this);
+				else if (location.href.match('/Main_page/Addresslist') != null)
+					this.$store.state.mounted.addresslist_mounted(this.$store.state, this)
 				else
-					this.$store.state.home_mounted(this.$store.state, this);
+					this.$store.state.mounted.home_mounted(this.$store.state, this);
 			},
 		}
 	}

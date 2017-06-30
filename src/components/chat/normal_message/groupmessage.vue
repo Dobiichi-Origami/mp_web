@@ -34,7 +34,7 @@
 									<img :src="$store.state.chat.conversation[list.index].me.headimg" alt="" class="headimg">
 									<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}" @click="show_chehui(sindex)" >
 
-										<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
+										<span  v-if="slist.content_type=='TXT'" v-html="emoji(slist.content)" class="slist_content"></span>
 
 										<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 											<img :src="slist.content.animatedPicUrl" alt="" >
@@ -62,7 +62,7 @@
 										<p class="other_name"><span v-if="slist.speaker.speakerTitle" class="group_member_title" :style="{background:title_bg(slist.speaker.memberType)}">{{slist.speaker.speakerTitle}}</span>{{slist.speaker.speakerName}}<span v-show="show_userno_switch">NO.{{slist.speaker.speakerNo}}</span></p>
 										
 										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}"  @click.stop="show_chehui(sindex,true)">
-											<span  v-if="slist.content_type=='TXT'">{{slist.content}}</span>
+											<span  v-if="slist.content_type=='TXT'" v-html="emoji(slist.content)" class="slist_content"></span>
 											<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
 												<img :src="slist.content.animatedPicUrl" alt="">
 											</div>
@@ -82,7 +82,7 @@
 				{{scroll_top()}}
 			</div>
 		</div>
-		<div class="windowfooter"  v-if="$store.state.chat.conversation[list.index].silenced==0">
+		<div class="windowfooter"  v-if="!$store.state.chat.conversation[list.index].silenced">
 			<div class="emoji_box" v-show="emoji_swi">
 				<div class="emoji_type">
 					<span :class="{active:emojitype==0}" @click="check_emojitype(0)"><img src="~assets/chat/face1.png" alt=""></span>
@@ -94,7 +94,7 @@
 				<div class="emoji_container">
 					<div class="emoji_content">
 						<div class="emoji_tu" v-show="emojitype==0">
-							<p v-for="emo in $store.state.chat.emoji.emojis" v-html="emo.innerHTML" @click="f_check_emoji(emo)"></p>
+							<img v-for="emo in $store.state.chat.emojis" @click="f_check_emoji($event)" :src="emo.ImageName" :data-name="emo.Word" class="emojis">
 						</div>
 						<div class="emoji_yan" v-show="emojitype==1">
 							<span v-for="emo in $store.state.chat.emoji.yan_emoji" @click="add_yan_emoji($event)">{{emo}}</span>
@@ -119,14 +119,13 @@
 				</div>
 				<div :class="{wordsay:true,border_left:true,active:!myself_say_act}" @click="f_me_say($event)">角色说</div>
 				<div :class="{wordsay:true,border_right:true,active:myself_say_act}" @click="f_me_say($event)">本人说</div>
-				
 				<p class="addjuqing_switch" @click="start_juqing">添加剧情</p>
 				<p class="select_img" :id="'container'+list.index"><input type="file" accept="image/jpeg,image/jpg,image/png"  :id="'pickfiles'+list.index"><img src="~assets/chat/add_img.png" alt=""></p>
 				<p class="face" @click="show_emoji"><img src="~assets/chat/add_face.png" alt=""></p>
 				<p class="qun_at" @click.stop="qun_at">@</p>
 			</div>
 			<div class="messageval">
-				<textarea v-model="val" @input="jianting($event)" :placeholder="tishi" :id="'emoji'+list.group._id"></textarea>
+				<textarea v-model="val" @input="jianting($event)" :placeholder="tishi" :id="'emoji'+list.group._id"@keydown.enter.shift = "sendmessage($event)"></textarea>
 				<div class="sendmessage" @click="sendmessage">发送</div>
 			</div> 
 		</div>
@@ -184,7 +183,7 @@
 		props: ['index', 'list'],
 		data() {
 			return {
-				atlist:[],
+				atlist: [],
 				myself_say_act: 0,
 				juqing: 0,
 				val: '',
@@ -206,7 +205,7 @@
 				show_userno_string: '已关闭',
 				show_userno_switch: false,
 				not_open: this.list.not_open ? 'transition:width 1s,height 1s,top 1s,left 1s,border-radius 1s,opacity 1s;height:0;width:0;border-radius:50%;' + 'opacity:0' : '',
-				scrollLeft:0,
+				scrollLeft: 0,
 			}
 		},
 		mounted: function() {
@@ -225,36 +224,47 @@
 			chat.uploadeimg(this.list.index);
 		},
 		methods: {
-			qun_at:function(){
-				this.$store.state.show_at=true;
+			qun_at: function() {
+				this.$store.state.show_at = true;
 				console.log("测试group:", this.list.group);
 				//全局设置当前进行的群会话index
 				console.log("this.list.index**********,", this.list.index);
-				this.$store.state.chat.at_current_con_index= this.list.index;
-				this.$store.state.group_id=this.list.group._id;
+				this.$store.state.chat.at_current_con_index = this.list.index;
+				this.$store.state.group_id = this.list.group._id;
 			},
-			delete_at:function(index){
+			emoji: function(content) {
+				var content = content.replace(/</g, '&lt;').
+				replace(/>/g, '&gt;').
+				replace(/"/g, "&quot;").
+				replace(/'/g, "&#039;");
+				content = content.replace(/\n/g, "<br />");
+				for (var i = 0; i < this.$store.state.chat.emojis.length; i++) {
+					if (content.match(this.$store.state.chat.emojis[i].Word)) {
+						var ex = new RegExp('\\[' + this.$store.state.chat.emojis[i].Word + '\\]', 'g');
+						content = content.replace(ex, '<image style="display: inline-block;position:relative;top:-3px;height: 20px;width: 20px;vertical-align: middle;" src="' + this.$store.state.chat.emojis[i].ImageName + '"/>')
+					}
+				}
+				return content
+			},
+			delete_at: function(index) {
 				//找到索引对应的@项并删除
 				var con = this.$store.state.chat.conversation[this.list.index];
-				con.tempAtList.splice(index,1);
-				console.log("tempAtList:",con.tempAtList);
+				con.tempAtList.splice(index, 1);
+				console.log("tempAtList:", con.tempAtList);
 			},
-			downat:function(event){
-			 var dom2=event.currentTarget.parentNode,
-			 left=event.clientX;
-			 console.log(left)
-			 // dom=querySelector('#win'+this.list.group._id')
-			 // left1=parseInt(window.getComputedStyle(dom).left);
-			 var that=this;
-			 document.onmousemove=function(event){
-			 	var evt=event || window.event,
-			 	left2=event.clientX;
-			 	dom2.scrollLeft=left-left2+that.scrollLeft;
-			 }
-			 document.onmouseup=function(){
-			 	that.scrollLeft=dom2.scrollLeft;
-			 	document.onmousemove=null;
-			 }
+			downat: function(event) {
+				var dom2 = event.currentTarget.parentNode,
+					left = event.clientX;
+				var that = this;
+				document.onmousemove = function(event) {
+					var evt = event || window.event,
+						left2 = event.clientX;
+					dom2.scrollLeft = left - left2 + that.scrollLeft;
+				}
+				document.onmouseup = function() {
+					that.scrollLeft = dom2.scrollLeft;
+					document.onmousemove = null;
+				}
 			},
 			del_msg: function(lindex, sindex) {
 				this.$store.state.chat.conversation[lindex].msg.splice(sindex, 1);
@@ -394,8 +404,8 @@
 			close_emoji: function() {
 				this.emoji_swi = false;
 			},
-			f_check_emoji: function(dom) {
-				var emoji = dom.children[0].getAttribute('name'),
+			f_check_emoji: function(event) {
+				var emoji = '[' + event.target.dataset.name + ']',
 					d = document.querySelector('#emoji' + this.list.group._id);
 				if (d) {
 					d.focus();
@@ -483,12 +493,13 @@
 				dom.style.left = this.$store.state.pageX + 40 + 'px';
 				console.log(this.$store.state.pageX)
 				dom.style.opacity = '0';
-				var a = this.$store.state.message_window[this.index],index=this.$store.state.message_window[this.index].index;
+				var a = this.$store.state.message_window[this.index],
+					index = this.$store.state.message_window[this.index].index;
 				a.show = 0;
 				this.$store.state.message_window.splice(this.index, 1, a);
 				console.log(index)
-				for(var j=0;j<this.$store.state.message_ball.length;j++){
-					if(this.$store.state.message_ball[j].index==index){
+				for (var j = 0; j < this.$store.state.message_ball.length; j++) {
+					if (this.$store.state.message_ball[j].index == index) {
 						var b = this.$store.state.message_ball[j];
 						b.show = 0;
 						this.$store.state.message_ball.splice(j, 1, b);
@@ -547,27 +558,22 @@
 					dom.style.top = b + 'px';
 				}
 			},
-			sendmessage: function() {
-				// 	chat.send(index, type, content_url, chat_type, temp)
-				// index 发送目标序号
-				// type 发送类型，0为文本，1为图片，2为魔法表情，3为红包，4为礼物。
-				// content_url 发送内容，文本或url
-				// chat_type 聊天类型 0为角色说，1为本人说，2为剧情
-				// temp 0 普通消息 1 临时消息
+			sendmessage: function(e) {
+				if (e.code == 'Enter' && e.shiftKey == true)
+					e.preventDefault()
 				if (this.val == '') {
 					this.tishi = "请输入内容！";
 				} else {
 					var me = this;
-					var val=me.val;
+					var val = me.val;
 					var group_at_users = this.$store.state.chat.conversation[me.list.index].tempAtList;
-					for(var i=0;i<group_at_users.length;i++){
-						val+=' @'+group_at_users[i].name;
+					for (var i = 0; i < group_at_users.length; i++) {
+						val += ' @' + group_at_users[i].name;
 					}
 					chat.send(me.list.index, 0, val, me.myself_say_act, group_at_users);
 					this.val = '';
 					this.tishi = '';
 					this.$store.state.chat.conversation[me.list.index].tempAtList = [];
-					// console.log(this.$store.state.chat.conversation[this.list.index])
 				}
 			},
 			send_magicimg(index, type) {
@@ -1103,54 +1109,58 @@
 	.windowfooter_func {
 		height: 40px;
 	}
-	.atlist_container{
+	
+	.atlist_container {
 		position: absolute;
-		left:0;
-		top:-24px;
-		height:24px;
-		width:100%;
-		overflow:hidden;
+		left: 0;
+		top: -24px;
+		height: 24px;
+		width: 100%;
+		overflow: hidden;
 	}
-	.atlist_content{
-		width:100%;
-		height:100px;
+	
+	.atlist_content {
+		width: 100%;
+		height: 100px;
 		overflow-x: scroll;
 		overflow-y: hidden;
 	}
-	.at_list{
-		height:2224px;
+	
+	.at_list {
+		height: 2224px;
 		cursor: pointer;
 	}
-	.delete_at{
+	
+	.delete_at {
 		position: absolute;
-		height:14px;
-		font-size:12px;
+		height: 14px;
+		font-size: 12px;
 		line-height: 14px;
-		top:3px;
-		width:14px;
-		right:0px;
-		border-radius:50%;
-		border:1px solid #999;
+		top: 3px;
+		width: 14px;
+		right: 0px;
+		border-radius: 50%;
+		border: 1px solid #999;
 		background: #fff;
-		text-align:center;
-
-
+		text-align: center;
 	}
-	.at_list>div{
+	
+	.at_list>div {
 		max-width: 100px;
-		text-overflow:ellipsis;
+		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
-		float:left;
-		height:22px;
-		border:#333 1px solid;
+		float: left;
+		height: 22px;
+		border: #333 1px solid;
 		line-height: 22px;
-		margin-right:6px;
+		margin-right: 6px;
 		background: #fff;
-		border-radius:5px;
-		padding:0 20px 0 5px;
+		border-radius: 5px;
+		padding: 0 20px 0 5px;
 		position: relative;
 	}
+	
 	.wordsay {
 		height: 22px;
 		color: #333;
@@ -1200,6 +1210,9 @@
 		padding: 5px;
 		line-height: 18px;
 		height: 58px;
+		-moz-user-select: text;
+		-webkit-user-select: text;
+		-ms-user-select: text;
 	}
 	
 	.get_height {
@@ -1275,9 +1288,12 @@
 		max-width: 300px;
 		text-align: left;
 		position: relative;
-		/*white-space: pre-wrap;*/
+		white-space: pre-wrap;
 		word-break: break-word;
 		cursor: pointer;
+		-moz-user-select: text;
+		-webkit-user-select: text;
+		-ms-user-select: text;
 	}
 	
 	div.wordcontent.active {
@@ -1417,11 +1433,11 @@
 	}
 	
 	p.qun_at {
-		float:right;
-		line-height:40px;
-		margin-right:20px;
+		float: right;
+		line-height: 40px;
+		margin-right: 20px;
 	}
-
+	
 	p.addjuqing_switch {
 		float: right;
 		line-height: 40px;
@@ -1503,6 +1519,14 @@
 	
 	.messageshow {
 		position: relative;
+	}
+	
+	.emojis {
+		margin: 5px;
+		float: left;
+		cursor: pointer;
+		width: 30px;
+		height: 30px;
 	}
 
 </style>

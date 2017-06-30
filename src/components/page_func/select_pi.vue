@@ -1,10 +1,10 @@
 <template>
    <transition name="anime">
-    <div class="show_img" v-show="$store.state.show_select_pi" @click.stop="f_hide_pi($event)">
+    <div class="show_img" v-show="$store.state.plugin.show_select_pi" @click.stop="f_hide_pi($event)">
 			<div class="container">	
 				<div class="pi_chu">
 					<ul class="pi_list">
-						<li v-for="(list,listindex) in this.$store.state.users" @click.stop="f_sure_add(listindex)">
+						<li v-for="(list,listindex) in $store.state.users" @click.stop="f_sure_add(listindex)">
 							<img :src="list.headimg">
 							<h3>{{list.name}}</h3>
 							<span :style="level_color(list.level_exp.level)">Lv.{{list.level_exp.level}}</span>
@@ -18,27 +18,24 @@
 </template>
 
 <script>
+	import vm from 'src/main.js'
+	var state = vm.$store.state
 	export default {
-		data() {
-			return {
-
-			}
-		},
 		mounted: function() {
 			var ele = document.querySelector(".pi_chu");
-			this.$store.state.no_scroll(ele);
+			state.no_scroll(ele);
 		},
 		methods: {
 			f_hide_pi: function(event) {
 				if (location.href.match('/Main_page/News') != null) {
-					this.$store.state.news_datas[this.$store.state.pi_index].pi_show = false;
-					this.$store.state.show_select_pi = false;
+					state.news_datas[state.plugin.pi_index].pi_show = false;
+					state.plugin.show_select_pi = false;
 				} else if (location.href.match('/Main_page/Personal') != null) {
-					this.$store.state.per_datas[this.$store.state.pi_index].pi_show = false;
-					this.$store.state.show_select_pi = false;
+					state.per_datas[state.plugin.pi_index].pi_show = false;
+					state.plugin.show_select_pi = false;
 				} else {
-					this.$store.state.home_datas[this.$store.state.pi_index].pi_show = false;
-					this.$store.state.show_select_pi = false;
+					state.home_datas[state.plugin.pi_index].pi_show = false;
+					state.plugin.show_select_pi = false;
 				}
 			},
 			f_sure_add: function(index) {
@@ -48,23 +45,23 @@
 						url: 'http://test.mrpyq.com/api/feed/add_play',
 						params: {
 							'access_token': localStorage.getItem('access_token'),
-							'id': this.$store.state.news_items[this.$store.state.pi_index].feed._id,
-							'userid': this.$store.state.users[index]._id,
-							'no': this.$store.state.users[index].no,
+							'id': state.news_items[state.plugin.pi_index].feed._id,
+							'userid': state.users[index]._id,
+							'no': state.users[index].no,
 						},
 						emulateJSON: true,
 					}).then((res) => {
 						if (res.body.play) {
 							if (res.body.play.default) {
-								this.$store.state.news_datas[this.$store.state.pi_index].play_user = res.body.play.user;
+								state.news_datas[state.plugin.pi_index].play_user = res.body.play.user;
 							}
-							this.$store.state.news_datas[this.$store.state.pi_index].pi_show = false;
-							this.$store.state.show_select_pi = false;
+							state.news_datas[state.plugin.pi_index].pi_show = false;
+							state.plugin.show_select_pi = false;
 						} else if (res.body.error) {
-							this.$store.state.f_error(this.$store.state, res.body.error);
+							state.plugin.f_error(state, res.body.error);
 						}
 					}, (res) => {
-						this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+						state.plugin.f_error(state, "服务器正在开小差。。。");
 					})
 				} else if (location.href.match('/Main_page/Personal') != null) {
 					this.$http({
@@ -72,33 +69,33 @@
 						url: 'http://test.mrpyq.com/api/feed/add_play',
 						params: {
 							'access_token': localStorage.getItem('access_token'),
-							'id': this.$store.state.per_items[this.$store.state.pi_index]._id,
-							'userid': this.$store.state.users[index]._id,
-							'no': this.$store.state.users[index].no,
+							'id': state.per_items[state.plugin.pi_index]._id,
+							'userid': state.users[index]._id,
+							'no': state.users[index].no,
 						},
 						emulateJSON: true,
 					}).then((res) => {
 						if (res.body.play) {
 							if (res.body.play.default) {
-								this.$store.state.per_datas[this.$store.state.pi_index].play_user = res.body.play.user;
-								for (var j = 0; j < this.$store.state.per_datas[this.$store.state.pi_index].like_inform.length; j++) {
-									this.$store.state.per_datas[this.$store.state.pi_index].like_inform[j].is_me = this.$store.state.per_datas[this.$store.state.pi_index].like_inform[j]._id == this.$store.state.per_datas[this.$store.state.pi_index].play_user._id;
-									if (this.$store.state.per_datas[this.$store.state.pi_index].like_inform[j].is_me) {
-										this.$store.state.per_datas[this.$store.state.pi_index].my_pi_like = true;
+								state.per_datas[state.plugin.pi_index].play_user = res.body.play.user;
+								for (var j = 0; j < state.per_datas[state.plugin.pi_index].like_inform.length; j++) {
+									state.per_datas[state.plugin.pi_index].like_inform[j].is_me = state.per_datas[state.plugin.pi_index].like_inform[j]._id == state.per_datas[state.plugin.pi_index].play_user._id;
+									if (state.per_datas[state.plugin.pi_index].like_inform[j].is_me) {
+										state.per_datas[state.plugin.pi_index].my_pi_like = true;
 										break;
 									} else {
-										this.$store.state.per_datas[this.$store.state.pi_index].my_pi_like = false;
+										state.per_datas[state.plugin.pi_index].my_pi_like = false;
 									}
 								}
 							}
-							this.$store.state.per_datas[this.$store.state.pi_index].pi_show = false;
-							this.$store.state.show_select_pi = false;
+							state.per_datas[state.plugin.pi_index].pi_show = false;
+							state.plugin.show_select_pi = false;
 
 						} else if (res.body.error) {
-							this.$store.state.f_error(this.$store.state, res.body.error);
+							state.plugin.f_error(state, res.body.error);
 						};
 					}, (res) => {
-						this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+						state.plugin.f_error(state, "服务器正在开小差。。。");
 					})
 				} else {
 					this.$http({
@@ -106,38 +103,38 @@
 						url: 'http://test.mrpyq.com/api/feed/add_play',
 						params: {
 							'access_token': localStorage.getItem('access_token'),
-							'id': this.$store.state.home_items[this.$store.state.pi_index]._id,
-							'userid': this.$store.state.users[index]._id,
-							'no': this.$store.state.users[index].no,
+							'id': state.home_items[state.plugin.pi_index]._id,
+							'userid': state.users[index]._id,
+							'no': state.users[index].no,
 						},
 						emulateJSON: true,
 					}).then((res) => {
 						if (res.body.play) {
 							if (res.body.play.default) {
-								this.$store.state.home_datas[this.$store.state.pi_index].play_user = res.body.play.user;
-								for (var j = 0; j < this.$store.state.home_datas[this.$store.state.pi_index].like_inform.length; j++) {
-									this.$store.state.home_datas[this.$store.state.pi_index].like_inform[j].is_me = this.$store.state.home_datas[this.$store.state.pi_index].like_inform[j]._id == this.$store.state.home_datas[this.$store.state.pi_index].play_user._id;
-									if (this.$store.state.home_datas[this.$store.state.pi_index].like_inform[j].is_me) {
-										this.$store.state.home_datas[this.$store.state.pi_index].my_pi_like = true;
+								state.home_datas[state.plugin.pi_index].play_user = res.body.play.user;
+								for (var j = 0; j < state.home_datas[state.plugin.pi_index].like_inform.length; j++) {
+									state.home_datas[state.plugin.pi_index].like_inform[j].is_me = state.home_datas[state.plugin.pi_index].like_inform[j]._id == state.home_datas[state.plugin.pi_index].play_user._id;
+									if (state.home_datas[state.plugin.pi_index].like_inform[j].is_me) {
+										state.home_datas[state.plugin.pi_index].my_pi_like = true;
 										break;
 									} else {
-										this.$store.state.home_datas[this.$store.state.pi_index].my_pi_like = false;
+										state.home_datas[state.plugin.pi_index].my_pi_like = false;
 									}
 								}
-								this.$store.state.home_datas[this.$store.state.pi_index].pi_show = false;
+								state.home_datas[state.plugin.pi_index].pi_show = false;
 							}
 
-							this.$store.state.show_select_pi = false;
+							state.plugin.show_select_pi = false;
 						} else if (res.body.error) {
-							this.$store.state.f_error(this.$store.state, res.body.error);
+							state.plugin.f_error(state, res.body.error);
 						}
 					}, (res) => {
-						this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+						state.plugin.f_error(state, "服务器正在开小差。。。");
 					})
 				}
 			},
 			level_color: function(level) {
-				if (this.$store.state.users) {
+				if (state.users) {
 					if (level < 4)
 						return "background:#7de0bf"
 					else if (level < 10)

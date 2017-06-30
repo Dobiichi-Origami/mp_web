@@ -45,9 +45,9 @@
 			}
 		},
 		mounted: function() {
-			if (this.$store.state.current_user){
-				if(this.$store.state.chat.messages.groupsDetail.length){
-					this.$store.state.friendcenter_mounted(this.$store.state, this);
+			if (this.$store.state.current_user) {
+				if (this.$store.state.chat.messages.groupsDetail.length) {
+					this.$store.state.mounted.addresslist_mounted(this.$store.state, this);
 				}
 			}
 			console.log(this.$store.state.chat.messages.grouplist)
@@ -76,7 +76,7 @@
 			},
 			opengroup: function(event, bindex) {
 				var id = event.target.dataset.index;
-				console.log(this.$store.state.chat.messages.grouplist[bindex])
+				console.log(this.$store.state.chat.messages.grouplist[bindex] + '11111111')
 				var index = chat.start(this.$store.state.chat.messages.grouplist[bindex]);
 				if (this.$store.state.message_window.length == 0) {
 					this.$store.state.message_window.push({
@@ -91,7 +91,7 @@
 					});
 				} else {
 					for (var i = 0; i < this.$store.state.message_window.length; i++) {
-						if(this.$store.state.message_window[i].group){
+						if (this.$store.state.message_window[i].group) {
 							if (id == this.$store.state.message_window[i].group._id) {
 								var dom = document.querySelector('#win' + id);
 								var w = parseInt(window.getComputedStyle(dom).width);
@@ -104,12 +104,12 @@
 									dom.style.left = document.body.clientWidth / 2 - 250 + 'px';
 									dom.style.opacity = 1;
 								}
-								dom.style.zIndex = ++this.$store.state.message_window_index;
-								var a = this.$store.state.message_window[i],index=this.$store.state.message_window[i].index;
+								var a = this.$store.state.message_window[i],
+									index = this.$store.state.message_window[i].index;
 								a.show = 1;
 								this.$store.state.message_window.splice(i, 1, a);
-								for(var j=0;j<this.$store.state.message_ball.length;j++){
-									if(this.$store.state.message_ball[j].index==index){
+								for (var j = 0; j < this.$store.state.message_ball.length; j++) {
+									if (this.$store.state.message_ball[j].index == index) {
 										var b = this.$store.state.message_ball[j];
 										b.show = 1;
 										console.log(this.$store.state.message_ball)
@@ -119,7 +119,20 @@
 									}
 								}
 								return;
-							}else if (i == this.$store.state.message_window.length - 1) {
+							} else if (i == this.$store.state.message_window.length - 1) {
+								this.$store.state.message_window.push({
+									group: this.$store.state.chat.messages.grouplist[bindex],
+									show: 1,
+									index: index,
+								});
+								this.$store.state.message_ball.unshift({
+									group: this.$store.state.chat.messages.grouplist[bindex],
+									show: 1,
+									index: index,
+								});
+								return;
+							}
+						} else if (i == this.$store.state.message_window.length - 1) {
 							this.$store.state.message_window.push({
 								group: this.$store.state.chat.messages.grouplist[bindex],
 								show: 1,
@@ -130,20 +143,6 @@
 								show: 1,
 								index: index,
 							});
-							return;
-						}
-						}
-						 else if (i == this.$store.state.message_window.length - 1) {
-							this.$store.state.message_window.push({
-								group: this.$store.state.chat.messages.grouplist[bindex],
-								show: 1,
-								index: index,
-							});
-							this.$store.state.message_ball.unshift({
-							group: this.$store.state.chat.messages.grouplist[bindex],
-							show: 1,
-							index: index,
-						});
 							return;
 						}
 					}
@@ -165,7 +164,7 @@
 					});
 				} else {
 					for (var i = 0; i < this.$store.state.message_window.length; i++) {
-						if(this.$store.state.message_window[i].user){
+						if (this.$store.state.message_window[i].user) {
 							if (id == this.$store.state.message_window[i].user.user._id) {
 								var dom = document.querySelector('#win' + id);
 								var w = parseInt(window.getComputedStyle(dom).width);
@@ -179,11 +178,12 @@
 									dom.style.opacity = 1;
 								}
 								dom.style.zIndex = ++this.$store.state.message_window_index;
-								var a = this.$store.state.message_window[i],index=this.$store.state.message_window[i].index;
+								var a = this.$store.state.message_window[i],
+									index = this.$store.state.message_window[i].index;
 								a.show = 1;
 								this.$store.state.message_window.splice(i, 1, a);
-								for(var j=0;j<this.$store.state.message_ball.length;j++){
-									if(this.$store.state.message_ball[j].index==index){
+								for (var j = 0; j < this.$store.state.message_ball.length; j++) {
+									if (this.$store.state.message_ball[j].index == index) {
 										var b = this.$store.state.message_ball[j];
 										b.show = 1;
 										console.log(this.$store.state.message_ball)
@@ -192,10 +192,11 @@
 										break;
 									}
 								}
-								return
+								return;
 							} else if (i == this.$store.state.message_window.length - 1) {
 								this.$store.state.message_window.push({
 									user: this.$store.state.chat.messages.friendlist[bindex].friends[sindex],
+
 									show: 1,
 									index: index,
 								});
@@ -206,9 +207,10 @@
 								});
 								return;
 							}
-						}else if (i == this.$store.state.message_window.length - 1) {
+						} else if (i == this.$store.state.message_window.length - 1) {
 							this.$store.state.message_window.push({
 								user: this.$store.state.chat.messages.friendlist[bindex].friends[sindex],
+
 								show: 1,
 								index: index,
 							});
@@ -305,7 +307,7 @@
 	}
 	
 	ul>li>img,
-	.groupname img{
+	.groupname img {
 		float: left;
 		width: 34px;
 		height: 34px;
@@ -411,12 +413,12 @@
 		background: url('~assets/chat/grouplist1.png') 120px center no-repeat #fff;
 		color: #333238;
 	}
+	
 	.tofriend.active>div,
 	.togroup.active>div {
 		display: block;
 	}
-	.groupname>div {
-
-	}
+	
+	.groupname>div {}
 
 </style>

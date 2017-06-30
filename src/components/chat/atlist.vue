@@ -20,48 +20,47 @@
 	export default ({
 		data() {
 			return {
-				all_members_list:[]
+				all_members_list: []
 			}
 		},
-		mounted:function(){
+		mounted: function() {
 			this.$http({
-					method: 'get',
-					url: 'http://test.mrpyq.com/api/group/members_in_group',
-					params: {
-						'access_token': localStorage.getItem('access_token'),
-						'id': this.$store.state.group_id,
-						'page': 1,
-					},
-					emulateJSON: true,
-				}).then((res) => {
-					console.log("test*******",res.body);
-					var s = res.body.items,
-						n = 1;
-					console.log();
-					for (var i = 0; i < s.length; i++) {
-						console.log(s[i].title)
-						if (!s[i].title) {
-							n = i;
-							console.log(n)
-							break;
-						}
+				method: 'get',
+				url: 'http://test.mrpyq.com/api/group/members_in_group',
+				params: {
+					'access_token': localStorage.getItem('access_token'),
+					'id': this.$store.state.group_id,
+					'page': 1,
+				},
+				emulateJSON: true,
+			}).then((res) => {
+				console.log("test*******", res.body);
+				var s = res.body.items,
+					n = 1;
+				for (var i = 0; i < s.length; i++) {
+					console.log(s[i].title)
+					if (!s[i].title) {
+						n = i;
+						console.log(n)
+						break;
 					}
-					var a = [];
-					for (var i = n; i < s.length; i++) {
-						if (s[i].title) {
-							a.push(s[i]);
-							s.splice(i, 1);
-							i--;
-						}
+				}
+				var a = [];
+				for (var i = n; i < s.length; i++) {
+					if (s[i].title) {
+						a.push(s[i]);
+						s.splice(i, 1);
+						i--;
 					}
-					for (var i = 0; i < a.length; i++) {
-						s.splice(n, 0, a[i])
-					}
-					this.all_members_list = s;
-					this.all_members_show = true;
-				})
+				}
+				for (var i = 0; i < a.length; i++) {
+					s.splice(n, 0, a[i])
+				}
+				this.all_members_list = s;
+				this.all_members_show = true;
+			})
 		},
-		methods:{
+		methods: {
 			title_bg: function(type) {
 				if (type == 20) {
 					return '#fc9934'
@@ -72,26 +71,27 @@
 				}
 			},
 
-			add_at:function(listIndex){
+			add_at: function(listIndex) {
 				//将选中的用户放入当前会话的临时atList中
 				var con = this.$store.state.chat.conversation[this.$store.state.chat.at_current_con_index];
-				console.log("@对应的当前会话：", con );
+				console.log("@对应的当前会话：", con);
 				var current_member = this.all_members_list[listIndex];
 				var user = {
-					id:current_member._id,
-   					no:current_member.no,
-    				name:current_member.name,
-    				head_img:current_member.headimg
+					id: current_member._id,
+					no: current_member.no,
+					name: current_member.name,
+					head_img: current_member.headimg
 				}
 				con.tempAtList.push(user);
-				console.log("tempAtList:   ", con.tempAtList);
+				console.log("tempAtList:", con.tempAtList);
 				this.$store.state.show_at = false;
 			},
-			f_hide_pi:function(event) {
+			f_hide_pi: function(event) {
 				this.$store.state.show_at = false;
 			}
 		}
 	})
+
 </script>
 <style scoped>
 	.container {
@@ -104,6 +104,7 @@
 		border-radius: 5px;
 		position: relative;
 	}
+	
 	.pi_chu {
 		width: 600px;
 		height: 490px;
@@ -191,4 +192,5 @@
 	.anime-leave-to {
 		opacity: 0;
 	}
+
 </style>

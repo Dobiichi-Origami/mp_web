@@ -105,42 +105,42 @@
       <activity id="right" class="border_box"></activity>
     </div>
     <btn id="btn" class="border_box"></btn>
-    <message v-for="(list,index) in this.$store.state.message_window" :index="index" :list="list" v-show="list.show"></message>
-    <system></system>
-    <checkwindow></checkwindow>
+    <normal_message v-for="(list,index) in this.$store.state.message_window" :index="index" :list="list" v-show="list.show"></normal_message>
+    <system_message></system_message>
+    <ball></ball>
+    <atlist v-if="$store.state.show_at"></atlist>
   </div>
 </template>
 <script>
-	import message from "./page_func/message"
-	import system from "./page_func/system_message"
-	import chat from 'src/chat'
 	import activity from "./page_func/activity"
 	import btn from "./page_func/btn"
 	import seeimg from "./page_func/seeimg.vue"
-	import checkwindow from "./page_func/ball"
+
+	import chat from 'src/chat'
+	import ball from "./page_func/ball"
+	import normal_message from "./chat/normal_message"
+	import system_message from "./chat/system_message"
 	import emoji from 'src/chat/emoji/emoji.js'
+	import atlist from "./chat/atlist"
+
 	export default {
 		updated: function() {},
 		components: {
 			activity,
 			btn,
-			message,
 			seeimg,
-			system,
-			checkwindow,
+			ball,
+			normal_message,
+			system_message,
+			atlist,
 		},
 		mounted: function() {
-			this.$http.get("http://test.mrpyq.com/api/qiniu", {}).then(
-				(res) => {
-					console.log(res.body)
-				})
 			var me = this,
 				ele1 = document.getElementById("li1"),
 				ele2 = document.getElementById("li2"),
 				ele3 = document.getElementsByClassName("des_s")[0];
 			//获取当前皮，专区等信息
 			me.get_info();
-			//me.level_bgcolor(); 重复
 			me.$store.state.no_scroll(ele1);
 			me.$store.state.no_scroll(ele2);
 			me.$store.state.no_scroll(ele3);
@@ -158,10 +158,8 @@
 				level: 0,
 				arrow1: false,
 				arrow2: false,
-
 				li1: false,
 				li2: false,
-
 			}
 		},
 
@@ -170,8 +168,11 @@
 				_czc.push(["_trackEvent", "功能", "登出"]);
 				TDAPP.onEvent("功能", "登出");
 				localStorage.clear();
+				chat.logout();
 				this.$router.push('/Login');
 				//强制刷新页面
+				window.location.reload();
+				window.location.reload();
 				window.location.reload();
 			},
 			logo_click: function() {
@@ -183,7 +184,7 @@
 				TDAPP.onEvent("功能", "点击个人头像");
 				this.$store.state.current_user_pe = this.$store.state.current_user;
 				if (/personal/i.exec(location.href) != null) {
-					this.$store.state.personal_mounted(this.$store.state, this);
+					this.$store.state.mounted.personal_mounted(this.$store.state, this);
 				} else {
 					this.$router.push('/Main_page/Personal');
 				}
@@ -193,7 +194,7 @@
 				TDAPP.onEvent("功能", "点击查看消息");
 				this.$store.state.news = 0;
 				if (location.href.match('/Main_page/News') != null) {
-					this.$store.state.news_mounted(this.$store.state, this);
+					this.$store.state.mounted.news_mounted(this.$store.state, this);
 				} else
 					this.$router.push('/Main_page/News');
 			},
@@ -226,7 +227,7 @@
 				TDAPP.onEvent("功能", "切换专区");
 				var id = e.target.id || e.target.parentNode.id,
 					me = this;
-				me.$http.get("http://test.mrpyq.com/api/room/set_room", {
+				me.$http.get(me.$store.state.domain + 'room/set_room', {
 					params: {
 						access_token: localStorage.getItem('access_token'),
 						roomid: id,
@@ -242,7 +243,7 @@
 							if (location.href.match('/Main_page/Home') == null) {
 								this.$router.push('/Main_page/Home');
 							} else {
-								this.$store.state.home_mounted(this.$store.state, this);
+								this.$store.state.mounted.home_mounted(this.$store.state, this);
 							}
 							me.level = me.$store.state.current_user.level_exp.level;
 							me.level_bgcolor();
@@ -250,7 +251,7 @@
 							me.li1 = !me.li1;
 							me.current_room_first();
 							//获取这个专区的皮
-							me.$http.get("http://test.mrpyq.com/api/room/members_by_me", {
+							me.$http.get(me.$store.state.domain + 'room/members_by_me', {
 								params: {
 									//page: 0,    先不传用默认，后去判断pagemore
 									access_token: localStorage.getItem('access_token'),
@@ -271,14 +272,14 @@
 
 										me.current_identity_first();
 									} else if (res1.body.error)
-										this.$store.state.f_error(this.$store.state, res1.body.error);
+										this.$store.state.plugin.f_error(this.$store.state, res1.body.error);
 								}, (res1) => {
-									this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+									this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 								})
 						} else if (res.body.error)
-							this.$store.state.f_error(this.$store.state, res.body.error);
+							this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					}, (res) => {
-						this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+						this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 					})
 			},
 			change_identity: function(e) {
@@ -286,7 +287,7 @@
 				TDAPP.onEvent("功能", "切换身份");
 				var id = e.target.id || e.target.parentNode.id,
 					me = this;
-				me.$http.get('http://test.mrpyq.com/api/account/set_user', {
+				me.$http.get(me.$store.state.domain + 'account/set_user', {
 					params: {
 						access_token: localStorage.getItem('access_token'),
 						userid: id,
@@ -328,10 +329,10 @@
 								}
 							}
 						} else if (res.body.error) {
-							this.$store.state.f_error(this.$store.state, res.body.error);
+							this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 						}
 					}, (res) => {
-						this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+						this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 					}
 				)
 			},
@@ -384,7 +385,7 @@
 			//获取第page页的数据
 			user_page_more: function(page, id) {
 				var me = this;
-				me.$http.get('http://test.mrpyq.com/api/room/members_by_me', {
+				me.$http.get(me.$store.state.domain + 'room/members_by_me', {
 					params: {
 						page: page,
 						access_token: localStorage.getItem('access_token'),
@@ -397,7 +398,7 @@
 								me.$store.state.users.push(resmore.body.items[i])
 						} else if (resmore.body.error) {
 
-							me.$store.state.f_error(me.$store.state, resmore.body.error);
+							me.$store.state.plugin.f_error(me.$store.state, resmore.body.error);
 						}
 						//判断pagemore
 						if (resmore.body.pagemore) {
@@ -406,7 +407,7 @@
 						}
 					}, (resmore) => {
 
-						me.$store.state.f_error(me.$store.state, "服务器正在开小差。。。");
+						me.$store.state.plugin.f_error(me.$store.state, "服务器正在开小差。。。");
 					})
 			},
 			get_info: function() {
@@ -418,7 +419,7 @@
 					return;
 				}
 				//为显示身份列表，获取当前专区当前皮
-				me.$http.get('http://test.mrpyq.com/api/account/current_account', {
+				me.$http.get(me.$store.state.domain + 'account/current_account', {
 					params: {
 						access_token: localStorage.getItem('access_token')
 					}
@@ -429,7 +430,7 @@
 							var re = res.body,
 								flag = 0;
 							//获取当前专区的所有皮
-							me.$http.get('http://test.mrpyq.com/api/room/members_by_me', {
+							me.$http.get(me.$store.state.domain + 'room/members_by_me', {
 								params: {
 									//page: 0,    先不传用默认，后去判断pagemore
 									access_token: localStorage.getItem('access_token'),
@@ -457,34 +458,34 @@
 										//personal_mounted 刷新个人主页避免person页面先执行接口传参取不到值
 										//放在这里请求带参数之后再调用
 										if (location.href.match(/Main_page\/Personal/i) != null) {
-											this.$store.state.personal_mounted(this.$store.state, this);
+											this.$store.state.mounted.personal_mounted(this.$store.state, this);
 										} else if (location.href.match(/Main_page\/News/i) != null) {
-											this.$store.state.news_mounted(this.$store.state, this);
+											this.$store.state.mounted.news_mounted(this.$store.state, this);
 										} else if (location.href.match(/Main_page\/Detail/i) != null) {
 											//this.$store.state.detail_mounted(this.$store.state, this);
 										} else if (location.href.match(/Main_page\/Addresslist/i) != null) {
 											if (this.$store.state.chat.messages.groupsDetail.length) {
-												this.$store.state.friendcenter_mounted(this.$store.state, this);
+												this.$store.state.mounted.addresslist_mounted(this.$store.state, this);
 											}
 										} else {
-											this.$store.state.home_mounted(this.$store.state, this);
+											this.$store.state.mounted.home_mounted(this.$store.state, this);
 										}
 										//
 									} else if (res1.body.error)
-										this.$store.state.f_error(this.$store.state, res1.body.error);
+										this.$store.state.plugin.f_error(this.$store.state, res1.body.error);
 								}, (res1) => {
-									this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+									this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 								}
 							)
 						} else if (res.body.error)
-							this.$store.state.f_error(this.$store.state, res.body.error);
+							this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 
 					}, (res) => {
-						this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+						this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 					}
 				)
 				//为显示专区列表，获取所有专区
-				me.$http.get('http://test.mrpyq.com/api/room/rooms_by_me', {
+				me.$http.get(me.$store.state.domain + 'room/rooms_by_me', {
 					params: {
 						access_token: localStorage.getItem('access_token')
 					}
@@ -498,9 +499,9 @@
 							})
 							me.current_room_first();
 						} else if (res.body.error)
-							this.$store.state.f_error(this.$store.state, res.body.error);
+							this.$store.state.plugin.f_error(this.$store.state, res.body.error);
 					}, (res) => {
-						this.$store.state.f_error(this.$store.state, "服务器正在开小差。。。");
+						this.$store.state.plugin.f_error(this.$store.state, "服务器正在开小差。。。");
 					}
 				)
 			},
