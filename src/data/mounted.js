@@ -1,6 +1,6 @@
 const Plugin = {
 	state: {
-		friendcenter_mounted: function (state, th) {
+		addresslist_mounted: function (state, th) {
 			state.chat.messages.friendlist = [];
 			state.title = '通讯录';
 			state.loader = true;
@@ -92,15 +92,16 @@ const Plugin = {
 		},
 		detail_mounted: function (state, th) {
 			state.details = {
-					item: false,
-					comments_pagemore: false,
-					like_inform: false,
-					me_inform: false,
-					my_pi_like: false,
-					play_user: false,
-					comments: false,
-				},
-				state.loader = true;
+				item: false,
+				comments_pagemore: false,
+				like_inform: false,
+				me_inform: false,
+				my_pi_like: false,
+				play_user: false,
+				comments: false,
+			};
+			state.loader = true;
+			state.title = "帖子详情";
 			th.$http({
 				method: 'get',
 				url: state.domain + 'feed/comments_by_feed',

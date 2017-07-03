@@ -445,8 +445,6 @@
 											obj: ['current_user', 'current_room', 'users'],
 											value: [re.user, re.room, re1.items]
 										})
-										//开启即时通讯
-										chat.login(me.$store.state.current_user.device._id);
 										//获取后几页的皮
 										if (re1.pagemore) {
 											me.user_page_more(2, re.room._id);
@@ -455,22 +453,21 @@
 										me.current_identity_first();
 										me.level_bgcolor();
 
-										//personal_mounted 刷新个人主页避免person页面先执行接口传参取不到值
-										//放在这里请求带参数之后再调用
+										//刷新后为避免没有获取到值就直接刷新子页面，所以在getinfo执行后再调用mounted
+										//通讯录mounted在连接im成功后调用
+										//addresslist_mounted
+										//开启即时通讯
+										chat.login(me.$store.state.current_user.device._id);
 										if (location.href.match(/Main_page\/Personal/i) != null) {
 											this.$store.state.mounted.personal_mounted(this.$store.state, this);
 										} else if (location.href.match(/Main_page\/News/i) != null) {
 											this.$store.state.mounted.news_mounted(this.$store.state, this);
 										} else if (location.href.match(/Main_page\/Detail/i) != null) {
 											//this.$store.state.detail_mounted(this.$store.state, this);
-										} else if (location.href.match(/Main_page\/Addresslist/i) != null) {
-											if (this.$store.state.chat.messages.groupsDetail.length) {
-												this.$store.state.mounted.friendcenter_mounted(this.$store.state, this);
-											}
 										} else {
 											this.$store.state.mounted.home_mounted(this.$store.state, this);
 										}
-										//
+
 									} else if (res1.body.error)
 										this.$store.state.plugin.f_error(this.$store.state, res1.body.error);
 								}, (res1) => {

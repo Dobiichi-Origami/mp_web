@@ -13,7 +13,6 @@
 			}
 		},
 		mounted: function() {
-			this.$store.state.title = "帖子详情";
 			this.$store.state.mounted.detail_mounted(this.$store.state, this);
 		},
 		components: {

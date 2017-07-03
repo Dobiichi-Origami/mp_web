@@ -20,6 +20,9 @@ var MpIMClient = {
 		me.ws.onopen = function () {
 			if (this.readyState == 1) {
 				console.log('链接成功', me.DeviceInfo);
+				if (location.href.match(/Main_page\/Addresslist/i) != null)
+					vm.$store.state.mounted.addresslist_mounted(vm.$store.state, vm);
+
 				me.login(me.DeviceInfo)
 				//如果是重练，登录成功关闭重练
 				if (me.reconnect_) {
@@ -84,7 +87,7 @@ var MpIMClient = {
 		this.ws.send(data)
 	},
 	close: function () {
-		if (this.ws) {
+		if (this.ws.close) {
 			this.ws.close();
 			vm.$store.state.chat.close_by_me = true;
 		}
@@ -121,7 +124,7 @@ var MpIMClient = {
 						msg = data.body.msg;
 						console.log('发送成功:op5')
 						console.log(msg);
-						
+
 						if (!msg.type) {
 							//聊天消息
 							msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));

@@ -46,8 +46,7 @@ var chat = {
 	login: function (deviceid) {
 		this.deviceInfo.token = localStorage.getItem('access_token');
 		this.mac = deviceid;
-		mpIM.init(this.deviceInfo);
-		this.getgroup();
+		this.getgroup(mpIM.init, this.deviceInfo);
 	},
 	logout: function () {
 		mpIM.close();
@@ -78,12 +77,12 @@ var chat = {
 	},
 
 	start: function (info, isreseive) {
-		var con = vm.$store.state.chat.conversation;
-		var me = {},
+		var con = vm.$store.state.chat.conversation,
+			me = {},
 			other = {},
-			group_details = {};
-		var conExist; //标识会话是否在会话数组中存在，在的话为对应索引index,不在的话为undefined
-		var conversation; //自定义conversation
+			group_details = {},
+			conExist, //标识会话是否在会话数组中存在，在的话为对应索引index,不在的话为undefined
+			conversation; //自定义conversation
 		//先判断收发类型
 		if (isreseive) {
 			//收消息情况下，判断会话类型
@@ -109,6 +108,9 @@ var chat = {
 					if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
 						vm.$store.state.chat.conversation[conExist].set_unreadCount();
 					}
+					if (info.chat_body.direction) {
+						vm.$store.state.openfriend(vm.$store.state, info, chat);
+					}
 					return conExist;
 				} else {
 					other.headimg = info.chat_body.sender.head_img;
@@ -118,84 +120,77 @@ var chat = {
 				}
 				//产生会话
 				conversation = new Conversation(me, other);
-				console.log("本次会话的mename************", me.name);
-				console.log("本次会话的othername***********", other.name);
 				if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
 					conversation.set_unreadCount();
 				}
 			} else if (info.target_type == 1) { //群聊
-				if (vm.$store.state.group_switch) {
-					var groupList = vm.$store.state.chat.messages.grouplist;
-					var currPi;
-					//遍历用户的所有群信息，找到和收到的群消息对应的群
-					for (var gindex = 0, glength = groupList.length; gindex < glength; gindex++) {
-						if (info.target_id == groupList[gindex]._id) {
-							//找到后取该群中对应的当前皮信息
-							currPi = groupList[gindex].member;
-							me.id = currPi._id;
-							me.no = currPi.no;
-							break;
-						}
-					}
-					other.id = info.target_id;
-					//判断该会话是否存在
-					conExist = this.conversationExist(me.id, other.id, con, me.no);
-					if (conExist != undefined) {
-						vm.$store.state.message_window[conExist].show = 1;
-						if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
-							vm.$store.state.chat.conversation[conExist].set_unreadCount()
-						}
-						return conExist;
-					} else {
-						me.headimg = currPi.headimg;
-						me.name = currPi.name;
-						other.headimg = info.chat_body.chat_head_img;
-						other.name = info.chat_body.chat_name;
-						other.no = info.target_no;
-					}
-					conversation = new Conversation(me, other);
 
-					conversation.set_group(true); //conversation的isGroup为true
-					var selfTitle;
-					console.log(conversation)
-					switch (currPi.group_member_type) {
-						case 10:
-							selfTitle = "管理员";
-							break;
-						case 20:
-							selfTitle = "群主";
-							break;
-						default:
-							selfTitle = "";
-							break;
+				var groupList = vm.$store.state.chat.messages.grouplist;
+				var currPi;
+				//遍历用户的所有群信息，找到和收到的群消息对应的群
+				for (var gindex = 0, glength = groupList.length; gindex < glength; gindex++) {
+					if (info.target_id == groupList[gindex]._id) {
+						//找到后取该群中对应的当前皮信息
+						currPi = groupList[gindex].member;
+						me.id = currPi._id;
+						me.no = currPi.no;
+						break;
+
 					}
-					//设置群头衔
-					conversation.set_title(selfTitle, currPi.group_member_type);
-					//
-					for (var i = 0; i < vm.$store.state.chat.messages.grouplist.length; i++) {
-						if (other.id == vm.$store.state.chat.messages.grouplist[i]._id) {
-							group_details = vm.$store.state.chat.messages.grouplist[i];
-							break;
-						}
+				}
+				other.id = info.target_id;
+				//判断该会话是否存在
+				conExist = this.conversationExist(me.id, other.id, con, me.no);
+				for (var i = 0; i < vm.$store.state.chat.messages.grouplist.length; i++) {
+					if (other.id == vm.$store.state.chat.messages.grouplist[i]._id) {
+						group_details = vm.$store.state.chat.messages.grouplist[i];
+						break;
 					}
-					if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
-						conversation.set_unreadCount();
+				}
+				if (conExist != undefined) {
+					vm.$store.state.message_window[conExist].show = 1;
+					if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
+						vm.$store.state.chat.conversation[conExist].set_unreadCount()
+
 					}
+					if (info.chat_body.direction) {
+						vm.$store.state.opengroup(vm.$store.state, group_details._id, group_details, chat);
+					}
+					return conExist;
 				} else {
-					var th = this;
-					var time = setInterval(function () {
-						if (vm.$store.state.group_switch) {
-							th.handle_text(info);
-							clearInterval(time);
-						}
-					}, 300)
-					return conExist;//检查
+					me.headimg = currPi.headimg;
+					me.name = currPi.name;
+					other.headimg = info.chat_body.chat_head_img;
+					other.name = info.chat_body.chat_name;
+					other.no = info.target_no;
+					//添加
+				}
+				conversation = new Conversation(me, other);
+				conversation.set_group(true);
+				var selfTitle;
+				console.log(conversation)
+				switch (currPi.group_member_type) {
+					case 10:
+						selfTitle = "管理员";
+						break;
+					case 20:
+						selfTitle = "群主";
+						break;
+					default:
+						selfTitle = "";
+						break;
+				}
+				//设置群头衔
+				conversation.set_title(selfTitle, currPi.group_member_type);
+
+
+				if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
+					conversation.set_unreadCount();
 				}
 			}
 		} else {
 			//发消息情况下，判断会话类型
 			if (!info.description) { //私聊
-				
 				if (info.target_id) {
 					me.id = info.target_id;
 					me.no = info.target_no;
@@ -223,11 +218,8 @@ var chat = {
 						other.name = info.name;
 						other.deviceid = info.device._id;
 					}
-
 				}
 				conversation = new Conversation(me, other);
-				console.log("本次会话的mename************", me.name);
-				console.log("本次会话的othername***********", other.name);
 			} else { //群聊
 				me.id = info.member._id;
 				me.no = info.member.no;
@@ -246,7 +238,6 @@ var chat = {
 				conversation = new Conversation(me, other);
 				conversation.set_group(true);
 
-				console.log(info.member.group_member_type);
 				switch (info.member.group_member_type) {
 					case 1:
 						conversation.set_title("", 1);
@@ -358,8 +349,9 @@ var chat = {
 			return;
 		}
 
-		var is_me_speak = message.chat_body.direction ? false : true;
-		var msg = new Msg(index, message.chat_body.content_type, message.chat_body.content.content, message.chat_body.content.speakType, message.time, is_me_speak, message.chat_body.chat_is_friend, message.uid);
+		var is_me_speak = message.chat_body.direction ? false : true,
+			temp = message.chat_body.chat_is_friend ? 0 : 1;
+		var msg = new Msg(index, message.chat_body.content_type, message.chat_body.content.content, message.chat_body.content.speakType, message.time, is_me_speak, temp, message.uid);
 
 		//群消息需要设置发言人
 		if (message.target_type == 1) { //为群会话消息，需要在msg中添加发言人信息
@@ -395,33 +387,36 @@ var chat = {
 			if (flag)
 				break;
 		}
-		//设置此条消息已撤回
-		con[i].msg[im].set_revoke(message.revoke_body.sender, message.revoke_body.content);
+		if (flag) {
+			//设置此条消息已撤回
+			con[i].msg[im].set_revoke(message.revoke_body.sender, message.revoke_body.content);
+		}
+
 	},
 	send_revoke: function (conversation_index, msg_index, content) {
-		var targetType = con[conversation_index].isGroup ? 1 : 0;
-		var body = {
-			revoke_body: {
-				msg_uid: con[conversation_index].msg[msg_index].uid,
-				sender: {
-					id: con[conversation_index].me.id,
-					no: con[conversation_index].me.no,
-					name: con[conversation_index].me.name,
-					head_img: con[conversation_index].me.headimg
+		var targetType = con[conversation_index].isGroup ? 1 : 0,
+			body = {
+				revoke_body: {
+					msg_uid: con[conversation_index].msg[msg_index].uid,
+					sender: {
+						id: con[conversation_index].me.id,
+						no: con[conversation_index].me.no,
+						name: con[conversation_index].me.name,
+						head_img: con[conversation_index].me.headimg
+					},
+					content: content,
 				},
-				content: content,
-			},
-			type: 2,
-			time: Date.now(),
-			target_type: targetType,
-			target_id: con[conversation_index].other.id,
-			target_no: con[conversation_index].other.no - 0,
-		}
+				type: 2,
+				time: Date.now(),
+				target_type: targetType,
+				target_id: con[conversation_index].other.id,
+				target_no: con[conversation_index].other.no - 0,
+			}
 		mpIM.send(body);
 		con[conversation_index].msg[msg_index].set_revoke(body.revoke_body.sender, body.revoke_body.content)
 	},
 	//获取群数据
-	getgroup: function () {
+	getgroup: function (callback, param) {
 		var allgroup;
 		//查看所有群信息
 		vm.$http({
@@ -442,6 +437,7 @@ var chat = {
 					var details = [];
 					if (allgroup) {
 						for (var i = 0, l = allgroup.length; i < l; i++) {
+							console.log(1)
 							//对每个群的群id获取其群详细
 							vm.$http({
 								method: 'get',
@@ -459,8 +455,7 @@ var chat = {
 										details.push(res.body.group);
 										if (details.length == vm.$store.state.chat.messages.grouplist.length) {
 											vm.$store.state.chat.messages.groupsDetail = details;
-											vm.$store.state.mounted.friendcenter_mounted(vm.$store.state, vm);
-											vm.$store.state.group_switch = true;
+											callback(param);
 										}
 									}
 								},
@@ -521,7 +516,7 @@ var chat = {
 						new Msg(index, 1, {
 							url: src,
 							id: file.id
-						}, 0, 0, new Date().getTime(), true);
+						}, 0, new Date().getTime(), true, 0);
 					} else {
 						vm.$store.state.plugin.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
 					}
@@ -539,7 +534,7 @@ var chat = {
 							}
 						}
 
-						me.send(index, 1, 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key, 0, 0)
+						me.send(index, 1, 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key, 0)
 					} else {
 						vm.$store.state.plugin.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
 					}
@@ -564,24 +559,24 @@ var chat = {
 			//点数
 			var random_dice = Math.ceil(Math.random() * 6),
 				dice = {
-					animatedPicLocalUri: "asset:///magic_pic/dice/dice_anim_" + random_dice + ".webp",
-					animatedPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/dice/dice_anim_" + random_dice + ".webp",
+					animatedPicLocalUri: "asset:///magic_pic/dice/dice_anim_" + random_dice + ".gif",
+					animatedPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/dice/dice_anim_" + random_dice + ".gif",
 					magicPicDesc: "[骰子]",
 					magicPicType: "DICE",
-					staticPicLocalUri: "asset:///magic_pic/dice/dice_" + random_dice + ".webp",
-					staticPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/dice/dice_" + random_dice + ".webp",
+					staticPicLocalUri: "asset:///magic_pic/dice/dice_" + random_dice + ".gif",
+					staticPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/dice/dice_" + random_dice + ".gif",
 				}
 			return dice;
 		} else {
 			//1石头2剪刀3布
 			var random_roshambo = Math.ceil(Math.random() * 3),
 				roshambo = {
-					animatedPicLocalUri: "asset:///magic_pic/roshambo/roshambo_anim_" + random_roshambo + ".webp",
-					animatedPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/roshambo/roshambo_anim_" + random_roshambo + ".webp",
+					animatedPicLocalUri: "asset:///magic_pic/roshambo/roshambo_anim_" + random_roshambo + ".gif",
+					animatedPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/roshambo/roshambo_anim_" + random_roshambo + ".gif",
 					magicPicDesc: "[猜拳]",
 					magicPicType: "ROSHAMBO",
-					staticPicLocalUri: "asset:///magic_pic/roshambo/roshambo_" + random_roshambo + ".webp",
-					staticPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/roshambo/roshambo_" + random_roshambo + ".webp",
+					staticPicLocalUri: "asset:///magic_pic/roshambo/roshambo_" + random_roshambo + ".gif",
+					staticPicUrl: "http://7x2wk4.com2.z0.glb.qiniucdn.com/magic_pic/roshambo/roshambo_" + random_roshambo + ".gif",
 				}
 			return roshambo;
 		}

@@ -18,8 +18,6 @@ const store = new Vuex.Store({
 		domain: "http://test.mrpyq.com/api/",
 		AwesomeMessage: false,
 		unread: 0,
-		//获取群数据开关
-		group_switch: false,
 		show_at: false,
 		//atid
 		group_id: '',
@@ -48,6 +46,16 @@ const store = new Vuex.Store({
 							var a = state.message_window[i];
 							a.show = 1;
 							state.message_window.splice(i, 1, a);
+							for (var j = 0; j < state.message_ball.length; j++) {
+								if (state.message_ball[j].index == index) {
+									var b = state.message_ball[j];
+									b.show = 1;
+
+									state.message_ball.splice(j, 1);
+									state.message_ball.unshift(b);
+									break;
+								}
+							}
 							return;
 						} else if (i == state.message_window.length - 1) {
 							state.message_window.push({
@@ -83,6 +91,7 @@ const store = new Vuex.Store({
 			}
 		},
 		openfriend: function (state, info, chat2) {
+			alert('openfriend')
 			var friends = {
 				name: info.chat_body.sender.name,
 				no: info.chat_body.sender.no,
@@ -108,10 +117,19 @@ const store = new Vuex.Store({
 			} else {
 				for (var i = 0; i < state.message_window.length; i++) {
 					if (state.message_window[i].user) {
-						if (friends.user._id == state.message_window[i].user.user._id) {
+						if (friends.user._id == state.message_window[i].user.user._id && friends.no == state.message_window[i].user.no) {
 							var a = state.message_window[i];
 							a.show = 1;
 							state.message_window.splice(i, 1, a);
+							for (var j = 0; j < state.message_ball.length; j++) {
+								if (state.message_ball[j].index == index) {
+									var b = state.message_ball[j];
+									b.show = 1;
+									state.message_ball.splice(j, 1);
+									state.message_ball.unshift(b);
+									break;
+								}
+							}
 							return;
 						} else if (i == state.message_window.length - 1) {
 							state.message_window.push({
@@ -142,9 +160,12 @@ const store = new Vuex.Store({
 							not_open: true
 						});
 						return;
+					} else {
+						alert('linshi')
 					}
 				}
 			}
+			alert('out')
 		},
 		//判断未读消息数目
 		unread_msg: function (id, state) {
@@ -289,13 +310,6 @@ const store = new Vuex.Store({
 				result = "刚刚";
 			}
 			return result;
-		},
-		//error组件
-		show_error: false,
-		error: '',
-		f_error: function (state, data) {
-			state.error = data;
-			state.show_error = true;
 		},
 		//帖子详情
 		details: {
