@@ -108,7 +108,9 @@ var chat = {
 					if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
 						vm.$store.state.chat.conversation[conExist].set_unreadCount();
 					}
-					vm.$store.state.openfriend(vm.$store.state, info, chat);
+					if (info.chat_body.direction) {
+						vm.$store.state.openfriend(vm.$store.state, info, chat);
+					}
 					return conExist;
 				} else {
 					other.headimg = info.chat_body.sender.head_img;
@@ -148,7 +150,9 @@ var chat = {
 					if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
 						vm.$store.state.chat.conversation[conExist].set_unreadCount()
 					}
-					vm.$store.state.opengroup(vm.$store.state, group_details._id, group_details, chat);
+					if (info.chat_body.direction) {
+						vm.$store.state.opengroup(vm.$store.state, group_details._id, group_details, chat);
+					}
 					return conExist;
 				} else {
 					me.headimg = currPi.headimg;
@@ -381,28 +385,31 @@ var chat = {
 			if (flag)
 				break;
 		}
-		//设置此条消息已撤回
-		con[i].msg[im].set_revoke(message.revoke_body.sender, message.revoke_body.content);
+		if (flag) {
+			//设置此条消息已撤回
+			con[i].msg[im].set_revoke(message.revoke_body.sender, message.revoke_body.content);
+		}
+
 	},
 	send_revoke: function (conversation_index, msg_index, content) {
-		var targetType = con[conversation_index].isGroup ? 1 : 0;
-		var body = {
-			revoke_body: {
-				msg_uid: con[conversation_index].msg[msg_index].uid,
-				sender: {
-					id: con[conversation_index].me.id,
-					no: con[conversation_index].me.no,
-					name: con[conversation_index].me.name,
-					head_img: con[conversation_index].me.headimg
+		var targetType = con[conversation_index].isGroup ? 1 : 0,
+			body = {
+				revoke_body: {
+					msg_uid: con[conversation_index].msg[msg_index].uid,
+					sender: {
+						id: con[conversation_index].me.id,
+						no: con[conversation_index].me.no,
+						name: con[conversation_index].me.name,
+						head_img: con[conversation_index].me.headimg
+					},
+					content: content,
 				},
-				content: content,
-			},
-			type: 2,
-			time: Date.now(),
-			target_type: targetType,
-			target_id: con[conversation_index].other.id,
-			target_no: con[conversation_index].other.no - 0,
-		}
+				type: 2,
+				time: Date.now(),
+				target_type: targetType,
+				target_id: con[conversation_index].other.id,
+				target_no: con[conversation_index].other.no - 0,
+			}
 		mpIM.send(body);
 		con[conversation_index].msg[msg_index].set_revoke(body.revoke_body.sender, body.revoke_body.content)
 	},
@@ -507,7 +514,7 @@ var chat = {
 						new Msg(index, 1, {
 							url: src,
 							id: file.id
-						}, 0, 0, new Date().getTime(), true);
+						}, 0, new Date().getTime(), true, 0);
 					} else {
 						vm.$store.state.plugin.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
 					}
@@ -525,7 +532,7 @@ var chat = {
 							}
 						}
 
-						me.send(index, 1, 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key, 0, 0)
+						me.send(index, 1, 'http://7x2wk4.com2.z0.glb.qiniucdn.com/' + JSON.parse(info).key, 0)
 					} else {
 						vm.$store.state.plugin.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
 					}

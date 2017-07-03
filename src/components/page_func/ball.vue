@@ -14,7 +14,7 @@
 				    	<p class="lastest_msg" style="color:#777">好友通知 / 群通知</p>
 			   		</li>
 			    	<li v-for="(list,index) in this.$store.state.message_ball" v-show="list.show"  @click.stop="openwindow($event,list.user?list.user.user._id:list.group._id,list.index,index)"><img :src="list.user?list.user.headimg:list.group.headimg" alt="">
-			    		<span v-show="$store.state.chat.conversation[list.index].msg.length?$store.state.chat.conversation[list.index].msg[0].temp:0">临</span>
+			    		<span v-show="$store.state.chat.conversation[list.index].temp">临</span>
 			    		<div class="unread_tishi" v-show="$store.state.chat.conversation[list.index].unreadCount">{{$store.state.chat.conversation[list.index].unreadCount<99?$store.state.chat.conversation[list.index].unreadCount:'n+'}}</div>
 				    	<p class="name_no">
 					    	<span>{{list.user?list.user.name:list.group.name}}</span>

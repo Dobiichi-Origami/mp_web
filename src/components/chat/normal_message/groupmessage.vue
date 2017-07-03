@@ -49,8 +49,8 @@
 											</div>
 										</div>
 										<span class="me_selfsay" v-show="slist.chat_type=='SELF'">本人说</span>
-										<span :id="'chehui'+list.group._id+sindex" class="chehui" data-show="false" :style="{left:slist.chat_type=='SELF'?'-70px':'-30px'}" @click="revoke(list.index,sindex,slist.time)">撤回</span>
-										<span :id="'del'+list.group._id+sindex" class="chehui" data-show="false" :style="{left:slist.chat_type=='SELF'?'-100px':'-60px'}" @click="del_msg(list.index,sindex)">删除</span>
+										<span :id="'chehui'+list.group._id+sindex" class="chehui" data-show="false" :style="{left:slist.chat_type=='SELF'?'-70px':'-30px'}" @click.stop="revoke(list.index,sindex,slist.time)">撤回</span>
+										<span :id="'del'+list.group._id+sindex" class="chehui" data-show="false" :style="{left:slist.chat_type=='SELF'?'-100px':'-60px'}" @click.stop="del_msg(list.index,sindex)">删除</span>
 									</div>
 								</div>
 							</div>
@@ -70,7 +70,7 @@
 												<img :src="slist.url" alt="" @dblclick="seeimg(slist.url)">
 											</div>
 											<span class="other_selfsay" v-show="slist.chat_type=='SELF'">本人说</span>
-											<span :id="'del'+list.group._id+sindex" class="chehui" data-show="false" :style="{right:slist.chat_type=='SELF'?'-70px':'-30px'}" @click="del_msg(list.index,sindex)">删除</span>
+											<span :id="'del'+list.group._id+sindex" class="chehui" data-show="false" :style="{right:slist.chat_type=='SELF'?'-70px':'-30px'}" @click.stop="del_msg(list.index,sindex)">删除</span>
 										</div>
 									</div>	
 								</div>
@@ -456,7 +456,7 @@
 				if (t - time <= 180000) {
 					chat.send_revoke(conversation_index, msg_index, "")
 				} else {
-					this.$store.state.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
+					this.$store.state.plugin.f_error(this.$store.state, "该消息发送时间已超过三分钟，不能撤回");
 				}
 			},
 			//取消剧情

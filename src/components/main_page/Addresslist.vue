@@ -15,7 +15,7 @@
 								<p class="friendname">{{slist.name}}<span>NO.{{slist.no}}</span></p>
 								<span class="messagecontent">{{slist.content}}</span>
 							</div>
-							<span @click="openwindow($event,bindex,sindex)" :data-index="slist.user._id" class="enterroom">聊天</span>
+							<span @click="openwindow($event,bindex,sindex)" :data-index="slist.user._id" :data-no="slist.no" class="enterroom">聊天</span>
 						</li>
 					</ul>
 				</div>
@@ -50,7 +50,6 @@
 					this.$store.state.mounted.addresslist_mounted(this.$store.state, this);
 				}
 			}
-			console.log(this.$store.state.chat.messages.grouplist)
 		},
 		methods: {
 			bianxiao: function(event) {
@@ -149,7 +148,8 @@
 				}
 			},
 			openwindow: function(event, bindex, sindex) {
-				var id = event.target.dataset.index;
+				var id = event.target.dataset.index,
+					no = event.target.dataset.no;
 				var index = chat.start(this.$store.state.chat.messages.friendlist[bindex].friends[sindex]);
 				if (this.$store.state.message_window.length == 0) {
 					this.$store.state.message_window.push({
@@ -165,7 +165,7 @@
 				} else {
 					for (var i = 0; i < this.$store.state.message_window.length; i++) {
 						if (this.$store.state.message_window[i].user) {
-							if (id == this.$store.state.message_window[i].user.user._id) {
+							if (id == this.$store.state.message_window[i].user.user._id && no == this.$store.state.message_window[i].user.no) {
 								var dom = document.querySelector('#win' + id);
 								var w = parseInt(window.getComputedStyle(dom).width);
 								if (w != 500) {

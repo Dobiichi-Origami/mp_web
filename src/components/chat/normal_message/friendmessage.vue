@@ -43,8 +43,8 @@
 											</div>
 										</div>
 										<span class="me_selfsay" v-show="slist.chat_type=='SELF'">本人说</span>
-										<span :id="'chehui'+list.user.user._id+sindex" class="chehui" data-show="false" :style="{left:slist.chat_type=='SELF'?'-70px':'-30px'}" @click="revoke(list.index,sindex,slist.time)">撤回</span>
-										<span :id="'del'+list.user.user._id+sindex" class="chehui" data-show="false" :style="{left:slist.chat_type=='SELF'?'-100px':'-60px'}" @click="del_msg(list.index,sindex)">删除</span>
+										<span :id="'chehui'+list.user.user._id+sindex" class="chehui" data-show="false" :style="{left:slist.chat_type=='SELF'?'-70px':'-30px'}" @click.stop="revoke(list.index,sindex,slist.time)">撤回</span>
+										<span :id="'del'+list.user.user._id+sindex" class="chehui" data-show="false" :style="{left:slist.chat_type=='SELF'?'-100px':'-60px'}" @click.stop="del_msg(list.index,sindex)">删除</span>
 									</div>
 								</div>
 							</div>
@@ -63,7 +63,7 @@
 												<img :src="slist.url" alt="" @dblclick="seeimg(slist.url)" @click.stop="show_chehui(sindex,true)">
 											</div>
 											<span class="other_selfsay" v-show="slist.chat_type=='SELF'">本人说</span>
-											<span :id="'del'+list.user.user._id+sindex" class="chehui" data-show="false" :style="{right:slist.chat_type=='SELF'?'-70px':'-30px'}" @click="del_msg(list.index,sindex)">删除</span>
+											<span :id="'del'+list.user.user._id+sindex" class="chehui" data-show="false" :style="{right:slist.chat_type=='SELF'?'-70px':'-30px'}" @click.stop="del_msg(list.index,sindex)">删除</span>
 										</div>
 									</div>	
 								</div>
