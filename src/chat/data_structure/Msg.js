@@ -26,12 +26,11 @@ class Msg {
 			this.content = JSON.parse(content)
 			this.content_type = "MAGIC_PIC"
 		} else if (type == 3) {
-			this.content = content
+			this.content = JSON.parse(content)
 			this.content_type = "REDPACK"
 		} else if (type == 4) {
-			this.content = content
+			this.content = JSON.parse(content)
 			this.content_type = "gift_message"
-			this.set_gift(content);
 		}
 		if (speak_type == 0)
 			this.chat_type = "MEMBER"
@@ -47,7 +46,6 @@ class Msg {
 		if (uid)
 			this.uid = uid;
 		if (temp && !vm.$store.state.chat.conversation[index].temp) {
-			alert(1)
 			vm.$store.state.chat.conversation[index].temp = temp;
 		}
 		this.revoke = false;
@@ -67,6 +65,7 @@ class Msg {
 
 	//是否撤回
 	set_revoke(sender, content) {
+		console.log(this, '% % % % %')
 		this.revoke = true;
 		this.revoke_user = sender;
 		this.revoke_content = content ? content : '';
@@ -75,9 +74,6 @@ class Msg {
 	//设置此条消息的atList数组
 	set_atList(atList) {
 		this.atList = atList;
-	}
-	set_gift(content) {
-
 	}
 }
 

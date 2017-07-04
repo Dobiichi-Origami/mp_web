@@ -27,13 +27,16 @@
         
 **/
 
+require('../../static/qiniu.js')
 import vm from 'src/main.js'
 var con = vm.$store.state.chat.conversation
 import mpIM from './mpIM/mpIM.js'
-import base64 from './mpIM/base64.js'
+import base64 from './mpIM/tools/base64.js'
+// structure
 import Msg from './data_structure/Msg'
 import Conversation from './data_structure/Conversation'
-require('../../static/qiniu.js')
+//send msg
+import Revoke from './mpIM/revoke_msg'
 
 
 //对外暴露的唯一对象。
@@ -301,119 +304,8 @@ var chat = {
 		var magicimg = this.get_magicimg(type)
 		this.send(index, 2, magicimg, 0, [], magicimg.magicPicDesc);
 	},
-
-	//找到群详细数组中指定群ID的群详细项
-	findGroupDetail: function (groupId) {
-		var groupDetail;
-		var groupsDetail = vm.$store.state.chat.messages.groupsDetail;
-		for (var i = 0, l = groupsDetail.length; i < l; i++) {
-			if (groupId == groupsDetail[i]._id) {
-				groupDetail = groupsDetail[i];
-				break;
-			}
-		}
-		return groupDetail;
-	},
-
-	//根据群id和皮id判断此皮在群中的身份
-	checkMemberType: function (groupId, userId) {
-		//根据groupId找到对应群的群详细
-		var memberType = 1;
-		var groupDetail = this.findGroupDetail(groupId);
-
-		if (groupDetail) {
-			//先判断此皮是否是群主
-			if (userId == groupDetail.owner._id) {
-				memberType = 20;
-
-			}
-			//再判断此皮是否属于管理员组
-			for (var j = 0, jl = groupDetail.admins.length; j < jl; j++) {
-				if (groupDetail.admins[j]._id == userId) {
-					memberType = 10;
-					break;
-				}
-			}
-		}
-		return memberType;
-	},
-
-
-	handle_text: function (message) {
-		var index = this.start(message, 1);
-		if (index === undefined) {
-			return;
-		}
-
-		var is_me_speak = message.chat_body.direction ? false : true,
-			temp = message.chat_body.chat_is_friend ? 0 : 1;
-		var msg = new Msg(index, message.chat_body.content_type, message.chat_body.content.content, message.chat_body.content.speakType, message.time, is_me_speak, temp, message.uid);
-
-		//群消息需要设置发言人
-		if (message.target_type == 1) { //为群会话消息，需要在msg中添加发言人信息
-			var speaker = {
-				speakerName: message.chat_body.sender.name,
-				speakerHeadimg: message.chat_body.sender.head_img,
-				speakerId: message.chat_body.sender.id,
-				speakerNo: message.chat_body.sender.no,
-				speakerTitle: message.chat_body.group_member_title,
-			}
-
-			speaker.memberType = this.checkMemberType(message.target_id, message.sender_id);
-			msg.set_from(speaker);
-			if (message.chat_body.group_at_users) {
-				msg.set_atList(message.chat_body.group_at_users);
-			}
-		}
-		console.log('本地會話数组:', vm.$store.state.chat.conversation);
-	},
-	handle_cmd: function(msg){
-		console.log('收到的cmd_msg:', msg);
-	},
-
-	handle_revoke: function (message) {
-		var uid = message.revoke_body.msg_uid,
-			flag = 0;
-		//查找匹配的uid并设置,需要优化
-		for (var i = 0, l = con.length; i < l; i++) {
-			for (var im = 0, jm = con[i].msg.length; im < jm; im++) {
-				if (con[i].msg[im].uid) {
-					if (con[i].msg[im].uid == uid) {
-						flag = 1;
-						break;
-					}
-				}
-			}
-			if (flag)
-				break;
-		}
-		if (flag) {
-			//设置此条消息已撤回
-			con[i].msg[im].set_revoke(message.revoke_body.sender, message.revoke_body.content);
-		}
-
-	},
 	send_revoke: function (conversation_index, msg_index, content) {
-		var targetType = con[conversation_index].isGroup ? 1 : 0,
-			body = {
-				revoke_body: {
-					msg_uid: con[conversation_index].msg[msg_index].uid,
-					sender: {
-						id: con[conversation_index].me.id,
-						no: con[conversation_index].me.no,
-						name: con[conversation_index].me.name,
-						head_img: con[conversation_index].me.headimg
-					},
-					content: content,
-				},
-				type: 2,
-				time: Date.now(),
-				target_type: targetType,
-				target_id: con[conversation_index].other.id,
-				target_no: con[conversation_index].other.no - 0,
-			}
-		mpIM.send(body);
-		con[conversation_index].msg[msg_index].set_revoke(body.revoke_body.sender, body.revoke_body.content)
+		Revoke.send_revoke(conversation_index, msg_index, content);
 	},
 	//获取群数据
 	getgroup: function (callback, param) {

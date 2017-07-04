@@ -49,7 +49,8 @@
 								</div>
 							</div>
 							<div v-else class="other_word">
-								<div v-if='slist.revoke' class="other_revoke">{{$store.state.chat.conversation[list.index].other.name}}撤回了一条消息</div>
+								<div v-if="slist.content_type=='REDPACK'" class="other_revoke">你收到了一个红包，请在手机上接收</div>
+								<div v-else-if='slist.revoke' class="other_revoke">{{$store.state.chat.conversation[list.index].other.name}}撤回了一条消息</div>
 								<div v-else>
 									<img :src="$store.state.chat.conversation[list.index].other.headimg" alt="" class="headimg">
 									<div class="other_info">
@@ -61,6 +62,13 @@
 											</div>
 											<div v-if="slist.content_type=='IMAGE'" class="img_show">
 												<img :src="slist.url" alt="" @dblclick="seeimg(slist.url)" @click.stop="show_chehui(sindex,true)">
+											</div>
+											<div v-if="slist.content_type=='gift_message'" class="gift_message">
+												<p>送你一份礼物</p>
+												<div>
+													<img :src="slist.content.url" alt="" @click.stop="show_chehui(sindex,true)">
+													<p>{{slist.content.name}}x{{slist.content.count}}</p>
+												</div>
 											</div>
 											<span class="other_selfsay" v-show="slist.chat_type=='SELF'">本人说</span>
 											<span :id="'del'+list.user.user._id+sindex" class="chehui" data-show="false" :style="{right:slist.chat_type=='SELF'?'-70px':'-30px'}" @click.stop="del_msg(list.index,sindex)">删除</span>
@@ -802,12 +810,15 @@
 		max-width: 300px;
 		text-align: left;
 		position: relative;
-		white-space: pre-wrap;
-		word-break: break-word;
 		cursor: pointer;
 		-moz-user-select: text;
 		-webkit-user-select: text;
 		-ms-user-select: text;
+	}
+	
+	.wordcontent>div {
+		white-space: pre-wrap;
+		word-break: break-word;
 	}
 	
 	div.wordcontent.active {
@@ -1027,6 +1038,39 @@
 	
 	.messageshow {
 		position: relative;
+	}
+	
+	.gift_message {
+		width: 160px;
+		height: 80px;
+		white-space: normal!important;
+		padding: 6px 0;
+	}
+	
+	.gift_message>p {
+		float: left;
+		width: 100px;
+		height: 100%;
+		line-height: 80px;
+		font-size: 16px;
+	}
+	
+	.gift_message>div {
+		float: left;
+		width: 60px;
+		height: 60px;
+	}
+	
+	.gift_message>div>img {
+		display: block;
+		height: 60px;
+		margin: 0 auto;
+	}
+	
+	.gift_message>div>p {
+		width: 60px;
+		text-align: center;
+		line-height: 20px;
 	}
 
 </style>

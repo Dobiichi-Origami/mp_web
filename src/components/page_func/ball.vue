@@ -21,27 +21,42 @@
 					    	<span :style="list.group?'line-height:26px;color:rgb(149, 105, 105)':''">{{list.user?'NO.'+list.user.no:'(群组)'}}</span>
 				    	</p>
 				    	<!-- 群聊窗口 -->
-				    	<p class="lastest_msg" v-if="list.group&& $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].chat_type!='SYSTEM'&& $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='TXT'">
+				    	<p class="lastest_msg" v-if="list.group&& $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].chat_type!='SYSTEM'&& $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='TXT' && !$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke" >
 				    		{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].me?'我':$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].speaker.speakerName}}：{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content}}
 				    	</p>
-				    	<p class="lastest_msg" v-if="list.group&& $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].chat_type!='SYSTEM'&& $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='IMAGE'">
+				    	<p class="lastest_msg" v-if="list.group&& $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].chat_type!='SYSTEM'&& $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='IMAGE'&& !$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
 				    		{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].me?'我':$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].speaker.speakerName}}：图片
 				    	</p>
-				    	<p class="lastest_msg" v-if="list.group&& $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].chat_type!='SYSTEM'&& $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='MAGIC_PIC'">
+				    	<p class="lastest_msg" v-if="list.group&& $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].chat_type!='SYSTEM'&& $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='MAGIC_PIC'&& !$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
 				    		{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].me?'我':$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].speaker.speakerName}}：魔法表情
 				    	</p>
+				    	<p class="lastest_msg" v-if="list.group && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='REDPACK'&& !$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
+				    		{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].me?'我':$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].speaker.speakerName}}：红包
+				    	</p>
+				    	<p class="lastest_msg" v-if="list.group && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
+				    		{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].me?'我':$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].speaker.speakerName}}：撤回了一条消息
+				    	</p>
 				    	<!-- 私聊窗口 -->
-				    	<p class="lastest_msg" v-if="$store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].chat_type=='SYSTEM' ">
+				    	<p class="lastest_msg" v-if="$store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].chat_type=='SYSTEM' && !$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
 				    		{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content}}
 				    	</p>
-				    	<p class="lastest_msg" v-if="list.user && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='TXT'">
+				    	<p class="lastest_msg" v-if="list.user && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='TXT'&& !$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
 				    		{{$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content}}
 				    	</p>
-				    	<p class="lastest_msg" v-if="list.user && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='IMAGE'">
+				    	<p class="lastest_msg" v-if="list.user && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='IMAGE'&& !$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
 				    		图片
 				    	</p>
-				    	<p class="lastest_msg" v-if="list.user && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='MAGIC_PIC'">
+				    	<p class="lastest_msg" v-if="list.user && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='MAGIC_PIC'&& !$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
 				    		魔法表情
+				    	</p>
+				    	<p class="lastest_msg" v-if="list.user && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='gift_message'&& !$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
+				    		礼物
+				    	</p>
+				    	<p class="lastest_msg" v-if="list.user && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].content_type=='REDPACK'&& !$store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
+				    		红包
+				    	</p>
+				    	<p class="lastest_msg" v-if="list.user && $store.state.chat.conversation[list.index].msg.length && $store.state.chat.conversation[list.index].msg[$store.state.chat.conversation[list.index].msg.length-1].revoke">
+				    		撤回了一条消息
 				    	</p>
 			    	</li>
 			    </ul>

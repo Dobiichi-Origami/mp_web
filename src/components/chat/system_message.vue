@@ -4,22 +4,13 @@
 			<p @click.stop.conce="change($event)" @mousedown.stop><img src="~assets/chat/smallest.png" alt=""></p>
 		</div>
 		<div class="tongzhi_nav">
-			<p :class="{active:tongzhi_act}" @click="change_tongzhi(1)">好友通知<span></span></p>
+			<p :class="{active:tongzhi_act}" @click="change_tongzhi(1)">个人通知<span></span></p>
 			<p :class="{active:!tongzhi_act}" @click="change_tongzhi(0)">群通知<span></span></p>
 		</div>
 		<div class="tongzhi_friend" v-if="tongzhi_act">
 			<ul>
 				<li v-for="(list,index) in $store.state.chat.cmd_msg.friendCmd" class="tongzhi_group_list">
-					<div v-if="list.name=='gift_message'" >
-						<img :src="list.data.content.url" alt="">
-						<div class="group_apply" style="width:420px">
-							<p class="tongzhi_group_name">礼物</p>
-							<p class="tongzhi_group_info">
-							你收到来自<span class="gift_sender_name">{{list.data.content.senderName}}NO.{{list.data.content.senderUserNo}}</span>的<span class="gift">{{list.data.content.name}} x {{list.data.content.count}}</span>
-							</p>
-						</div>
-						
-					</div>
+					
 				</li>
 			</ul>
 		</div>
@@ -64,36 +55,11 @@
 			}
 		},
 		mounted: function() {
-			console.log(this.$store.state.chat.cmd_msg)
+
 		},
 		methods: {
 			//同意入群
-			agree_join: function(data, index, event) {
-				this.$store.state.chat.cmd_msg.groupCmd[index].data.state = 1;
-				var d = event.target.parentNode.nextElementSibling;
-				event.target.parentNode.style.display = 'none'
-				d.style.display = 'block';
-				this.$http({
-					method: 'get',
-					url: 'http://test.mrpyq.com/api/group/agree_join',
-					params: {
-						'access_token': localStorage.getItem('access_token'),
-						'id': data.groupId,
-						'userid': data.targetUserId,
-						'invite_deviceid': data.applyUserHxId,
-						'invite_userid': data.applyUserId,
-						'invite_time': data.applyDate,
-						'invite_key': data.inviteKey,
-					},
-					emulateJSON: true,
-				}).then(res => {
-					if (res.body.result == 1) {
-						this.$store.state.chat.cmd_msg.groupCmd[index].data.state = 1;
-					} else {
-						this.$store.state.plugin.f_error(this.$store.state, res.body.error);
-					}
-				})
-			},
+
 			change_tongzhi: function(s) {
 				if (s) {
 					this.tongzhi_act = true;
