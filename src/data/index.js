@@ -91,7 +91,6 @@ const store = new Vuex.Store({
 			}
 		},
 		openfriend: function (state, info, chat2) {
-			alert('openfriend')
 			var friends = {
 				name: info.chat_body.sender.name,
 				no: info.chat_body.sender.no,
@@ -160,12 +159,9 @@ const store = new Vuex.Store({
 							not_open: true
 						});
 						return;
-					} else {
-						alert('linshi')
 					}
 				}
 			}
-			alert('out')
 		},
 		//判断未读消息数目
 		unread_msg: function (id, state) {

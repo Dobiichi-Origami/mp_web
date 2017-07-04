@@ -1,6 +1,10 @@
 import chat from '../index.js'
-import base64 from './base64.js'
+import base64 from './tools/base64.js'
 import vm from 'src/main.js'
+// msg
+import Revoke from './revoke_msg'
+import Text from './text_msg'
+import Cmd from './cmd_msg'
 var MpIMClient = {
 	seq: 1,
 	DeviceInfo: '',
@@ -132,13 +136,11 @@ var MpIMClient = {
 						if (!msg.type) {
 							//聊天消息
 							msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
-							chat.handle_text(msg)
+							Text.handle_text(msg)
 						} else if (msg.type == 1) {
-							//cmd
-							chat.handle_cmd(msg)
+							//Cmd.handle_cmd();
 						} else if (msg.type == 3) {
-							//system
-							chat.handle_system(msg)
+							//System.handle_system(msg)
 						}
 					} else {
 						console.log('数据错误');
@@ -154,18 +156,14 @@ var MpIMClient = {
 					msg = data.body;
 					console.log(msg);
 					if (!msg.type) {
-						//chat
 						msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
-						chat.handle_text(msg)
+						Text.handle_text(msg)
 					} else if (msg.type == 1) {
-						//cmd
-						chat.handle_cmd(msg)
+						System.handle_cmd(msg)
 					} else if (msg.type == 2) {
-						//rovoke
-						chat.handle_revoke(msg)
+						Revoke.handle_revoke(msg)
 					} else if (msg.type == 3) {
-						//system
-						chat.handle_system(msg)
+						System.handle_system(msg)
 					}
 
 				}

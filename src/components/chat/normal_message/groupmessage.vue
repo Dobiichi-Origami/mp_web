@@ -55,7 +55,8 @@
 								</div>
 							</div>
 							<div v-else class="other_word">
-								<div v-if='slist.revoke' class="other_revoke">{{slist.speaker.speakerName}}撤回了一条消息</div>
+								<div v-if="slist.content_type=='REDPACK'" class="other_revoke">你收到了一个红包，请在手机上接收</div>
+								<div v-else-if='slist.revoke' class="other_revoke">{{slist.speaker.speakerName}}撤回了一条消息</div>
 								<div v-else>
 									<img :src="slist.speaker.speakerHeadimg" alt="" class="headimg">
 									<div class="other_info">
