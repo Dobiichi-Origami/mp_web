@@ -155,7 +155,7 @@ var MpIMClient = {
 						msg.chat_body.content = JSON.parse(base64.base64ToString(msg.chat_body.content));
 						Text.handle_text(msg)
 					} else if (msg.type == 1) {
-						System.handle_cmd(msg)
+						Cmd.handle_cmd(msg)
 					} else if (msg.type == 2) {
 						Revoke.handle_revoke(msg)
 					} else if (msg.type == 3) {
