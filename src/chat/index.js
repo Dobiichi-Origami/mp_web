@@ -135,7 +135,6 @@ var chat = {
 						me.id = currPi._id;
 						me.no = currPi.no;
 						break;
-
 					}
 				}
 				other.id = info.target_id;
@@ -151,7 +150,6 @@ var chat = {
 					vm.$store.state.message_window[conExist].show = 1;
 					if (!vm.$store.state.unread_msg(vm.$store.state.chat.conversation[conExist].other.id, vm.$store.state)) {
 						vm.$store.state.chat.conversation[conExist].set_unreadCount()
-
 					}
 					if (info.chat_body.direction) {
 						vm.$store.state.opengroup(vm.$store.state, group_details._id, group_details, chat);
@@ -182,8 +180,6 @@ var chat = {
 				}
 				//设置群头衔
 				conversation.set_title(selfTitle, currPi.group_member_type);
-
-
 				if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
 					conversation.set_unreadCount();
 				}
@@ -371,6 +367,10 @@ var chat = {
 		}
 		console.log('本地會話数组:', vm.$store.state.chat.conversation);
 	},
+	handle_cmd: function(msg){
+		console.log('收到的cmd_msg:', msg);
+	},
+
 	handle_revoke: function (message) {
 		var uid = message.revoke_body.msg_uid,
 			flag = 0;

@@ -155,7 +155,7 @@ var MpIMClient = {
 						chat.handle_text(msg)
 					} else if (msg.type == 1) {
 						//cmd
-						chat.handle_cmd(msg)
+						chat.handle_cmd(msg);
 					} else if (msg.type == 2) {
 						//rovoke
 						chat.handle_revoke(msg)

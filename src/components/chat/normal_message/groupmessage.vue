@@ -948,6 +948,7 @@
 		background: #ddd;
 		border-top: 1px solid #bbb;
 		border-bottom: 1px solid #bbb;
+		z-index:99;
 	}
 	
 	.emoji_container {

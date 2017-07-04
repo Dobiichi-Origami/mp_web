@@ -20,6 +20,8 @@ const Chat = {
 		cmd_msg: {
 			"friendCmd": [],
 			"groupCmd": [],
+			"friendCmdType": ['friend_apply', 'friend_delete', 'couple_apply', 'couple_divorce', 'couple_force_divorce'],
+			"groupCmdType": ['group_join', 'group_kick', 'group_quit', 'admin_setting', 'admin_cancel', 'group_transfer', 'group_title', 'group_silenced', 'group_admin_changed'],
 			"count": 0 //通知总数
 		},
 		close_by_me: false,
