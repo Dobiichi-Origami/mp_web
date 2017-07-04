@@ -10,8 +10,8 @@ const Chat = {
 		at_current_con_index: "",
 		//好友中心数据
 		messages: {
-			friendlist: [],
-			grouplist: [], //群列表，存储我的所有群(含有我在群中的身份信息)
+			friendlist: false,
+			grouplist: false, //群列表，存储我的所有群(含有我在群中的身份信息)
 			groupsDetail: [], //所有群的详细信息(方便查看成员类型)
 		},
 		//系统消息
@@ -23,7 +23,7 @@ const Chat = {
 			count: 0 //通知总数
 		},
 		close_by_me: false,
-		emojis: [],
+		emojis: false,
 		emoji: {
 			"yan_emoji": [
 		    "┭┮﹏┭┮", // 呜呜呜

@@ -64,17 +64,5 @@ const router = new VueRouter({
 			path: '*',
 			component: Not_found
 		}, ],
-
-	//		切换页面自动上滑
-	scrollBehavior(to, from, savedPosition) {
-		if (savedPosition) {
-			return savedPosition
-		} else {
-			return {
-				x: 0,
-				y: 0
-			}
-		}
-	}
 })
 export default router;

@@ -2,7 +2,7 @@ import vm from 'src/main.js'
 import chat from 'src/chat/index.js'
 import Msg from 'src/chat/data_structure/Msg'
 var Text = {
-	handle_text: function (message) {
+	handle_text(message) {
 		var index = chat.start(message, 1);
 		if (index === undefined) {
 			return;
@@ -31,7 +31,7 @@ var Text = {
 		console.log('本地會話数组:', vm.$store.state.chat.conversation);
 	},
 	//根据群id和皮id判断此皮在群中的身份
-	checkMemberType: function (groupId, userId) {
+	checkMemberType(groupId, userId) {
 		//根据groupId找到对应群的群详细
 		var memberType = 1;
 		var groupDetail = this.findGroupDetail(groupId);
@@ -53,7 +53,7 @@ var Text = {
 		return memberType;
 	},
 	//找到群详细数组中指定群ID的群详细项
-	findGroupDetail: function (groupId) {
+	findGroupDetail(groupId) {
 		var groupDetail;
 		var groupsDetail = vm.$store.state.chat.messages.groupsDetail;
 		for (var i = 0, l = groupsDetail.length; i < l; i++) {

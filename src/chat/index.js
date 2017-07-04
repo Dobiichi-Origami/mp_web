@@ -332,7 +332,6 @@ var chat = {
 					var details = [];
 					if (allgroup) {
 						for (var i = 0, l = allgroup.length; i < l; i++) {
-							console.log(1)
 							//对每个群的群id获取其群详细
 							vm.$http({
 								method: 'get',
@@ -358,6 +357,8 @@ var chat = {
 									vm.$store.state.plugin.f_error(vm.$store.state, "服务器正在开小差。。。");
 								})
 						}
+						if (i == 0)
+							callback(param)
 					}
 				}
 			},
