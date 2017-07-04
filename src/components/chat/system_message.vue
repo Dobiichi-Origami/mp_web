@@ -10,7 +10,16 @@
 		<div class="tongzhi_friend" v-if="tongzhi_act">
 			<ul>
 				<li v-for="(list,index) in $store.state.chat.cmd_msg.friendCmd" class="tongzhi_group_list">
-					
+					<img :src="list.apply_user.head_img" alt="" class="tongzhi_img">
+					<div class="tongzhi_info">
+						<p>{{list.apply_user.name}}</p>
+						<p>申请信息: {{list.apply_info}}</p>
+						<p>我的身份:{{list.target_user.name}}</p>
+					</div>
+					<div class="tongzhi_info_right">
+						<p>{{list.timeString}}</p>
+						<button @click="">同意</button>
+					</div>
 				</li>
 			</ul>
 		</div>
@@ -148,16 +157,25 @@
 		overflow: hidden;
 		margin: 5px 0;
 		border: 1px solid #ddd;
+		position: relative;
 	}
 	
 	.tongzhi_group_list img {
 		float: left;
 		width: 50px;
 		height: 50px;
-		margin: 5px 10px;
+		margin: 20px 10px;
 		border-radius: 50%;
 	}
 	
+
+
+	.tongzhi_info_right{
+		position: absolute;
+		top:20px;
+		right: 20px;
+	}
+
 	.group_apply>p {
 		line-height: 20px;
 		font-size: 14px;
@@ -249,6 +267,19 @@
 		margin-top: 26px;
 	}
 	
+/*	.tongzhi_img {
+		vertical-align: center;
+	}*/
+
+	.tongzhi_info {
+		margin-left: 20px;
+		margin-top:10px;
+	}
+
+	.tongzhi_info_right {
+		float:right;
+	}
+
 	.tongzhi_nav {
 		width: 100%;
 		overflow: hidden;
