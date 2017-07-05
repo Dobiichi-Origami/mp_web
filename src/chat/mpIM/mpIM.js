@@ -64,10 +64,6 @@ var MpIMClient = {
 				vm.$store.state.plugin.f_error(vm.$store.state, "您的设备已断开连接，请检查网络");
 				vm.$store.state.IM_switch = false;
 			}
-			//每五秒重连一次
-			// me.reconnect_ = setInterval(function () {
-			// 	me.connect();
-			// }, 50000);
 		}
 	},
 	login() {
@@ -165,7 +161,6 @@ var MpIMClient = {
 					} else if (msg.type == 3) {
 						System.handle_system(msg)
 					}
-
 				}
 			}
 		}

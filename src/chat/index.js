@@ -127,6 +127,7 @@ var chat = {
 					conversation.set_unreadCount();
 				}
 			} else if (info.target_type == 1) { //群聊
+
 				var groupList = vm.$store.state.chat.messages.grouplist;
 				var currPi;
 				//遍历用户的所有群信息，找到和收到的群消息对应的群
@@ -182,8 +183,6 @@ var chat = {
 				}
 				//设置群头衔
 				conversation.set_title(selfTitle, currPi.group_member_type);
-
-
 				if (!vm.$store.state.unread_msg(other.id, vm.$store.state)) {
 					conversation.set_unreadCount();
 				}
@@ -303,10 +302,8 @@ var chat = {
 	send_magicimg: function (index, type) {
 		//0骰子1猜拳
 		var magicimg = this.get_magicimg(type)
-		// this.send(index, 2, magicimg.magicPicDesc, 0, 0, magicimg);
 		this.send(index, 2, magicimg, 0, [], magicimg.magicPicDesc);
 	},
-
 	send_revoke: function (conversation_index, msg_index, content) {
 		Revoke.send_revoke(conversation_index, msg_index, content);
 	},

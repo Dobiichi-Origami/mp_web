@@ -10,14 +10,26 @@
 		<div class="inform" v-if="toggle_switch">
 			<ul>
 				<li v-for="(item,index) in $store.state.chat.cmd_msg.friendCmd" class="inform_list">
-					<div>
-						<img src="item.apply_user.head_img" alt="">
+					<div class="inform_list_img">
+						<img :src="item.apply_user.head_img" alt="">
 					</div>
-					<div>
-						<p>item.apply_user.name <span>item.apply_user.no</span></p>
-						<p class="inform_content">item.action</p>
-						<p>我的身份:{{item.target_user.name}}</p>
-					</div>					
+					<div class="inform_list_content">
+						<p>{{item.apply_user.name}} <span class="no">NO.{{item.apply_user.no}}</span></p>
+						<p>{{item.action}}</p>
+						<p>我的身份:{{item.target_user.name}} <span class="no">NO.{{item.target_user.no}}</span></p>
+					</div>
+					<div v-if="!item.option[9]" class="inform_list_select">
+						 	 <div>
+						 	 	{{item.option[0]}}
+						 	 </div>
+						 	 <div @click="show_option(index)">
+						 		<img src="~assets/chat/pull_list.png" alt="">
+						 	 </div>
+						 	<ul v-show="show_option_switch[index]">
+						 		<li v-for="(sitem,sindex) in item.option" @click="select_option(item,sitem,index)">{{sitem}}</li>
+						 	</ul>
+					</div>
+					<div v-else class="inform_list_select">{{item.option[9]}}</div>					
 				</li>
 			</ul>
 		</div>
@@ -35,6 +47,7 @@
 		data() {
 			return {
 				toggle_switch: true,
+				show_option_switch: [],
 			}
 		},
 		mounted: function() {
@@ -60,6 +73,14 @@
 
 		},
 		methods: {
+			select_option: function(item, sitem, index) {
+				item.option[9] = "已" + sitem;
+				this.show_option_switch.splice(index, 1, !this.show_option_switch[index]);
+				//do something
+			},
+			show_option: function(index) {
+				this.show_option_switch.splice(index, 1, !this.show_option_switch[index]);
+			},
 			toggle_change: function(bool) {
 				bool ? this.toggle_switch = true : this.toggle_switch = false;
 			},
@@ -108,12 +129,101 @@
 
 </script>
 <style scoped>
+	.inform_list_select {
+		margin-top: 30px;
+		width: 70px;
+		height: 30px;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		text-align: center;
+		line-height: 30px;
+		position: relative;
+	}
+	
+	.inform_list_select>ul {
+		border: 1px solid #ccc;
+		width: 70px;
+		margin-left: -1px;
+		border-radius: 3px;
+	}
+	
+	.inform_list_select>ul>li {
+		height: 28px;
+		text-align: center;
+		background: #fff;
+		border-bottom: 1px solid #ccc;
+		cursor: pointer;
+	}
+	
+	.inform_list_select>ul>li:hover {
+		background: #aaa;
+	}
+	
+	.inform_list_select>ul>li:last-child {
+		border: none;
+	}
+	
+	.inform_list_select>div:nth-child(1) {
+		text-align: right;
+		width: 44px;
+		display: inline-block;
+		margin-right: -3px;
+		cursor: default;
+	}
+	
+	.inform_list_select>div:nth-child(2) {
+		display: inline-block;
+		width: 25px;
+	}
+	
+	.inform_list_select>div>img {
+		width: 9px;
+	}
+	
+	.no {
+		font-size: 12px;
+	}
+	
+	.inform_list_content>p:nth-child(1) {
+		color: #333;
+		margin-top: 15px;
+	}
+	
+	.inform_list_content>p:nth-child(3) {
+		color: #676767;
+	}
+	
+	.inform_list_content>p {
+		height: 25px;
+		line-height: 25px;
+		color: #aaa;
+	}
+	
+	.inform_list_content {
+		width: 300px;
+	}
+	
+	.inform_list_img {
+		width: 100px;
+	}
+	
+	.inform_list_img>img {
+		margin: 0 auto;
+		margin-top: 15px;
+		border-radius: 50%;
+		height: 70px;
+		display: block;
+	}
+	
+	.inform_list>div {
+		float: left;
+	}
+	
 	.inform_list {
-		height: min-60px;
+		height: 100px;
 		width: 100%;
 		background: #fff;
-		overflow: hidden;
-		margin: 5px 0;
+		margin: 7px 0;
 		border: 1px solid #ddd;
 	}
 	
@@ -170,10 +280,7 @@
 	.toggle_bar>p {
 		float: left;
 		width: 50%;
-		background: #fff;
 		position: relative;
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
 		box-sizing: border-box;
 		text-align: center;
 		line-height: 50px;
@@ -189,31 +296,21 @@
 		background-size: 20px;
 	}
 	
-	.toggle_bar>p:nth-child(1).active {
-		background: url(~assets/chat/friendlist1.png) 78px center no-repeat #fff;
-		background-size: 20px;
-	}
-	
+	.toggle_bar>p:nth-child(1).active,
 	.toggle_bar>p:nth-child(1):hover {
-		background: url(~assets/chat/friendlist1.png) 78px center no-repeat #fff;
-		background-size: 20px;
+		background-image: url(~assets/chat/friendlist1.png);
+		background-size: 24px;
 	}
 	
 	.toggle_bar>p:nth-child(2) {
-		text-indent: 24px;
-		background: url(~assets/chat/grouplist2.png) 82px center no-repeat #fff;
-		background-size: 26px;
+		background: url(~assets/chat/grouplist2.png) 78px center no-repeat #fff;
+		background-size: 28px;
 	}
 	
-	.toggle_bar>p:nth-child(2):hover {
-		text-indent: 24px;
-		background: url(~assets/chat/grouplist1.png) 82px center no-repeat #fff;
-		background-size: 26px;
-	}
-	
+	.toggle_bar>p:nth-child(2):hover,
 	.toggle_bar>p:nth-child(2).active {
-		background: url(~assets/chat/grouplist1.png) 82px center no-repeat #fff;
-		background-size: 26px;
+		background-image: url(~assets/chat/grouplist1.png);
+		background-size: 32px;
 	}
 	
 	.toggle_bar>p>span {
@@ -226,12 +323,12 @@
 		display: none;
 	}
 	
-	.toggle_bar>p.active {
-		color: #333;
-	}
-	
 	.toggle_bar>p.active>span {
 		display: block;
+	}
+	
+	.toggle_bar>p.active {
+		color: #333;
 	}
 	
 	.toggle_bar>p:hover {

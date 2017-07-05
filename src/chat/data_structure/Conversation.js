@@ -25,7 +25,6 @@ class Conversation {
 	}
 	set_unreadCount() {
 		this.unreadCount++;
-		console.log('%%%%%%%%%%' + this.unreadCount + '%%%%%%%%%%%%%%%%%%%')
 		vm.$store.state.unread++;
 	}
 	set_group(type) {
@@ -34,8 +33,5 @@ class Conversation {
 	set_silenced(status) {
 		this.silenced = status; //会话中是否处于禁言状态(群组，管理员不需要禁言) ,0 未禁言，1 禁言中
 	}
-	// set_tempAtList(atList){//会话里面的暂存atList数组，只用于at成员显示
-	// 	this.atList = atList;
-	// }
 }
 export default Conversation;
