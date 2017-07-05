@@ -7,7 +7,7 @@ var Cmd = {
 	pre_handle(cmdBody) {
 		//cmd_msg的apply_info需要base64解密
 		var apply_info = cmdBody.apply_info;
-		if(apply_info){
+		if (apply_info) {
 			cmdBody.apply_info = base64.base64ToString(apply_info);
 		}
 		
@@ -16,8 +16,6 @@ var Cmd = {
 		date.setTime(cmdBody.apply_date);
 		cmdBody.timeString = date.toLocaleString();
 
-		//设置cmd的状态，分为未处理0，已处理1，已忽略2，已拒绝3，收到消息默认都设置未处理
-		cmdBody.cmdStatus = 0;
 	},
 	dereplication(cmd, type) {
 		//去重函数
@@ -27,17 +25,16 @@ var Cmd = {
 			receiver = cmd.target_user,
 			action = cmd.action;
 
-		if(type == 0){//好友cmd
+		if (type == 0) { //好友cmd
 			var friendCmd = chat.cmd_msg.friendCmd;
-			// var friendCmdMap = chat.cmd_msg.friendCmdMap;
-			for(var i in friendCmd){
-				if(friendCmd[i].action == action && friendCmd[i].apply_user.id == sender.id && friendCmd[i].apply_user.no == sender.no &&
-					friendCmd[i].target_user.id == receiver.id && friendCmd[i].target_user.no == receiver.no){
+			for (var i in friendCmd) {
+				if (friendCmd[i].action == action && friendCmd[i].apply_user.id == sender.id && friendCmd[i].apply_user.no == sender.no &&
+					friendCmd[i].target_user.id == receiver.id && friendCmd[i].target_user.no == receiver.no) {
 					flag = true;
 					break;
 				}
 			}
-			if(!flag){//不存在则左插
+			if (!flag) { //不存在则左插
 				friendCmd.unshift(cmd);
 				chat.cmd_msg.count++;
 				vm.$store.state.chat.unread++;
@@ -46,12 +43,9 @@ var Cmd = {
 			}
 		}else{//群cmd
 			
-
 		}
 	},
 	handle_cmd(msg) {
-		console.log('收到的cmd消息:', msg);
-		
 		var cmd_body = msg.cmd_body;
 		//cmd_body的apply_info需要base64解密
 		Cmd['pre_handle'](cmd_body);
@@ -75,11 +69,33 @@ var Cmd = {
 		console.log('groupCmd:', chat.cmd_msg.groupCmd);
 	},
 
-	friend_apply(cmd){
+	re_handle_cmd: function(cmd, flag){
+		switch(cmd.action){
+			case 'friend_apply': Cmd.handle_friend_apply(cmd, flag);break;//
+			case 'couple_apply': ;break;
+			case 'couple_divorce': ;break;
+			case 'couple_force_divorce': ;break;
+			case 'group_join':;break;
+			case 'group_kick':;break;
+			case 'group_quit':;break;
+			case 'admin_setting':;break;
+			case 'admin_cancel':;break;
+			case 'group_transfer':;break;
+			case 'group_title':;break;
+			case 'group_invite':;break;
+			case 'group_silenced':;break;
+			case 'group_admin_changed':;break;
+		}
+	},
+
+	friend_apply(cmd) {
 		//申请加好友通知
 		//去重处理
+		cmd.option = ["同意", "忽略"];
+		console.log(cmd)
 		Cmd['dereplication'](cmd, 0);
 	},
+
 	handle_friend_apply(cmd, flag){
 		//取到索引对应的cmd消息数据
 		// var friendCmd = chat.cmd_msg.friendCmd[index];
@@ -108,7 +124,6 @@ var Cmd = {
 					} else if (res.body.item) {
 						console.log('item********', res.body.item);
 						//返回的数据暂未处理
-						friendCmd.cmdStatus = 1;//状态为已处理 
 						console.log('friendCmd数组为：', chat.cmd_msg.friendCmd);
 					}
 				},
@@ -117,32 +132,25 @@ var Cmd = {
 				}
 			)
 		}else{//忽略
-			friendCmd.cmdStatus = 2;
 			console.log('friendCmd数组为：', chat.cmd_msg.friendCmd);
 		}	
 	},
 
-	friend_delete(cmd){
+	friend_delete(cmd) {
 		//删除好友的通知暂不做任何处理
 	},
-	couple_apply(cmd){
-		console.log(cmd);
+	couple_apply(cmd) {
+		cmd.option = ["同意", "拒绝"];
+		Cmd['dereplication'](cmd, 0);
 	},
-	couple_divorce(cmd){
-		console.log(cmd);
-	},
-	couple_force_divorce(cmd){
-		console.log(cmd);
+	couple_divorce(cmd) {
+		cmd.option = ["同意", "拒绝"];
+		Cmd['dereplication'](cmd, 0);
 	},
 
-	group_invite(cmd){
-		Cmd['dereplication'](cmd, 1);
+	couple_force_divorce(cmd) {
+		Cmd['dereplication'](cmd, 0);
 	}
-
-
-
-
 
 }
 export default Cmd;
-

@@ -1,7 +1,7 @@
 <template>
 	<div class="content" >
 		<div class="ajax-loader" v-show="$store.state.loader"></div>
-		<div v-show="$store.state.chat.messages.friendlist.length" class="content_content">
+		<div v-show="$store.state.chat.messages.friendlist && !$store.state.loader" class="content_content">
 			<div :class="{tofriend:true,active:act}" @click="check_friend">好友列表<div></div></div>
 			<div :class="{togroup:true,active:!act}" @click="check_group">群组<div></div></div>
 			<div class="classname" v-show="friendorgroup">
@@ -46,9 +46,9 @@
 		},
 		mounted: function() {
 			if (this.$store.state.current_user) {
-				if (this.$store.state.chat.messages.groupsDetail.length) {
-					this.$store.state.mounted.addresslist_mounted(this.$store.state, this);
-				}
+				//				if (this.$store.state.chat.messages.groupsDetail.length) {
+				this.$store.state.mounted.addresslist_mounted(this.$store.state, this);
+				//				}
 			}
 		},
 		methods: {

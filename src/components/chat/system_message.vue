@@ -1,104 +1,96 @@
 <template>
 	<div class="content window_select" id="system_msg">
-		<div @mousedown="down($event)" class="windowheader">系统通知
+		<div @mousedown="down($event)" class="header">系统通知
 			<p @click.stop.conce="change($event)" @mousedown.stop><img src="~assets/chat/smallest.png" alt=""></p>
 		</div>
-		<div class="tongzhi_nav">
-			<p :class="{active:tongzhi_act}" @click="change_tongzhi(1)">个人通知<span></span></p>
-			<p :class="{active:!tongzhi_act}" @click="change_tongzhi(0)">群通知<span></span></p>
+		<div class="toggle_bar">
+			<p :class="{active:toggle_switch}" @click="toggle_change(1)">个人消息<span></span></p>
+			<p :class="{active:!toggle_switch}" @click="toggle_change(0)">群消息<span></span></p>
 		</div>
-		<div class="tongzhi_friend" v-if="tongzhi_act">
+		<div class="inform" v-if="toggle_switch">
 			<ul>
-				<li v-for="(list,index) in $store.state.chat.cmd_msg.friendCmd" class="tongzhi_group_list">
-					<img :src="list.apply_user.head_img" alt="" class="tongzhi_img">
-					<div class="tongzhi_info">
-						<p>{{list.apply_user.name}}</p>
-						<p>申请信息: {{list.apply_info}}</p>
-						<p>我的身份:{{list.target_user.name}}</p>
+				<li v-for="(item,index) in $store.state.chat.cmd_msg.friendCmd" class="inform_list">
+					<div class="inform_list_img">
+						<img :src="item.apply_user.head_img" alt="">
 					</div>
-					<div class="tongzhi_info_right">
-						<p>{{list.timeString}}</p>
-						<button @click="handle_cmd(list, 0, 'friend_apply')">同意</button>
-						<button @click="handle_cmd(list, 1, 'friend_apply')">忽略</button>
+
+					<div class="inform_list_content">
+						<p>{{item.apply_user.name}} <span class="no">NO.{{item.apply_user.no}}</span></p>
+						<p>向你{{$store.state.chat.cmd_msg.friendCmdType.get(item.action)}} {{item.apply_info?":"+item.apply_info:""}}</p>
+						<p>我的身份:{{item.target_user.name}} <span class="no">NO.{{item.target_user.no}}</span></p>
 					</div>
+					<div v-if="!item.option[9]" class="inform_list_select">
+						 	 <div>
+						 	 	{{item.option[0]}}
+						 	 </div>
+						 	 <div @click="show_option(index)">
+						 		<img src="~assets/chat/pull_list.png" alt="">
+						 	 </div>
+						 	<ul v-show="show_option_switch[index]">
+						 		<li v-for="(sitem,sindex) in item.option" @click="select_option(item,sitem,index)">{{sitem}}</li>
+						 	</ul>
+					</div>
+					<div v-else class="inform_list_select">{{item.option[9]}}</div>					
 				</li>
 			</ul>
 		</div>
-		<div class="tongzhi_group" v-else>
+		<div class="inform" v-else>
 			<ul>
-				<li v-for="(list,index) in $store.state.chat.cmd_msg.groupCmd" class="tongzhi_group_list">
-					<div v-if="list.name=='group_kick'">
-						<img :src="list.data.groupHeadimg" alt="">
-						<div class="group_apply">
-							<p class="tongzhi_group_name">{{list.data.groupName}}</p>
-							<p class="tongzhi_group_info">你已被移出该群</p>
-						</div>
-					</div>
-					<div v-else-if="list.name=='group_invite'">
-						<img :src="list.data.groupHeadimg" alt="">
-						<div class="group_apply">
-							<p class="tongzhi_group_name">{{list.data.groupName}}</p>
-							<p class="tongzhi_group_info">{{list.data.applyUserName+'('+list.data.applyUserNo+')'}}邀请你加入该群</p>
-						</div>
-						<div class="group_api_apply" v-show="list.data.state==0">
-							<button @click="agree_join(list.data,index,$event)">同意</button>
-							<button >忽略</button>
-						</div>
-						<div class="agree_join_success" style="display:none" v-show="list.data.state==1">
-							已同意
-						</div>
-						<div class="agree_join_fail" style="display:none" v-show="list.data.state==2">
-							已拒绝
-						</div>
-					</div>
+				<li v-for="(item,index) in $store.state.chat.cmd_msg.groupCmd" class="inform_list">
 				</li>
 			</ul>
 		</div>
 	</div>
 </template>
 <script>
-	import Cmd from 'src/chat/mpIM/cmd_msg/index.js'
+	import Cmd from 'src/chat/mpIM/cmd_msg/index.js';
+
+
 	export default ({
-		props: ['index', 'list'],
 		data() {
 			return {
-				tongzhi_act: true,
+				toggle_switch: true,
+				show_option_switch: [],
 			}
 		},
 		mounted: function() {
+			document.onmouseup = function() {
+				document.onmousemove = null;
+				var dom = document.querySelector('#window_container');
+			}
+			document.querySelector('#system_msg').style.left = parseInt(document.body.clientWidth - 150) + 'px';
+			document.querySelector('#system_msg').style.top = parseInt(document.body.clientHeight - 50) + 'px';
+			var me = this;
+			window.onresize = function() {
+				var dom = document.querySelector('#window_container');
+				me.$store.state.pageX = parseInt(dom.offsetLeft);
+				me.$store.state.pageY = parseInt(dom.offsetTop);
+				var win = document.querySelectorAll('.window_select');
+				for (var i = 0; i < win.length; i++) {
+					if (parseInt(window.getComputedStyle(win[i]).width) == 0) {
+						win[i].style.top = me.$store.state.pageY + 25 + 'px';
+						win[i].style.left = me.$store.state.pageX + 25 + 'px';
+					}
+				}
+			}
 
 		},
 		methods: {
-			handle_cmd: function(cmd, flag, action){
-				switch(action){
-					case 'friend_apply': Cmd.handle_friend_apply(cmd, flag);break;//
-					case 'couple_apply': ;break;
-					case 'couple_divorce': ;break;
-					case 'couple_force_divorce': ;break;
-					case 'group_join':;break;
-					case 'group_kick':;break;
-					case 'group_quit':;break;
-					case 'admin_setting':;break;
-					case 'admin_cancel':;break;
-					case 'group_transfer':;break;
-					case 'group_title':;break;
-					case 'group_invite':;break;
-					case 'group_silenced':;break;
-					case 'group_admin_changed':;break;
-				}
-			},
 
-			//同意入群
-			agree_friend_apply: function(cmd, flag, action){
+			select_option: function(item, sitem, index) {
+				item.option[9] = "已" + sitem;
+				this.show_option_switch.splice(index, 1, !this.show_option_switch[index]);
+				//do something
+				
+				var flag = sitem=="同意"?0:1;
+				Cmd.re_handle_cmd(item,flag);
 
-				Cmd.handle_friend_apply(cmd, flag);
 			},
-			change_tongzhi: function(s) {
-				if (s) {
-					this.tongzhi_act = true;
-				} else {
-					this.tongzhi_act = false;
-				}
+			show_option: function(index) {
+				this.show_option_switch.splice(index, 1, !this.show_option_switch[index]);
+			},
+			toggle_change: function(bool) {
+				bool ? this.toggle_switch = true : this.toggle_switch = false;
 			},
 			change: function(event) {
 				var dom = document.querySelector('#system_msg');
@@ -108,7 +100,6 @@
 				dom.style.borderRadius = "50%";
 				dom.style.top = this.$store.state.pageY + 40 + 'px';
 				dom.style.left = this.$store.state.pageX + 40 + 'px';
-				console.log(this.$store.state.pageX)
 				dom.style.opacity = '0';
 			},
 			down: function(event) {
@@ -121,7 +112,6 @@
 				box.style.transition = "none";
 				dom.style.zIndex = ++this.$store.state.message_window_index;
 				document.onmousemove = function(event) {
-					console.log(1)
 					var evt = window.event || event,
 						x2 = evt.clientX,
 						y2 = evt.clientY;
@@ -147,6 +137,104 @@
 
 </script>
 <style scoped>
+	.inform_list_select {
+		margin-top: 30px;
+		width: 70px;
+		height: 30px;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		text-align: center;
+		line-height: 30px;
+		position: relative;
+	}
+	
+	.inform_list_select>ul {
+		border: 1px solid #ccc;
+		width: 70px;
+		margin-left: -1px;
+		border-radius: 3px;
+	}
+	
+	.inform_list_select>ul>li {
+		height: 28px;
+		text-align: center;
+		background: #fff;
+		border-bottom: 1px solid #ccc;
+		cursor: pointer;
+	}
+	
+	.inform_list_select>ul>li:hover {
+		background: #aaa;
+	}
+	
+	.inform_list_select>ul>li:last-child {
+		border: none;
+	}
+	
+	.inform_list_select>div:nth-child(1) {
+		text-align: right;
+		width: 44px;
+		display: inline-block;
+		margin-right: -3px;
+		cursor: default;
+	}
+	
+	.inform_list_select>div:nth-child(2) {
+		display: inline-block;
+		width: 25px;
+	}
+	
+	.inform_list_select>div>img {
+		width: 9px;
+	}
+	
+	.no {
+		font-size: 12px;
+	}
+	
+	.inform_list_content>p:nth-child(1) {
+		color: #333;
+		margin-top: 15px;
+	}
+	
+	.inform_list_content>p:nth-child(3) {
+		color: #676767;
+	}
+	
+	.inform_list_content>p {
+		height: 25px;
+		line-height: 25px;
+		color: #aaa;
+	}
+	
+	.inform_list_content {
+		width: 300px;
+	}
+	
+	.inform_list_img {
+		width: 100px;
+	}
+	
+	.inform_list_img>img {
+		margin: 0 auto;
+		margin-top: 15px;
+		border-radius: 50%;
+		height: 70px;
+		display: block;
+	}
+	
+	.inform_list>div {
+		float: left;
+	}
+	
+	.inform_list {
+		height: 100px;
+		width: 100%;
+		background: #fff;
+		margin: 7px 0;
+		border: 1px solid #ddd;
+	}
+	
 	#system_msg {
 		right: 150px;
 		bottom: 50px;
@@ -155,107 +243,8 @@
 		transition: width 1s, height 1s, top 1s, left 1s, border-radius 1s, opacity 1s;
 	}
 	
-	.agree_join_success,
-	.agree_join_fail {
-		float: left;
-		width: 58px;
-		height: 24px;
-		float: left;
-		font-size: 12px;
-		background: #8fc9f5;
-		color: #fff;
-		border-radius: 3px;
-		text-align: center;
-		line-height: 24px;
-		margin: 18px 0 0 40px;
-	}
-	
-	div.agree_join_fail {
-		background: #bbb;
-	}
-	
-	.tongzhi_group_list {
-		height: min-60px;
-		width: 100%;
-		background: #fff;
-		overflow: hidden;
-		margin: 5px 0;
-		border: 1px solid #ddd;
-		position: relative;
-	}
-	
-	.tongzhi_group_list img {
-		float: left;
-		width: 50px;
-		height: 50px;
-		margin: 20px 10px;
-		border-radius: 50%;
-	}
-	
-
-
-	.tongzhi_info_right{
-		position: absolute;
-		top:20px;
-		right: 20px;
-	}
-
-	.group_apply>p {
-		line-height: 20px;
-		font-size: 14px;
-		margin-top: 6px;
-	}
-	
-	.tongzhi_group_name {
-		font-size: 16px!important;
-	}
-	
-	.group_apply {
-		float: left;
-		width: 280px;
-	}
-	
-	.group_api_apply {
-		float: left;
-		width: 130px;
-		margin-top: 18px;
-		margin-left: 6px;
-	}
-	
-	.group_api_apply>button {
-		width: 58px;
-		height: 24px;
-		float: left;
-		border: none;
-		font-size: 12px;
-		cursor: pointer;
-		transition: all .3s;
-		position: relative;
-		top: 0;
-		left: 0;
-		border-radius: 3px;
-	}
-	
-	.group_api_apply>button:hover {
-		top: -2px;
-		box-shadow: 0 0 3px 0 #999;
-	}
-	
-	.group_api_apply>button:nth-child(1) {
-		background: #8fc9f5;
-		color: #fff;
-	}
-	
-	.group_api_apply>button:nth-child(2) {
-		margin-left: 10px;
-		background: #bbb;
-		color: #fff;
-		padding-bottom: 8px;
-	}
-	
 	.content {
 		position: fixed;
-		top: 100px;
 		z-index: 999;
 		width: 500px;
 		overflow: hidden;
@@ -266,7 +255,7 @@
 		height: 611px;
 	}
 	
-	.windowheader {
+	.header {
 		background: #333;
 		height: 55px;
 		font-size: 16px;
@@ -276,7 +265,7 @@
 		position: relative;
 	}
 	
-	.windowheader>p {
+	.header>p {
 		position: absolute;
 		color: #fff;
 		height: 100%;
@@ -285,37 +274,21 @@
 		cursor: pointer;
 	}
 	
-	.windowheader>p>img {
+	.header>p>img {
 		display: block;
 		width: 16px;
 		margin-top: 26px;
 	}
 	
-/*	.tongzhi_img {
-		vertical-align: center;
-	}*/
-
-	.tongzhi_info {
-		margin-left: 20px;
-		margin-top:10px;
-	}
-
-	.tongzhi_info_right {
-		float:right;
-	}
-
-	.tongzhi_nav {
+	.toggle_bar {
 		width: 100%;
 		overflow: hidden;
 	}
 	
-	.tongzhi_nav>p {
+	.toggle_bar>p {
 		float: left;
 		width: 50%;
-		background: #fff;
 		position: relative;
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
 		box-sizing: border-box;
 		text-align: center;
 		line-height: 50px;
@@ -325,40 +298,30 @@
 		text-indent: 20px;
 	}
 	
-	.tongzhi_nav>p:nth-child(1) {
+	.toggle_bar>p:nth-child(1) {
 		border-right: 1px solid #ededed;
 		background: url(~assets/chat/friendlist2.png) 78px center no-repeat #fff;
 		background-size: 20px;
 	}
 	
-	.tongzhi_nav>p:nth-child(1).active {
-		background: url(~assets/chat/friendlist1.png) 78px center no-repeat #fff;
-		background-size: 20px;
+	.toggle_bar>p:nth-child(1).active,
+	.toggle_bar>p:nth-child(1):hover {
+		background-image: url(~assets/chat/friendlist1.png);
+		background-size: 24px;
 	}
 	
-	.tongzhi_nav>p:nth-child(1):hover {
-		background: url(~assets/chat/friendlist1.png) 78px center no-repeat #fff;
-		background-size: 20px;
+	.toggle_bar>p:nth-child(2) {
+		background: url(~assets/chat/grouplist2.png) 78px center no-repeat #fff;
+		background-size: 28px;
 	}
 	
-	.tongzhi_nav>p:nth-child(2) {
-		text-indent: 24px;
-		background: url(~assets/chat/grouplist2.png) 82px center no-repeat #fff;
-		background-size: 26px;
+	.toggle_bar>p:nth-child(2):hover,
+	.toggle_bar>p:nth-child(2).active {
+		background-image: url(~assets/chat/grouplist1.png);
+		background-size: 32px;
 	}
 	
-	.tongzhi_nav>p:nth-child(2):hover {
-		text-indent: 24px;
-		background: url(~assets/chat/grouplist1.png) 82px center no-repeat #fff;
-		background-size: 26px;
-	}
-	
-	.tongzhi_nav>p:nth-child(2).active {
-		background: url(~assets/chat/grouplist1.png) 82px center no-repeat #fff;
-		background-size: 26px;
-	}
-	
-	.tongzhi_nav>p>span {
+	.toggle_bar>p>span {
 		background: #132b4d;
 		height: 2px;
 		position: absolute;
@@ -368,29 +331,17 @@
 		display: none;
 	}
 	
-	.tongzhi_nav>p.active {
-		color: #333;
-	}
-	
-	.tongzhi_nav>p.active>span {
+	.toggle_bar>p.active>span {
 		display: block;
 	}
 	
-	.tongzhi_nav>p:hover {
+	.toggle_bar>p.active {
+		color: #333;
+	}
+	
+	.toggle_bar>p:hover {
 		color: #333;
 		cursor: pointer;
-	}
-	
-	.gift_sender_name {
-		margin: 0 5px;
-		color: #c89191;
-		font-size: 14px;
-	}
-	
-	.gift {
-		margin: 0 5px;
-		color: #c89191;
-		font-size: 16px;
 	}
 
 </style>

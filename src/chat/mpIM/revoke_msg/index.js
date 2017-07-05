@@ -3,7 +3,7 @@ import mpIM from '../mpIM'
 var con = vm.$store.state.chat.conversation
 
 var Revoke = {
-	handle_revoke: function (message) {
+	handle_revoke(message) {
 		var uid = message.revoke_body.msg_uid,
 			flag = 0;
 		//查找匹配的uid并设置,需要优化
@@ -24,7 +24,7 @@ var Revoke = {
 			con[i].msg[im].set_revoke(message.revoke_body.sender, message.revoke_body.content);
 		}
 	},
-	send_revoke: function (conversation_index, msg_index, content) {
+	send_revoke(conversation_index, msg_index, content) {
 		var targetType = con[conversation_index].isGroup ? 1 : 0,
 			body = {
 				revoke_body: {

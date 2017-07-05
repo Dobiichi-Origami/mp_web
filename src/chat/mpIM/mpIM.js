@@ -12,12 +12,12 @@ var MpIMClient = {
 	time: 0,
 	reconnect_: 0,
 	heart_: 0,
-	init: function (DeviceInfo) {
+	init(DeviceInfo) {
 		var me = MpIMClient;
 		me.DeviceInfo = DeviceInfo;
 		me.connect();
 	},
-	connect: function () {
+	connect() {
 		var me = MpIMClient;
 		me.ws = new WebSocket('ws://101.37.28.77:8090/sub');
 		console.log('正在连接')
@@ -54,7 +54,7 @@ var MpIMClient = {
 			me.reconnect();
 		}
 	},
-	reconnect: function () {
+	reconnect() {
 		//重新连接
 		var me = MpIMClient;
 		vm.$store.state.chat.close_by_me = false;
@@ -66,7 +66,7 @@ var MpIMClient = {
 			}
 		}
 	},
-	login: function () {
+	login() {
 		//登录之后发一条消息
 		var me = this;
 		var data = {
@@ -79,7 +79,7 @@ var MpIMClient = {
 		me.ws.send(data)
 		me.receiver();
 	},
-	send: function (body) {
+	send(body) {
 		var data = {
 			'ver': 1,
 			'op': 4,
@@ -90,13 +90,13 @@ var MpIMClient = {
 		data = JSON.stringify(data);
 		this.ws.send(data)
 	},
-	close: function () {
+	close() {
 		if (this.ws.close) {
 			this.ws.close();
 			vm.$store.state.chat.close_by_me = true;
 		}
 	},
-	receiver: function () {
+	receiver() {
 		var me = MpIMClient,
 			msg;
 		me.ws.onmessage = function (evt) {
@@ -110,7 +110,7 @@ var MpIMClient = {
 					clearInterval(me.heart_);
 				}
 				//开启心跳
-				me.heart_ = setInterval(function () {
+				me.heart_ = setInterval(() => {
 					me.ws.send(JSON.stringify({
 						'ver': 1,
 						'op': 2,

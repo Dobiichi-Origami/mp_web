@@ -146,11 +146,13 @@
 			me.$store.state.no_scroll(ele3);
 
 			//加载表情库
-			this.$store.state.chat.emojis = emoji;
-			for (var i = 0; i < this.$store.state.chat.emojis.length; i++) {
-				this.$store.state.chat.emojis[i].ImageName = require('../assets/emoji/' + this.$store.state.chat.emojis[i].ImageName);
+			if (!this.$store.state.chat.emojis) {
+				this.$store.state.chat.emojis = emoji;
+				for (var i = 0; i < this.$store.state.chat.emojis.length; i++) {
+					this.$store.state.chat.emojis[i].ImageName = require('../assets/emoji/' + this.$store.state.chat.emojis[i].ImageName);
+				}
+				console.log(this.$store.state.chat.emojis)
 			}
-			console.log(this.$store.state.chat.emojis)
 		},
 		name: 'Main_page',
 		data() {

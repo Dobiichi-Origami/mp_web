@@ -15,9 +15,8 @@ const Plugin = {
 				emulateJSON: true,
 			}).then((res) => {
 				state.chat.messages.friendlist = res.body.items;
-				console.log(res.body);
-				console.log(0)
-				state.loader = false;
+				if (state.chat.messages.grouplist)
+					state.loader = false;
 			})
 			th.$http({
 				method: 'get',
@@ -28,7 +27,8 @@ const Plugin = {
 				emulateJSON: true,
 			}).then((res) => {
 				state.chat.messages.grouplist = res.body.items;
-				console.log(res.body);
+				if (state.chat.messages.friendlist)
+					state.loader = false;
 			})
 		},
 		news_mounted: function (state, th) {
