@@ -1,6 +1,6 @@
 <template>
    <div class="content" id="window_container" @mousedown="down($event)" @click="select">
-   		<p class="all_unread" v-show="$store.state.unread" @click.stop @mousedown.stop>{{$store.state.unread<99?$store.state.unread:'n+'}}</p>
+   		<p class="all_unread" v-show="$store.state.chat.unread" @click.stop @mousedown.stop>{{$store.state.chat.unread<99?$store.state.chat.unread:'n+'}}</p>
    		<div class="container" @mousedown.stop :class="{act:$store.state.act}">
    			<div class="container_box">
    				<div class="container_content">
@@ -88,7 +88,7 @@
 		},
 		methods: {
 			open_system: function() {
-				this.$store.state.unread -= this.$store.state.chat.cmd_msg.count;
+				this.$store.state.chat.unread -= this.$store.state.chat.cmd_msg.count;
 				this.$store.state.chat.cmd_msg.count = 0;
 				var dom = document.querySelector('#system_msg');
 				var w = parseInt(window.getComputedStyle(dom).width);
@@ -111,7 +111,7 @@
 				this.$store.state.message_ball.splice(sindex, 1);
 				this.$store.state.message_ball.unshift(a);
 				this.$store.state.act = false;
-				this.$store.state.unread -= this.$store.state.chat.conversation[index].unreadCount;
+				this.$store.state.chat.unread -= this.$store.state.chat.conversation[index].unreadCount;
 				this.$store.state.chat.conversation[index].unreadCount = 0;
 				var dom = document.querySelector('#win' + id);
 				var w = parseInt(window.getComputedStyle(dom).width);

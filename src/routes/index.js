@@ -13,7 +13,9 @@ const Personal = resolve => require(['components/main_page/Personal'], resolve)
 const Home = resolve => require(['components/main_page/Home'], resolve)
 const News = resolve => require(['components/main_page/News'], resolve)
 const Detail = resolve => require(['components/main_page/Detail'], resolve)
+const testMap = resolve => require(['components/chat/testMap'], resolve)
 const Addresslist = resolve => require(['components/main_page/Addresslist'], resolve)
+
 
 const router = new VueRouter({
 	//mode: "history",
@@ -56,7 +58,10 @@ const router = new VueRouter({
 							component: Detail
 						}
 					],
-			}
+			},  {
+					path: 'testMap',
+					component: testMap
+			}	
 				 ]
 		},
 

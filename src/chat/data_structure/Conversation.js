@@ -25,7 +25,7 @@ class Conversation {
 	}
 	set_unreadCount() {
 		this.unreadCount++;
-		vm.$store.state.unread++;
+		vm.$store.state.chat.unread++;
 	}
 	set_group(type) {
 		this.isGroup = type; //是否是群组

@@ -17,7 +17,6 @@ const store = new Vuex.Store({
 	state: {
 		domain: "http://test.mrpyq.com/api/",
 		AwesomeMessage: false,
-		unread: 0,
 		show_at: false,
 		//atid
 		group_id: '',
@@ -184,7 +183,6 @@ const store = new Vuex.Store({
 					}
 				}
 				var dom = document.querySelector('#win' + id);
-				console.log('(((((((((((((((((((((((((((' + id)
 				if (dom) {
 					var w = parseInt(window.getComputedStyle(dom).width);
 					if (w > 0) {

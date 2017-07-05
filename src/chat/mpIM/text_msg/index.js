@@ -7,7 +7,6 @@ var Text = {
 		if (index === undefined) {
 			return;
 		}
-
 		var is_me_speak = message.chat_body.direction ? false : true,
 			temp = message.chat_body.chat_is_friend ? 0 : 1;
 		var msg = new Msg(index, message.chat_body.content_type, message.chat_body.content.content, message.chat_body.content.speakType, message.time, is_me_speak, temp, message.uid);

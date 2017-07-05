@@ -18,7 +18,8 @@
 					</div>
 					<div class="tongzhi_info_right">
 						<p>{{list.timeString}}</p>
-						<button @click="">同意</button>
+						<button @click="handle_cmd(list, 0, 'friend_apply')">同意</button>
+						<button @click="handle_cmd(list, 1, 'friend_apply')">忽略</button>
 					</div>
 				</li>
 			</ul>
@@ -41,7 +42,7 @@
 						</div>
 						<div class="group_api_apply" v-show="list.data.state==0">
 							<button @click="agree_join(list.data,index,$event)">同意</button>
-							<button>忽略</button>
+							<button >忽略</button>
 						</div>
 						<div class="agree_join_success" style="display:none" v-show="list.data.state==1">
 							已同意
@@ -56,6 +57,7 @@
 	</div>
 </template>
 <script>
+	import Cmd from 'src/chat/mpIM/cmd_msg/index.js'
 	export default ({
 		props: ['index', 'list'],
 		data() {
@@ -67,8 +69,30 @@
 
 		},
 		methods: {
-			//同意入群
+			handle_cmd: function(cmd, flag, action){
+				switch(action){
+					case 'friend_apply': Cmd.handle_friend_apply(cmd, flag);break;//
+					case 'couple_apply': ;break;
+					case 'couple_divorce': ;break;
+					case 'couple_force_divorce': ;break;
+					case 'group_join':;break;
+					case 'group_kick':;break;
+					case 'group_quit':;break;
+					case 'admin_setting':;break;
+					case 'admin_cancel':;break;
+					case 'group_transfer':;break;
+					case 'group_title':;break;
+					case 'group_invite':;break;
+					case 'group_silenced':;break;
+					case 'group_admin_changed':;break;
+				}
+			},
 
+			//同意入群
+			agree_friend_apply: function(cmd, flag, action){
+
+				Cmd.handle_friend_apply(cmd, flag);
+			},
 			change_tongzhi: function(s) {
 				if (s) {
 					this.tongzhi_act = true;
