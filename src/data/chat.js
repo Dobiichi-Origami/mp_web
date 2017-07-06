@@ -18,11 +18,11 @@ const Chat = {
 		//系统消息
 		cmd_msg: {
 			friendCmd: [],
-			friendCmdType: new Map([['friend_apply', '申请好友'], 
-				['friend_delete', '删除好友'], ['couple_apply', '求婚申请'], 
+			friendCmdType: new Map([['friend_apply', '申请好友'],   
+				['friend_delete', '删除好友'], ['couple_apply', '求婚申请'],           	
 				['couple_divorce', '协议离婚'], ['couple_force_divorce', '强制离婚']]),
 			groupCmd: [],
-			groupCmdType: ['group_join', 'group_kick', 'group_quit', 'admin_setting', 'admin_cancel', 'group_transfer', 'group_title', 'group_silenced', 'group_admin_changed'],
+			groupCmdType: new Map([['group_join', '申请加群'], ['group_invite', '群邀请'], ['group_kick', '被踢出群'], ['group_quit', '退群'], ['admin_setting', '设置群管理员'], ['admin_cancel', '取消管理员'], ['group_transfer', '转让群'], ['group_title', '群头衔设置'], ['group_silenced', '群禁言'], ['group_admin_changed', '职位变化']]),
 			count: 0 //通知总数
 		},
 		close_by_me: false,

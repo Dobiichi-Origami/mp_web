@@ -37,6 +37,27 @@
 		<div class="inform" v-else>
 			<ul>
 				<li v-for="(item,index) in $store.state.chat.cmd_msg.groupCmd" class="inform_list">
+					<div class="inform_list_img">
+						<img :src="item.group.head_img" alt="">
+					</div>
+					<div class="inform_list_content">
+						<p>{{item.apply_user.name}} <span class="no">NO.{{item.apply_user.no}}</span></p>
+						<p>{{$store.state.chat.cmd_msg.groupCmdType.get(item.action)}}:加入 {{item.group.name}}  </p>
+						<p>{{item.apply_info?""+item.apply_info:""}}</p>
+						
+					</div>
+					<div v-if="!item.option[9]" class="inform_list_select">
+						 	 <div>
+						 	 	{{item.option[0]}}
+						 	 </div>
+						 	 <div @click="show_option(index)">
+						 		<img src="~assets/chat/pull_list.png" alt="">
+						 	 </div>
+						 	<ul v-show="show_option_switch[index]">
+						 		<li v-for="(sitem,sindex) in item.option" @click="select_option(item,sitem,index)">{{sitem}}</li>
+						 	</ul>
+					</div>
+					<div v-else class="inform_list_select">{{item.option[9]}}</div>		
 				</li>
 			</ul>
 		</div>
@@ -76,12 +97,10 @@
 
 		},
 		methods: {
-
 			select_option: function(item, sitem, index) {
 				item.option[9] = "已" + sitem;
 				this.show_option_switch.splice(index, 1, !this.show_option_switch[index]);
 				//do something
-				
 				var flag = sitem=="同意"?0:1;
 				Cmd.re_handle_cmd(item,flag);
 
