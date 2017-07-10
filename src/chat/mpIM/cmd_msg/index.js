@@ -172,7 +172,7 @@ var Cmd = {
 		Cmd['dereplication'](cmd, 1);
 	},
 
-	handle_group_invite(cmd, flag){
+	handle_group_invite(cmd, flag){//处理群主邀请
 		var groupCmd = cmd;
 		//同意或者忽略
 		if(!flag){//同意
@@ -209,11 +209,13 @@ var Cmd = {
 			console.log('groupCmd数组为：', chat.cmd_msg.groupCmd);
 		}	
 	},
+
 	group_join(cmd){
 		cmd.option = ["同意", "拒绝"];
 		Cmd['dereplication'](cmd, 1);
 	},
-	handle_group_join(cmd, flag){
+
+	handle_group_join(cmd, flag){//处理加群申请
 		var groupCmd = cmd;
 		//同意或者忽略
 		if(!flag){//同意
