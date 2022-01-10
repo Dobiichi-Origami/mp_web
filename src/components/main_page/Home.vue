@@ -7,7 +7,7 @@
 	<button v-show="$store.state.pagemore && !$store.state.loader" @click.stop="f_get_more">点击加载更多！</button>
 	<button v-show="!$store.state.pagemore && !$store.state.loader && this.$store.state.current_user" class="no_more">没有更多了哦！</button>
  </section>
-   
+
 </template>
 
 <script>
@@ -30,7 +30,7 @@
 					//查看首页帖子列表
 					this.$http({
 						method: 'get',
-						url: 'http://test.mrpyq.com//api/feed/feeds_by_room',
+						url: 'http://www.mrpyq.com/api/feed/feeds_by_room',
 						params: {
 							'access_token': localStorage.getItem('access_token'),
 							'page': this.$store.state.pagenumber,
@@ -98,7 +98,7 @@
 		width: 660px;
 		padding-bottom: 25px;
 	}
-	
+
 	button {
 		height: 35px;
 		line-height: 35px;
@@ -111,7 +111,7 @@
 		border-radius: 3px;
 		color: #777;
 	}
-	
+
 	button.no_more {
 		background: transparent;
 		color: #dd6f5a;

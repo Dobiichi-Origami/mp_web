@@ -18,7 +18,7 @@
 							你收到来自<span class="gift_sender_name">{{list.data.content.senderName}}NO.{{list.data.content.senderUserNo}}</span>的<span class="gift">{{list.data.content.name}} x {{list.data.content.count}}</span>
 							</p>
 						</div>
-						
+
 					</div>
 				</li>
 			</ul>
@@ -75,7 +75,7 @@
 				d.style.display = 'block';
 				this.$http({
 					method: 'get',
-					url: 'http://test.mrpyq.com/api/group/agree_join',
+					url: 'http://www.mrpyq.com/api/group/agree_join',
 					params: {
 						'access_token': localStorage.getItem('access_token'),
 						'id': data.groupId,
@@ -155,7 +155,7 @@
 		height: 0;
 		transition: width 1s, height 1s, top 1s, left 1s, border-radius 1s, opacity 1s;
 	}
-	
+
 	.agree_join_success,
 	.agree_join_fail {
 		float: left;
@@ -170,11 +170,11 @@
 		line-height: 24px;
 		margin: 18px 0 0 40px;
 	}
-	
+
 	div.agree_join_fail {
 		background: #bbb;
 	}
-	
+
 	.tongzhi_group_list {
 		height: min-60px;
 		width: 100%;
@@ -183,7 +183,7 @@
 		margin: 5px 0;
 		border: 1px solid #ddd;
 	}
-	
+
 	.tongzhi_group_list img {
 		float: left;
 		width: 50px;
@@ -191,29 +191,29 @@
 		margin: 5px 10px;
 		border-radius: 50%;
 	}
-	
+
 	.group_apply>p {
 		line-height: 20px;
 		font-size: 14px;
 		margin-top: 6px;
 	}
-	
+
 	.tongzhi_group_name {
 		font-size: 16px!important;
 	}
-	
+
 	.group_apply {
 		float: left;
 		width: 280px;
 	}
-	
+
 	.group_api_apply {
 		float: left;
 		width: 130px;
 		margin-top: 18px;
 		margin-left: 6px;
 	}
-	
+
 	.group_api_apply>button {
 		width: 58px;
 		height: 24px;
@@ -227,24 +227,24 @@
 		left: 0;
 		border-radius: 3px;
 	}
-	
+
 	.group_api_apply>button:hover {
 		top: -2px;
 		box-shadow: 0 0 3px 0 #999;
 	}
-	
+
 	.group_api_apply>button:nth-child(1) {
 		background: #8fc9f5;
 		color: #fff;
 	}
-	
+
 	.group_api_apply>button:nth-child(2) {
 		margin-left: 10px;
 		background: #bbb;
 		color: #fff;
 		padding-bottom: 8px;
 	}
-	
+
 	.content {
 		position: fixed;
 		top: 100px;
@@ -257,7 +257,7 @@
 		box-shadow: 1px 1px 6px #333;
 		height: 611px;
 	}
-	
+
 	.windowheader {
 		background: #333;
 		height: 55px;
@@ -267,7 +267,7 @@
 		line-height: 55px;
 		position: relative;
 	}
-	
+
 	.windowheader>p {
 		position: absolute;
 		color: #fff;
@@ -276,18 +276,18 @@
 		top: 0;
 		cursor: pointer;
 	}
-	
+
 	.windowheader>p>img {
 		display: block;
 		width: 16px;
 		margin-top: 26px;
 	}
-	
+
 	.tongzhi_nav {
 		width: 100%;
 		overflow: hidden;
 	}
-	
+
 	.tongzhi_nav>p {
 		float: left;
 		width: 50%;
@@ -303,40 +303,40 @@
 		color: #b3b3b3;
 		text-indent: 20px;
 	}
-	
+
 	.tongzhi_nav>p:nth-child(1) {
 		border-right: 1px solid #ededed;
 		background: url(~assets/chat/friendlist2.png) 78px center no-repeat #fff;
 		background-size: 20px;
 	}
-	
+
 	.tongzhi_nav>p:nth-child(1).active {
 		background: url(~assets/chat/friendlist1.png) 78px center no-repeat #fff;
 		background-size: 20px;
 	}
-	
+
 	.tongzhi_nav>p:nth-child(1):hover {
 		background: url(~assets/chat/friendlist1.png) 78px center no-repeat #fff;
 		background-size: 20px;
 	}
-	
+
 	.tongzhi_nav>p:nth-child(2) {
 		text-indent: 24px;
 		background: url(~assets/chat/grouplist2.png) 82px center no-repeat #fff;
 		background-size: 26px;
 	}
-	
+
 	.tongzhi_nav>p:nth-child(2):hover {
 		text-indent: 24px;
 		background: url(~assets/chat/grouplist1.png) 82px center no-repeat #fff;
 		background-size: 26px;
 	}
-	
+
 	.tongzhi_nav>p:nth-child(2).active {
 		background: url(~assets/chat/grouplist1.png) 82px center no-repeat #fff;
 		background-size: 26px;
 	}
-	
+
 	.tongzhi_nav>p>span {
 		background: #132b4d;
 		height: 2px;
@@ -346,26 +346,26 @@
 		left: 105px;
 		display: none;
 	}
-	
+
 	.tongzhi_nav>p.active {
 		color: #333;
 	}
-	
+
 	.tongzhi_nav>p.active>span {
 		display: block;
 	}
-	
+
 	.tongzhi_nav>p:hover {
 		color: #333;
 		cursor: pointer;
 	}
-	
+
 	.gift_sender_name {
 		margin: 0 5px;
 		color: #c89191;
 		font-size: 14px;
 	}
-	
+
 	.gift {
 		margin: 0 5px;
 		color: #c89191;

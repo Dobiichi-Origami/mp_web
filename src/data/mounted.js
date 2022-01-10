@@ -273,7 +273,7 @@ const Plugin = {
 			//获取首页帖子列表
 			th.$http({
 				method: 'get',
-				url: 'http://test.mrpyq.com//api/feed/feeds_by_room',
+				url: 'http://www.mrpyq.com//api/feed/feeds_by_room',
 				params: {
 					'access_token': localStorage.getItem('access_token'),
 					'page': state.pagenumber,

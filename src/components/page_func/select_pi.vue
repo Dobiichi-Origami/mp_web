@@ -1,7 +1,7 @@
 <template>
    <transition name="anime">
     <div class="show_img" v-show="$store.state.plugin.show_select_pi" @click.stop="f_hide_pi($event)">
-			<div class="container">	
+			<div class="container">
 				<div class="pi_chu">
 					<ul class="pi_list">
 						<li v-for="(list,listindex) in $store.state.users" @click.stop="f_sure_add(listindex)">
@@ -42,7 +42,7 @@
 				if (location.href.match('/Main_page/News') != null) {
 					this.$http({
 						method: 'get',
-						url: 'http://test.mrpyq.com/api/feed/add_play',
+						url: 'http://www.mrpyq.com/api/feed/add_play',
 						params: {
 							'access_token': localStorage.getItem('access_token'),
 							'id': state.news_items[state.plugin.pi_index].feed._id,
@@ -66,7 +66,7 @@
 				} else if (location.href.match('/Main_page/Personal') != null) {
 					this.$http({
 						method: 'get',
-						url: 'http://test.mrpyq.com/api/feed/add_play',
+						url: 'http://www.mrpyq.com/api/feed/add_play',
 						params: {
 							'access_token': localStorage.getItem('access_token'),
 							'id': state.per_items[state.plugin.pi_index]._id,
@@ -100,7 +100,7 @@
 				} else {
 					this.$http({
 						method: 'get',
-						url: 'http://test.mrpyq.com/api/feed/add_play',
+						url: 'http://www.mrpyq.com/api/feed/add_play',
 						params: {
 							'access_token': localStorage.getItem('access_token'),
 							'id': state.home_items[state.plugin.pi_index]._id,
@@ -161,7 +161,7 @@
 		border-radius: 5px;
 		position: relative;
 	}
-	
+
 	.pi_chu {
 		width: 600px;
 		height: 490px;
@@ -170,22 +170,22 @@
 		background: #fff;
 		margin: 0 auto;
 	}
-	
+
 	.pi_chu ul {
 		width: 400px;
 	}
-	
+
 	.pi_chu ul>li {
 		height: 70px;
 		padding-left: 10px;
 		border-bottom: 1px solid #ccc;
 		cursor: pointer;
 	}
-	
+
 	.pi_chu ul>li:hover {
 		background: #f2f2f2;
 	}
-	
+
 	.pi_list li>img {
 		float: left;
 		margin-top: 7px;
@@ -194,7 +194,7 @@
 		border-radius: 50%;
 		margin-right: 10px;
 	}
-	
+
 	.pi_list li>h3 {
 		float: left;
 		display: table;
@@ -204,7 +204,7 @@
 		font-weight: normal;
 		color: #000;
 	}
-	
+
 	.pi_list li>span {
 		float: left;
 		display: table;
@@ -218,7 +218,7 @@
 		border-radius: 3px;
 		color: #fff;
 	}
-	
+
 	.pi_list li>p {
 		float: left;
 		width: 317px;
@@ -230,7 +230,7 @@
 		height: 14px;
 		margin-top: 10px;
 	}
-	
+
 	.show_img {
 		position: fixed;
 		top: 0;
@@ -242,11 +242,11 @@
 		padding-top: 20px;
 		z-index: 999;
 	}
-	
+
 	.show_img img {
 		display: block;
 	}
-	
+
 	.anime-enter,
 	.anime-leave-to {
 		opacity: 0;

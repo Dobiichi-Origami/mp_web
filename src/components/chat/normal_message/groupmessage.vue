@@ -60,7 +60,7 @@
 									<img :src="slist.speaker.speakerHeadimg" alt="" class="headimg">
 									<div class="other_info">
 										<p class="other_name"><span v-if="slist.speaker.speakerTitle" class="group_member_title" :style="{background:title_bg(slist.speaker.memberType)}">{{slist.speaker.speakerTitle}}</span>{{slist.speaker.speakerName}}<span v-show="show_userno_switch">NO.{{slist.speaker.speakerNo}}</span></p>
-										
+
 										<div :class="{wordcontent:true,self:slist.chat_type=='SELF',active:slist.content_type=='IMAGE' || slist.content_type=='MAGIC_PIC'}"  @click.stop="show_chehui(sindex,true)">
 											<span  v-if="slist.content_type=='TXT'" v-html="emoji(slist.content)" class="slist_content"></span>
 											<div v-if="slist.content_type=='MAGIC_PIC'" class="magic_pic">
@@ -72,7 +72,7 @@
 											<span class="other_selfsay" v-show="slist.chat_type=='SELF'">本人说</span>
 											<span :id="'del'+list.group._id+sindex" class="chehui" data-show="false" :style="{right:slist.chat_type=='SELF'?'-70px':'-30px'}" @click="del_msg(list.index,sindex)">删除</span>
 										</div>
-									</div>	
+									</div>
 								</div>
 							</div>
 						</div>
@@ -102,7 +102,7 @@
 						<div class="emoji_wen" v-show="emojitype==2">
 							<span v-for="emo in $store.state.chat.emoji.wen_emoji" @click="add_yan_emoji($event)">{{emo}}</span>
 						</div>
-						<div class="emoji_mo" v-show="emojitype==3">	
+						<div class="emoji_mo" v-show="emojitype==3">
 							<p @click="send_magicimg(list.index,1)" class="magic_img"><img src="~assets/chat/shitou.png" alt=""></p>
 							<p @click="send_magicimg(list.index,0)" class="magic_img"><img src="~assets/chat/saizi.png" alt="" class="small"></p>
 						</div>
@@ -127,7 +127,7 @@
 			<div class="messageval">
 				<textarea v-model="val" @input="jianting($event)" :placeholder="tishi" :id="'emoji'+list.group._id"@keydown.enter.shift = "sendmessage($event)"></textarea>
 				<div class="sendmessage" @click="sendmessage">发送</div>
-			</div> 
+			</div>
 		</div>
 		<div v-else class="jinyan">
 			禁言中
@@ -179,6 +179,7 @@
 </template>
 <script>
 	import chat from "src/chat/index.js"
+  import qs from "qs";
 	export default ({
 		props: ['index', 'list'],
 		data() {
@@ -292,17 +293,18 @@
 			},
 			//获取所有群成员
 			get_all_members: function() {
-				this.$http({
-					method: 'get',
-					url: 'http://test.mrpyq.com/api/group/members_in_group',
-					params: {
-						'access_token': localStorage.getItem('access_token'),
-						'id': this.list.group._id,
-						'page': 1,
-					},
-					emulateJSON: true,
-				}).then((res) => {
-					var s = res.body.items,
+
+        var params = {
+          'access_token': localStorage.getItem('access_token'),
+          'id': this.list.group._id,
+          'page': 1,
+        }
+
+        params = qs.stringify(params)
+
+				this.$axios.get('/api/group/members_in_group?' + params)
+          .then((res) => {
+					var s = res.data.items,
 						n = 1;
 					for (var i = 0; i < s.length; i++) {
 						console.log(s[i].title)
@@ -333,20 +335,36 @@
 			},
 			//获取群资料
 			getgroupinfo: function() {
-				this.$http({
-					method: 'get',
-					url: 'http://test.mrpyq.com/api/group/details',
-					params: {
-						'access_token': localStorage.getItem('access_token'),
-						'id': this.list.group._id,
-						'page': 1,
-					},
-					emulateJSON: true,
-				}).then((res) => {
-					//title顺序排列
-					this.group_info = res.body.group;
-					this.group_switch = true;
-				})
+        var params = {
+          'access_token': localStorage.getItem('access_token'),
+          'id': this.list.group._id,
+          'page': 1,
+        }
+
+        params = qs.stringify(params)
+
+        this.$axios.get('/api/group/details?' + params, {
+          }).
+          then((res) => {
+          console.log(res)
+          //title顺序排列
+          this.group_info = res.data.group;
+          this.group_switch = true;
+        })
+				// this.$http({
+				// 	method: 'get',
+				// 	url: 'http://www.mrpyq.com/api/group/details',
+				// 	params: {
+				// 		'access_token': localStorage.getItem('access_token'),
+				// 		'id': this.list.group._id,
+				// 		'page': 1,
+				// 	},
+				// 	emulateJSON: true,
+				// }).then((res) => {
+				// 	//title顺序排列
+				// 	this.group_info = res.body.group;
+				// 	this.group_switch = true;
+				// })
 			},
 			//消息向上滚动
 			scroll_top: function() {
@@ -605,7 +623,7 @@
 		text-indent: 40px;
 		box-shadow: 0 0 6px 0px #000;
 	}
-	
+
 	.group_member_title {
 		display: inline-block;
 		padding: 0 5px;
@@ -614,7 +632,7 @@
 		margin: 0 5px 0 0!important;
 		line-height: 16px;
 	}
-	
+
 	.all_members {
 		position: absolute;
 		top: 0;
@@ -624,13 +642,13 @@
 		overflow: hidden;
 		background: #fff;
 	}
-	
+
 	.all_members>div:nth-child(2) {
 		height: 556px;
 		width: 600px;
 		overflow: auto;
 	}
-	
+
 	.all_members li {
 		width: 500px;
 		height: 60px;
@@ -638,11 +656,11 @@
 		border-bottom: 1px solid #ededed;
 		cursor: pointer;
 	}
-	
+
 	.all_members li:hover {
 		background: #ccc;
 	}
-	
+
 	.group_members_details>img {
 		float: left;
 		height: 50px;
@@ -650,13 +668,13 @@
 		border-radius: 5px;
 		margin: 5px 10px;
 	}
-	
+
 	.group_members_details>div {
 		float: left;
 		width: 300px;
 		margin-left: 5px;
 	}
-	
+
 	.group_members_details>div>p {
 		font-size: 14px;
 		width: 300px;
@@ -665,12 +683,12 @@
 		white-space: nowrap;
 		text-overflow: ellipsis;
 	}
-	
+
 	.group_members_details>div>p:nth-child(2) {
 		margin-top: 5px;
 		color: #888;
 	}
-	
+
 	.group_members_details>p {
 		float: right;
 		padding: 0 5px;
@@ -682,7 +700,7 @@
 		line-height: 22px;
 		color: #fff;
 	}
-	
+
 	.check_show_no {
 		float: right;
 		width: 40px;
@@ -695,12 +713,12 @@
 		border: 1px solid #ddd;
 		transition: all .3s;
 	}
-	
+
 	.check_show_no.active {
 		background: #42c047;
 		border: 1px solid #42c047;
 	}
-	
+
 	.check_show_no>i {
 		display: block;
 		width: 16px;
@@ -713,37 +731,37 @@
 		left: 1px;
 		transition: all .3s;
 	}
-	
+
 	.check_show_no.active>i {
 		left: 23px;
 		box-shadow: none;
 	}
-	
+
 	.show_no_switch {
 		color: #999;
 		font-size: 12px;
 		margin-left: 20px;
 	}
-	
+
 	.group_members_headimg {
 		float: left;
 		padding-bottom: 10px;
 		width: 410px;
 	}
-	
+
 	.group_members_headimg>li {
 		float: left;
 		padding: 0 9px;
 		cursor: pointer;
 	}
-	
+
 	.group_members_headimg>li>img {
 		display: block;
 		width: 50px;
 		height: 50px;
 		border-radius: 50%;
 	}
-	
+
 	.group_members_headimg>li>p {
 		width: 50px;
 		text-align: center;
@@ -754,7 +772,7 @@
 		white-space: nowrap;
 		color: #999;
 	}
-	
+
 	.group_member>div {
 		float: left;
 		width: 50px;
@@ -767,34 +785,34 @@
 		margin-left: 9px;
 		cursor: pointer;
 	}
-	
+
 	.group_details {
 		padding-left: 12px;
 	}
-	
+
 	.group_details>div>p:nth-child(1) {
 		font-size: 14px;
 		color: #999;
 		line-height: 40px;
 	}
-	
+
 	.group_details>div>p:nth-child(2) {
 		line-height: 20px;
 		color: #666;
 		padding-bottom: 5px;
 	}
-	
+
 	.group_details>div {
 		border-bottom: 1px solid #ededed;
 		float: left;
 		width: 100%;
 	}
-	
+
 	.group_banner {
 		height: 240px;
 		overflow: hidden;
 	}
-	
+
 	.group_banner>img {
 		display: block;
 		width: 80px;
@@ -803,22 +821,22 @@
 		margin-top: 40px;
 		border-radius: 50%;
 	}
-	
+
 	.group_banner>p {
 		color: #fff;
 		text-align: center;
 	}
-	
+
 	.group_banner>p:nth-child(2) {
 		font-size: 16px;
 		margin-top: 15px;
 	}
-	
+
 	.group_banner>p:nth-child(3) {
 		font-size: 12px;
 		line-height: 24px
 	}
-	
+
 	.group_info {
 		position: absolute;
 		background: #fcfcfc;
@@ -827,34 +845,34 @@
 		top: 0;
 		left: 0;
 	}
-	
+
 	.system_message {
 		margin-bottom: 12px;
 	}
-	
+
 	.magic_img {
 		cursor: pointer;
 		float: left;
 		padding: 10px;
 	}
-	
+
 	.magic_img:hover {
 		background: #ccc;
 	}
-	
+
 	.magic_img:nth-child(2) {
 		padding: 20px;
 	}
-	
+
 	.magic_img>img {
 		display: block;
 		width: 60px;
 	}
-	
+
 	.magic_img>img.small {
 		width: 40px;
 	}
-	
+
 	.other_revoke {
 		display: table;
 		font-size: 12px;
@@ -864,7 +882,7 @@
 		padding: 0 10px;
 		margin: 0 auto;
 	}
-	
+
 	.revoke {
 		display: table;
 		background: #ddd;
@@ -874,19 +892,19 @@
 		padding: 0 10px;
 		margin: 0 auto;
 	}
-	
+
 	.magic_pic>img {
 		display: block;
 		width: 70px;
 	}
-	
+
 	.ajax-loader-container {
 		position: absolute;
 		height: 100%;
 		width: 100%;
 		background: rgba(0, 0, 0, .3);
 	}
-	
+
 	.ajax-loader {
 		position: absolute;
 		top: 50%;
@@ -894,24 +912,24 @@
 		margin-top: -.75em;
 		margin-left: -.75em;
 	}
-	
+
 	.localurl>img {
 		display: block;
 		width: 80px;
 		border-radius: 5px;
 	}
-	
+
 	.localurl {
 		position: relative;
 	}
-	
+
 	.otherurl>img,
 	.img_show>img {
 		display: block;
 		width: 150px;
 		border-radius: 5px;
 	}
-	
+
 	.select_img {
 		float: right;
 		width: 26px;
@@ -920,12 +938,12 @@
 		position: relative;
 		margin: 8px 15px 0 0;
 	}
-	
+
 	.select_img>img {
 		display: block;
 		height: 22px;
 	}
-	
+
 	.select_img>input {
 		font-size: 0;
 		position: absolute;
@@ -937,7 +955,7 @@
 		width: 100%;
 		cursor: pointer;
 	}
-	
+
 	.emoji_box {
 		width: 500px;
 		height: 150px;
@@ -949,29 +967,29 @@
 		border-top: 1px solid #bbb;
 		border-bottom: 1px solid #bbb;
 	}
-	
+
 	.emoji_container {
 		width: 530px;
 		height: 120px;
 		overflow: auto;
 		border-top: 1px solid #bbb;
 	}
-	
+
 	.emoji_content {
 		width: 480px;
 		padding: 0 10px;
 	}
-	
+
 	.emoji_tu>p {
 		margin: 5px;
 		float: left;
 		cursor: pointer;
 	}
-	
+
 	.emoji_type {
 		overflow: hidden;
 	}
-	
+
 	.emoji_type>span {
 		float: left;
 		width: 50px;
@@ -982,11 +1000,11 @@
 		background: #ccc;
 		cursor: pointer;
 	}
-	
+
 	.emoji_type>span.active {
 		background: #aaa;
 	}
-	
+
 	.emoji_type>span:nth-child(5) {
 		float: right;
 		border-right: none;
@@ -994,7 +1012,7 @@
 		background: url(~assets/chat/close_emoji.png) center center no-repeat;
 		border: none;
 	}
-	
+
 	.emoji_yan>span,
 	.emoji_wen>span {
 		float: left;
@@ -1004,12 +1022,12 @@
 		cursor: pointer;
 		line-height: 50px;
 	}
-	
+
 	.emoji_yan>span:hover,
 	.emoji_wen>span:hover {
 		background: #bbb;
 	}
-	
+
 	.content {
 		position: fixed;
 		top: 100px;
@@ -1022,7 +1040,7 @@
 		box-shadow: 1px 1px 6px #333;
 		height: 611px;
 	}
-	
+
 	.windowheader,
 	.group_info_header,
 	.all_members_header {
@@ -1035,7 +1053,7 @@
 		line-height: 55px;
 		position: relative;
 	}
-	
+
 	.group_info_header>img,
 	.all_members_header>img {
 		position: absolute;
@@ -1045,7 +1063,7 @@
 		right: 15px;
 		cursor: pointer;
 	}
-	
+
 	.windowheader>p {
 		position: absolute;
 		color: #fff;
@@ -1054,62 +1072,62 @@
 		top: 0;
 		cursor: pointer;
 	}
-	
+
 	.windowheader>p>img {
 		display: block;
 		width: 16px;
 	}
-	
+
 	.windowheader>p:nth-child(1) {
 		right: 70px;
 	}
-	
+
 	.windowheader>p:nth-child(1)>img {
 		width: 18px;
 		margin-top: 22px;
 	}
-	
+
 	.windowheader>p:nth-child(2) {
 		right: 40px;
 	}
-	
+
 	.windowheader>p:nth-child(2)>img {
 		margin-top: 28px;
 	}
-	
+
 	.windowheader>p:nth-child(3)>img {
 		margin-top: 23px;
 		width: 12px;
 	}
-	
+
 	.window_box {
 		width: 530px;
 		height: 430px;
 		overflow: auto;
 	}
-	
+
 	.window_hidden {
 		width: 500px;
 		height: 430px;
 		overflow: hidden;
 	}
-	
+
 	.windowcontent {
 		width: 470px;
 		padding: 15px;
 	}
-	
+
 	.windowfooter {
 		border-top: 1px solid #ccc;
 		background: #fff;
 		padding-bottom: 15px;
 		position: relative;
 	}
-	
+
 	.windowfooter_func {
 		height: 40px;
 	}
-	
+
 	.atlist_container {
 		position: absolute;
 		left: 0;
@@ -1118,19 +1136,19 @@
 		width: 100%;
 		overflow: hidden;
 	}
-	
+
 	.atlist_content {
 		width: 100%;
 		height: 100px;
 		overflow-x: scroll;
 		overflow-y: hidden;
 	}
-	
+
 	.at_list {
 		height: 2224px;
 		cursor: pointer;
 	}
-	
+
 	.delete_at {
 		position: absolute;
 		height: 14px;
@@ -1144,7 +1162,7 @@
 		background: #fff;
 		text-align: center;
 	}
-	
+
 	.at_list>div {
 		max-width: 100px;
 		text-overflow: ellipsis;
@@ -1160,7 +1178,7 @@
 		padding: 0 20px 0 5px;
 		position: relative;
 	}
-	
+
 	.wordsay {
 		height: 22px;
 		color: #333;
@@ -1174,31 +1192,31 @@
 		text-align: center;
 		cursor: pointer;
 	}
-	
+
 	.wordsay.active {
 		color: #fff;
 		background: #333;
 	}
-	
+
 	.wordsay.active:hover {
 		background: #333;
 	}
-	
+
 	.wordsay:hover {
 		background: #ededed;
 	}
-	
+
 	.border_left {
 		border-top-left-radius: 5px;
 		border-bottom-left-radius: 5px;
 		margin-left: 15px;
 	}
-	
+
 	.border_right {
 		border-top-right-radius: 5px;
 		border-bottom-right-radius: 5px;
 	}
-	
+
 	.messageval>textarea {
 		float: left;
 		width: 360px;
@@ -1214,20 +1232,20 @@
 		-webkit-user-select: text;
 		-ms-user-select: text;
 	}
-	
+
 	.get_height {
 		white-space: pre-wrap;
 		width: 370px;
 		padding: 0 10px;
 		font-size: 12px;
 	}
-	
+
 	.messageval {
 		overflow: hidden;
 		position: relative;
 		width: 100%;
 	}
-	
+
 	.messageval .sendmessage {
 		width: 80px;
 		height: 32px;
@@ -1242,29 +1260,29 @@
 		text-align: center;
 		cursor: pointer;
 	}
-	
+
 	.messageval .sendmessage:hover {
 		background: #454545;
 	}
-	
+
 	.gugai {
 		position: absolute;
 	}
-	
+
 	.me_word,
 	.other_word {
 		width: 100%;
 		overflow: hidden;
 		margin-bottom: 12px;
 	}
-	
+
 	.me_word .headimg {
 		width: 40px;
 		height: 40px;
 		float: right;
 		border-radius: 50%;
 	}
-	
+
 	.chehui {
 		width: 24px;
 		line-height: 33px;
@@ -1275,7 +1293,7 @@
 		display: none;
 		font-size: 12px;
 	}
-	
+
 	.wordcontent {
 		float: right;
 		border-radius: 5px;
@@ -1295,19 +1313,19 @@
 		-webkit-user-select: text;
 		-ms-user-select: text;
 	}
-	
+
 	div.wordcontent.active {
 		padding: 0;
 		white-space: normal;
 		border: none;
 	}
-	
+
 	.wordcontent.self,
 	.other_word .wordcontent.self {
 		background: #ddd;
 		border: 1px solid #ccc;
 	}
-	
+
 	.add_juqing {
 		position: absolute;
 		top: 0;
@@ -1318,19 +1336,19 @@
 		z-index: 99;
 		overflow: hidden;
 	}
-	
+
 	.con_text1 {
 		font-size: 14px;
 		color: #777;
 		text-align: center;
 		line-height: 35px;
 	}
-	
+
 	.con_text2 {
 		font-size: 12px;
 		text-align: center;
 	}
-	
+
 	.juqing_container {
 		margin: 0 auto;
 		margin-top: 200px;
@@ -1340,7 +1358,7 @@
 		border-radius: 5px;
 		border: 1px solid #fff;
 	}
-	
+
 	.juqing_container>textarea {
 		display: block;
 		border-radius: 5px;
@@ -1357,7 +1375,7 @@
 		word-break: break-word;
 		padding: 5px;
 	}
-	
+
 	.type_description {
 		margin: 0 auto;
 		position: relative;
@@ -1366,7 +1384,7 @@
 		border-radius: 5px;
 		cursor: pointer;
 	}
-	
+
 	.type_description>p:nth-child(1) {
 		text-align: center;
 		font-size: 12px;
@@ -1375,7 +1393,7 @@
 		line-height: 20px;
 		white-space: pre-wrap;
 	}
-	
+
 	p.juqing_name {
 		padding: 0 10px;
 		margin: 0 auto;
@@ -1387,7 +1405,7 @@
 		top: -10px;
 		background: #f8f6f7;
 	}
-	
+
 	p.juqing_name>span {
 		display: block;
 		border: 1px solid #ccc;
@@ -1397,13 +1415,13 @@
 		background: #ddd;
 		color: #999;
 	}
-	
+
 	p.juqing_sure {
 		border-top: 1px solid #ccc;
 		margin-top: 10px;
 		overflow: hidden;
 	}
-	
+
 	p.juqing_sure>span {
 		text-align: center;
 		float: left;
@@ -1419,25 +1437,25 @@
 		background: -o-linear-gradient(top left, #eee, #ccc, #fff);
 		background: linear-gradient(to bottom right, #eee, #ccc, #fff);
 	}
-	
+
 	p.juqing_sure>span:hover {
 		background: #fff;
 	}
-	
+
 	p.juqing_sure>span:nth-child(1) {
 		border-right: 1px solid #ccc;
 	}
-	
+
 	p.juqing_sure>span:nth-child(2) {
 		color: #f09a9a;
 	}
-	
+
 	p.qun_at {
 		float: right;
 		line-height: 40px;
 		margin-right: 20px;
 	}
-	
+
 	p.addjuqing_switch {
 		float: right;
 		line-height: 40px;
@@ -1447,19 +1465,19 @@
 		padding-left: 16px;
 		background-size: 12px;
 	}
-	
+
 	p.face {
 		float: right;
 		line-height: 40px;
 		cursor: pointer;
 		margin: 8px 15px 0 0;
 	}
-	
+
 	p.face>img {
 		display: block;
 		width: 22px;
 	}
-	
+
 	.me_selfsay {
 		position: absolute;
 		font-size: 12px;
@@ -1471,7 +1489,7 @@
 		line-height: 20px;
 		text-align: center;
 	}
-	
+
 	.other_selfsay {
 		position: absolute;
 		font-size: 12px;
@@ -1483,7 +1501,7 @@
 		line-height: 20px;
 		text-align: center;
 	}
-	
+
 	.other_word .headimg {
 		width: 40px;
 		height: 40px;
@@ -1491,36 +1509,36 @@
 		border-radius: 50%;
 		margin-top: 5px;
 	}
-	
+
 	.other_info {
 		overflow: hidden;
 		float: left;
 		width: 400px;
 		margin-left: 15px;
 	}
-	
+
 	.other_word .wordcontent {
 		float: left;
 		background: #fff;
 		border: #ccc 1px solid;
 		margin: 2px 0 0 0;
 	}
-	
+
 	.other_name {
 		font-size: 14px;
 		margin: 0;
 	}
-	
+
 	.other_name>span {
 		font-size: 12px;
 		color: #999;
 		margin-left: 5px;
 	}
-	
+
 	.messageshow {
 		position: relative;
 	}
-	
+
 	.emojis {
 		margin: 5px;
 		float: left;

@@ -24,7 +24,7 @@
         某群管理员关闭了全员禁言 group_silenced (通知类型，但在消息栏显示，同上)
         群主授予某某专属头衔 (txt)
         礼物消息 某某送给你一份礼物  (txt)
-        
+
 **/
 
 import vm from 'src/main.js'
@@ -128,8 +128,8 @@ var chat = {
 				for (var gindex = 0, glength = groupList.length; gindex < glength; gindex++) {
 					if (info.target_id == groupList[gindex]._id) {
 						//找到后取该群中对应的当前皮信息
-						currPi = groupList[gindex].member;
-						me.id = currPi._id;
+						currPi = info.chat_body.chat_current_user;
+						me.id = currPi.id;
 						me.no = currPi.no;
 						break;
 					}
@@ -214,15 +214,15 @@ var chat = {
 				}
 				conversation = new Conversation(me, other);
 			} else { //群聊
-				me.id = info.member._id;
-				me.no = info.member.no;
+				me.id = info._id;
+				me.no = info.no;
 				other.id = info._id;
 				conExist = this.conversationExist(me.id, other.id, con, me.no);
 				if (!isNaN(conExist))
 					return conExist;
 				else {
-					me.headimg = info.member.headimg;
-					me.name = info.member.name;
+					me.headimg = info.headimg;
+					me.name = info.name;
 					other.headimg = info.headimg;
 					other.name = info.name;
 					other.no = info.no;
@@ -231,7 +231,7 @@ var chat = {
 				conversation = new Conversation(me, other);
 				conversation.set_group(true);
 
-				switch (info.member.group_member_type) {
+				switch (info.group_member_type) {
 					case 1:
 						conversation.set_title("", 1);
 						break;
@@ -241,6 +241,8 @@ var chat = {
 					case 20:
 						conversation.set_title("群主", 20);
 						break;
+          default:
+            conversation.set_title("超级小北",1)
 				}
 			}
 		} //初始化未读消息数目为0

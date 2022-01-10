@@ -1,7 +1,7 @@
 <template>
    <transition name="anime">
     <div class="show_img" v-show="$store.state.show_at" @click.stop="f_hide_pi($event)">
-			<div class="container">	
+			<div class="container">
 				<div class="pi_chu">
 					<ul class="pi_list">
 						<li v-for="(list,listindex) in all_members_list" @click.stop="add_at(listindex)">
@@ -17,25 +17,28 @@
    </transition>
 </template>
 <script>
-	export default ({
+	import qs from "qs";
+
+  export default ({
 		data() {
 			return {
 				all_members_list: []
 			}
 		},
 		mounted: function() {
-			this.$http({
-				method: 'get',
-				url: 'http://test.mrpyq.com/api/group/members_in_group',
-				params: {
-					'access_token': localStorage.getItem('access_token'),
-					'id': this.$store.state.group_id,
-					'page': 1,
-				},
-				emulateJSON: true,
-			}).then((res) => {
-				console.log("test*******", res.body);
-				var s = res.body.items,
+
+      var params = {
+        'access_token': localStorage.getItem('access_token'),
+        'id': this.$store.state.group_id,
+        'page': 1,
+      }
+
+      params = qs.stringify(params)
+
+      this.$axios.get('/api/group/members_in_group?' + params)
+        .then((res) => {
+				console.log("test*******", res.data);
+				var s = res.data.items,
 					n = 1;
 				for (var i = 0; i < s.length; i++) {
 					console.log(s[i].title)
@@ -104,7 +107,7 @@
 		border-radius: 5px;
 		position: relative;
 	}
-	
+
 	.pi_chu {
 		width: 600px;
 		height: 490px;
@@ -113,22 +116,22 @@
 		background: #fff;
 		margin: 0 auto;
 	}
-	
+
 	.pi_chu ul {
 		width: 400px;
 	}
-	
+
 	.pi_chu ul>li {
 		height: 70px;
 		padding-left: 10px;
 		border-bottom: 1px solid #ccc;
 		cursor: pointer;
 	}
-	
+
 	.pi_chu ul>li:hover {
 		background: #f2f2f2;
 	}
-	
+
 	.pi_list li>img {
 		float: left;
 		margin-top: 7px;
@@ -137,7 +140,7 @@
 		border-radius: 50%;
 		margin-right: 10px;
 	}
-	
+
 	.pi_list li>h3 {
 		float: left;
 		display: table;
@@ -147,7 +150,7 @@
 		font-weight: normal;
 		color: #000;
 	}
-	
+
 	.pi_list li>span {
 		float: left;
 		padding: 0 5px;
@@ -159,7 +162,7 @@
 		line-height: 22px;
 		color: #fff;
 	}
-	
+
 	.pi_list li>p {
 		float: left;
 		width: 317px;
@@ -171,7 +174,7 @@
 		height: 14px;
 		margin-top: 10px;
 	}
-	
+
 	.show_img {
 		position: fixed;
 		top: 0;
@@ -183,11 +186,11 @@
 		padding-top: 20px;
 		z-index: 99999999;
 	}
-	
+
 	.show_img img {
 		display: block;
 	}
-	
+
 	.anime-enter,
 	.anime-leave-to {
 		opacity: 0;

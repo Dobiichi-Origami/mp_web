@@ -3,7 +3,7 @@
   <seeimg></seeimg>
     <header>
       <div id="title">
-        <a href="http://test.mrpyq.com/" target="_blank" @click="logo_click">
+        <a href="http://www.mrpyq.com/" target="_blank" @click="logo_click">
           <div id="logo">
 
             <img src="~assets/Main_page/logo.png" alt="logo"> 名人朋友圈
@@ -517,7 +517,7 @@
 		border-bottom: 1px inset #bbb !important;
 		position: relative;
 	}
-	
+
 	.current_select:after {
 		content: url("~assets/Main_page/selected.png");
 		color: black;
@@ -525,7 +525,7 @@
 		top: 2px;
 		right: 10px;
 	}
-	
+
 	.new_message {
 		position: absolute;
 		right: 10px;
@@ -539,25 +539,25 @@
 		text-align: center;
 		line-height: 2;
 	}
-	
+
 	#out_box {
 		-moz-user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
 	}
-	
+
 	#box {
 		margin: 0 auto;
 		margin-top: 72px;
 		width: 1100px;
 		overflow: auto;
 	}
-	
+
 	#main {
 		float: left;
 		margin: 0 15px;
 	}
-	
+
 	header {
 		cursor: default;
 		background: #323238;
@@ -580,66 +580,66 @@
 		-ms-transform: translateZ(0);
 		-o-transform: translateZ(0);
 	}
-	
+
 	#title {
 		width: 1100px;
 		margin: 0 auto;
 		position: relative;
 	}
-	
+
 	#title_name {
 		margin-left: 1em;
 	}
-	
+
 	#logo {
 		position: absolute;
 		font-size: 20px;
 		margin-left: 10px;
 	}
-	
+
 	#logo img {
 		float: left;
 		margin-right: 15px;
 	}
-	
+
 	#logout {
 		position: absolute;
 		font-size: 20px;
 		right: 15px;
 		cursor: pointer;
 	}
-	
+
 	.border_box {
 		border: 1px solid #ddd;
 		border-radius: 2px;
 		background: white;
 		box-shadow: 1px 1px 6px #666;
 	}
-	
+
 	#left {
 		width: 200px;
 		float: left;
 	}
-	
+
 	#user_info {
 		word-break: break-all;
 		margin-bottom: 20px;
 		padding: 0 10px;
 		max-height: 380px;
 	}
-	
+
 	#headimg {
 		width: 100px;
 		height: 100px;
 		margin: 30px auto 10px auto;
 	}
-	
+
 	#headimg img {
 		width: 100px;
 		border-radius: 100%;
 		cursor: pointer;
 	}
-	
+
 	#name {
 		text-align: center;
 		font-size: 22px;
@@ -648,7 +648,7 @@
 		min-height: 33px;
 		cursor: default;
 	}
-	
+
 	#level {
 		cursor: default;
 		text-align: center;
@@ -660,7 +660,7 @@
 		border-radius: 4px;
 		color: white;
 	}
-	
+
 	#descript {
 		width: 150px;
 		font-size: 14px;
@@ -669,41 +669,41 @@
 		margin: 0 auto;
 		padding-right: calc(100% - 171px);
 	}
-	
+
 	.user_scroll_box {
 		overflow: hidden;
 		width: 178px;
 	}
-	
+
 	.user_scroll {
 		overflow: auto;
 		width: 198px;
 	}
-	
+
 	.des_s {
 		max-height: 130px;
 		margin: 10px 0 22px 5px;
 	}
-	
+
 	.name_s {
 		max-height: 66px;
 	}
-	
+
 	.ul {
 		position: relative;
 		overflow: hidden;
 	}
-	
+
 	.dec {
 		background: linear-gradient(white 15px, hsla(0, 0%, 100%, 0)) 0 0 / 100% 50px, radial-gradient(at top, rgba(0, 0, 0, .2), transparent 80%) 0 0 / 100% 10px, linear-gradient(to top, white 15px, hsla(0, 0%, 100%, 0)) bottom / 100% 50px, radial-gradient(at bottom, rgba(0, 0, 0, .2), transparent 80%) bottom / 100% 10px;
 		background-repeat: no-repeat;
 		background-attachment: local, scroll, local, scroll;
 	}
-	
+
 	.li {
 		display: none;
 	}
-	
+
 	.omit {
 		margin-left: 50px;
 		width: 100px;
@@ -713,7 +713,7 @@
 		overflow: hidden;
 		cursor: pointer;
 	}
-	
+
 	.func_box {
 		font-size: 22px;
 		border-bottom: 1px solid #ddd;
@@ -724,27 +724,27 @@
 		transition: all 0.2s;
 		cursor: pointer;
 	}
-	
+
 	.func_box:hover {
 		color: white;
 		background: #bbb;
 	}
-	
+
 	.ul_scroll {
 		width: 220px;
 		max-height: 300px;
 		overflow: auto;
 	}
-	
+
 	#func {
 		background: white;
 		border: none;
 	}
-	
+
 	#identity>div {
 		border-bottom: 1px solid #bbb;
 	}
-	
+
 	#func ul li {
 		position: relative;
 		text-align: center;
@@ -759,14 +759,14 @@
 		cursor: default;
 		overflow: hidden;
 	}
-	
+
 	#func ul li:hover {
 		color: white;
 		border-bottom: 1px inset #bbb;
 		background: #bbb;
 		transition: 0.3s;
 	}
-	
+
 	.li_img {
 		width: 36px;
 		height: 36px;
@@ -775,19 +775,19 @@
 		left: 25px;
 		top: 15px;
 	}
-	
+
 	.selected {
 		position: absolute;
 		right: 20px;
 		top: 20px;
 	}
-	
+
 	.func_img {
 		position: absolute;
 		left: 20px;
 		top: 20px;
 	}
-	
+
 	.func_arrow_right {
 		position: absolute;
 		right: 9px;
@@ -796,7 +796,7 @@
 		border-left: 10px solid #4e4e4e;
 		border-bottom: 8px solid transparent;
 	}
-	
+
 	.func_arrow_down {
 		position: absolute;
 		right: 9px;
@@ -805,14 +805,14 @@
 		border-top: 10px solid #4e4e4e;
 		border-right: 8px solid transparent;
 	}
-	
+
 	#right {
 		float: left;
 		width: 205px;
 		overflow: hidden;
 		position: relative;
 	}
-	
+
 	#btn {
 		position: fixed;
 		transform: translateZ(0);
@@ -824,33 +824,33 @@
 		right: calc((100vw - 1100px)/2);
 		margin-right: calc(100% - 100vw);
 	}
-	
+
 	.fade-enter-active,
 	.fade-leave-active {
 		transition: opacity 0.3s
 	}
-	
+
 	.fade-enter,
 	.fade-leave-active {
 		opacity: 0;
 	}
-	
+
 	.ul-enter-active {
 		animation: ul-in .7s;
 	}
-	
+
 	.ul-leave-active {
 		animation: ul-out .5s;
 	}
-	
+
 	.ul_li-enter-active {
 		transition: opacity 0.7s
 	}
-	
+
 	.ul_li-leave-active {
 		transition: opacity 0.5s
 	}
-	
+
 	@keyframes ul-in {
 		0% {
 			max-height: 0px;
@@ -861,7 +861,7 @@
 			opacity: 1;
 		}
 	}
-	
+
 	@keyframes ul-out {
 		0% {
 			max-height: 300px;

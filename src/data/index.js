@@ -8,14 +8,14 @@ import Plugin from './plugin.js'
 import Mounted from './mounted.js'
 
 const store = new Vuex.Store({
-	//暂时用不到module，等数据大了再用  
+	//暂时用不到module，等数据大了再用
 	modules: {
 		chat: Chat,
 		plugin: Plugin,
 		mounted: Mounted,
 	},
 	state: {
-		domain: "http://test.mrpyq.com/api/",
+		domain: "/api/",
 		AwesomeMessage: false,
 		unread: 0,
 		show_at: false,

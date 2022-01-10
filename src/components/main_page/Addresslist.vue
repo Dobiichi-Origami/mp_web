@@ -76,6 +76,7 @@
 			},
 			opengroup: function(event, bindex) {
 				var id = event.target.dataset.index;
+        console.log(this.$store.state.chat.messages.grouplist)
 				console.log(this.$store.state.chat.messages.grouplist[bindex] + '11111111')
 				var index = chat.start(this.$store.state.chat.messages.grouplist[bindex]);
 				if (this.$store.state.message_window.length == 0) {
@@ -233,7 +234,7 @@
 		width: 660px;
 		min-height: 1px;
 	}
-	
+
 	.content_content {
 		background: #fff;
 		overflow: hidden;
@@ -241,7 +242,7 @@
 		padding-bottom: 200px;
 		box-shadow: 1px 1px 6px #333;
 	}
-	
+
 	.listtitle,
 	.groupname>div {
 		height: 56px;
@@ -251,16 +252,16 @@
 		color: #555;
 		cursor: pointer;
 	}
-	
+
 	.listtitle {
 		text-indent: 30px;
 		position: relative;
 	}
-	
+
 	.listtitle:hover {
 		background: #ccc;
 	}
-	
+
 	.listtitle>img {
 		display: block;
 		position: absolute;
@@ -273,31 +274,31 @@
 		transform: rotateZ(-90deg);
 		transition: transform .5s;
 	}
-	
+
 	.listtitle>img.active {
 		-webkit-transform: rotateZ(0deg);
 		-ms-transform: rotateZ(0deg);
 		-o-transform: rotateZ(0deg);
 		transform: rotateZ(0deg);
 	}
-	
+
 	.classname,
 	.groupname {
 		margin-left: 10px;
 		float: left;
 		width: 640px;
 	}
-	
+
 	ul {
 		transition: all .5s;
 		overflow: hidden;
 	}
-	
+
 	ul.active {
 		height: 0!important;
 		opacity: 0;
 	}
-	
+
 	ul>li {
 		height: 54px;
 		border-bottom: 1px solid #ebebeb;
@@ -305,7 +306,7 @@
 		overflow: hidden;
 		background: #fafafa;
 	}
-	
+
 	ul>li>img,
 	.groupname img {
 		float: left;
@@ -314,7 +315,7 @@
 		border-radius: 50%;
 		margin: 10px 0 0 10px;
 	}
-	
+
 	.friendinfo {
 		float: left;
 		width: 490px;
@@ -323,20 +324,20 @@
 		margin-left: 10px;
 		border-right: 1px solid #ebebeb;
 	}
-	
+
 	.friendname {
 		display: block;
 		font-size: 14px;
 		color: #343434;
 		line-height: 20px;
 	}
-	
+
 	.friendname>span {
 		color: #999;
 		font-size: 12px;
 		margin-left: 5px;
 	}
-	
+
 	.messagecontent {
 		display: block;
 		width: 490px;
@@ -347,7 +348,7 @@
 		color: #999;
 		line-height: 24px;
 	}
-	
+
 	.enterroom {
 		float: left;
 		height: 100%;
@@ -360,7 +361,7 @@
 		background: url(~assets/chat/enterroom.png) 10px center no-repeat;
 		background-size: 20px;
 	}
-	
+
 	.tofriend,
 	.togroup {
 		width: 50%;
@@ -380,17 +381,17 @@
 		-moz-box-sizing: border-box;
 		box-sizing: border-box;
 	}
-	
+
 	.tofriend {
 		border-right: 1px solid #ccc;
 		border-right: 1px solid #ebebeb;
 		background: url('~assets/chat/friendlist2.png') 115px center no-repeat #fff;
 	}
-	
+
 	.togroup {
 		background: url('~assets/chat/grouplist2.png') 120px center no-repeat #fff;
 	}
-	
+
 	.tofriend>div,
 	.togroup>div {
 		width: 20%;
@@ -401,24 +402,24 @@
 		left: 40%;
 		display: none;
 	}
-	
+
 	.tofriend.active,
 	.tofriend:hover {
 		background: url('~assets/chat/friendlist1.png') 115px center no-repeat #fff;
 		color: #333238;
 	}
-	
+
 	.togroup.active,
 	.togroup:hover {
 		background: url('~assets/chat/grouplist1.png') 120px center no-repeat #fff;
 		color: #333238;
 	}
-	
+
 	.tofriend.active>div,
 	.togroup.active>div {
 		display: block;
 	}
-	
+
 	.groupname>div {}
 
 </style>

@@ -4,7 +4,7 @@
 		<div id="qr_code">
 			<img src="~assets/Login/qr_code.png" alt="二维码下载">
 		</div>
-	</div>	
+	</div>
 	<div id="login">
 		<img src="~assets/Login/title.png" alt="标题" id="title">
 
@@ -29,7 +29,9 @@
 </div>
 </template>
 <script>
-	export default {
+	import axios from "axios";
+
+  export default {
 		name: 'Login',
 		data() {
 			return {
@@ -50,17 +52,17 @@
 				//传数据判断用户输入的信息是否正确，正确后执行下面函数
 				//返回id，设置id
 				var me = this;
-				me.$http.get(me.$store.state.domain + 'account/login', {
+				this.$axios.get( '/api/account/login', {
 					params: {
 						phone: me.phone_number,
 						password: me.password,
 					},
 				}).then(
 					(res) => {
-						if (res.body.access_token) {
+						if (res.data.access_token) {
 							_czc.push(["_trackEvent", "登录页面", "登录成功"]);
 							TDAPP.onEvent("登录页面", "登录成功");
-							localStorage.setItem('access_token', res.body.access_token);
+							localStorage.setItem('access_token', res.data.access_token);
 							me.set_location();
 							me.error = '';
 							me.$router.push('/Main_page');
@@ -112,7 +114,7 @@
 		font: #323238;
 		background-image: url("~assets/Login/bg.png");
 	}
-	
+
 	#zhezhao {
 		position: fixed;
 		z-index: 1;
@@ -122,7 +124,7 @@
 		bottom: 0;
 		background: rgba(0, 0, 0, .7);
 	}
-	
+
 	#qr_code:after {
 		position: absolute;
 		top: -50px;
@@ -131,26 +133,26 @@
 		color: white;
 		content: url("~assets/Login/close.png");
 	}
-	
+
 	#qr_code {
 		position: absolute;
 		z-index: 1;
 		left: calc(50% - 175px);
 		top: calc(40% - 235px);
 	}
-	
+
 	#login {
 		margin: 250px auto;
 	}
-	
+
 	#title {
 		transform: translateX(30px);
 	}
-	
+
 	#xbj {
 		margin-bottom: 0;
 	}
-	
+
 	.input {
 		background: #fff;
 		border: 1px solid #bbb;
@@ -160,40 +162,40 @@
 		width: 500px;
 		transform: translateY(-5px);
 	}
-	
+
 	.input_focus {
 		border: 1px solid #323238;
 	}
-	
+
 	.img_focus {
 		opacity: 1;
 	}
-	
+
 	.img_nfocus {
 		opacity: .5;
 	}
-	
+
 	.input img {
 		vertical-align: sub;
 		margin: 0 15px;
 	}
-	
+
 	#error {
 		height: 40px;
 		width: 100%;
 	}
-	
+
 	#error>span {
 		font-size: 18px;
 		line-height: 2;
 		display: inline-block;
 	}
-	
+
 	#error>span img {
 		vertical-align: sub;
 		margin-right: 12px;
 	}
-	
+
 	#login>div:nth-last-child(2) {
 		color: white;
 		width: 500px;
@@ -207,23 +209,23 @@
 		position: relative;
 		transition: all .3s;
 	}
-	
+
 	#login>div:nth-last-child(2):hover {
 		background: #111;
 	}
-	
+
 	#login>div:nth-last-child(1) {
 		text-align: center;
 		font-size: 24px;
 		margin-top: 15px;
 	}
-	
+
 	#download {
 		cursor: pointer;
 		display: table;
 		margin: 0 auto;
 	}
-	
+
 	input {
 		font-size: 20px;
 		color: #4c4c4c;
@@ -232,7 +234,7 @@
 		border: none;
 		letter-spacing: 4px;
 	}
-	
+
 	::placeholder {
 		color: #a6a6a6;
 		font-size: 20px;

@@ -56,7 +56,7 @@
 					if (this.$store.state.per_number == 0) {
 						this.$http({
 							method: 'get',
-							url: 'http://test.mrpyq.com/api/feed/feeds_by_member',
+							url: 'http://www.mrpyq.com/api/feed/feeds_by_member',
 							params: {
 								'userid': this.$store.state.current_user_pe._id,
 								'access_token': localStorage.getItem('access_token'),
@@ -111,7 +111,7 @@
 					} else {
 						this.$http({
 							method: 'get',
-							url: 'http://test.mrpyq.com/api/feed/feeds_by_member',
+							url: 'http://www.mrpyq.com/api/feed/feeds_by_member',
 							params: {
 								'userid': this.$store.state.current_user_pe._id,
 								'access_token': localStorage.getItem('access_token'),
@@ -127,7 +127,7 @@
 								it.splice(0, it.length + this.$store.state.per_number);
 								this.$http({
 									method: 'get',
-									url: 'http://test.mrpyq.com/api/feed/feeds_by_member',
+									url: 'http://www.mrpyq.com/api/feed/feeds_by_member',
 									params: {
 										'userid': this.$store.state.current_user_pe._id,
 										'access_token': localStorage.getItem('access_token'),
@@ -203,7 +203,7 @@
 		width: 660px;
 		padding-bottom: 25px;
 	}
-	
+
 	.per_content>button {
 		height: 35px;
 		line-height: 35px;
@@ -216,42 +216,42 @@
 		border-radius: 3px;
 		color: #777;
 	}
-	
+
 	.per_content>button.no_more {
 		background: transparent;
 		color: #dd6f5a;
 		cursor: auto;
 		border: none;
 	}
-	
+
 	.per_inform {
 		padding: 14px 34px 14px 20px;
 	}
-	
+
 	.per_inform>div:nth-child(1) {
 		width: 86px;
 		height: 86px;
 		margin: 0 auto;
 		position: relative;
 	}
-	
+
 	.per_inform>div:nth-child(1)>img {
 		width: 86px;
 		border-radius: 50%;
 	}
-	
+
 	.per_inform>div:nth-child(1)>span {
 		position: absolute;
 		left: 100%;
 		top: 64px;
 		font-size: 16px;
 	}
-	
+
 	.per_inform>div:nth-child(2) {
 		width: 100%;
 		margin-top: 15px;
 	}
-	
+
 	.per_inform>div:nth-child(3) {
 		display: table;
 		margin: 0 auto;
@@ -261,14 +261,14 @@
 		text-align: center;
 		padding: 0 3px;
 	}
-	
+
 	.per_name {
 		display: table;
 		margin: 0 auto;
 		position: relative;
 		font-size: 16px;
 	}
-	
+
 	.per_level {
 		position: absolute;
 		display: table;
@@ -281,28 +281,28 @@
 		overflow: hidden;
 		padding-left: 5px;
 	}
-	
+
 	.per_level span {
 		display: table;
 		padding: 1px 3px;
 		line-height: 1.0;
 		border-radius: 5px;
 	}
-	
+
 	.per_content * {
 		word-wrap: break-word;
 		box-sizing: border-box;
 		-moz-box-sizing: border-box;
 		-webkit-box-sizing: border-box;
 	}
-	
+
 	button {
 		border: 0;
 		background: none;
 		overflow: visible;
 		font-size: 14px;
 	}
-	
+
 	button.more {
 		height: 30px;
 		line-height: 30px;
@@ -311,7 +311,7 @@
 		text-align: center;
 		cursor: pointer;
 	}
-	
+
 	.per_content .user_list:after,
 	.per_content .user_list>div>div:nth-child(1):after,
 	.per_content .text_content>p.active:after,
@@ -323,7 +323,7 @@
 		visibility: hidden;
 		height: 0
 	}
-	
+
 	.per_content .show_img {
 		position: fixed;
 		top: 0;
@@ -336,11 +336,11 @@
 		/*overflow: auto;*/
 		z-index: 999;
 	}
-	
+
 	.per_content .form_list {
 		width: 660px;
 	}
-	
+
 	.per_content .user_list,
 	.per_inform {
 		width: 100%;
@@ -349,19 +349,19 @@
 		margin-bottom: 20px;
 		box-shadow: 1px 1px 6px #666;
 	}
-	
+
 	.per_content .user_list>div {
 		padding: 14px 34px 14px 20px;
 	}
-	
+
 	.per_content .user_list>div>div:nth-child(1) {
 		width: 100%;
 	}
-	
+
 	.per_content .toBigger {
 		cursor: zoom-in;
 	}
-	
+
 	.per_content .headimg {
 		float: left;
 		width: 57px;
@@ -369,49 +369,49 @@
 		border-radius: 50%;
 		cursor: pointer;
 	}
-	
+
 	.per_content .user_inform {
 		float: left;
 		margin-left: 23px;
 	}
-	
+
 	.per_content .user_inform>h3 {
 		font-weight: normal;
 		margin-top: 15px;
 		font-size: 16px;
 		display: table;
 	}
-	
+
 	.per_content .user_inform>p {
 		font-size: 12px;
 		color: #aaa8a8;
 		display: table;
 	}
-	
+
 	.per_content .i_like {
 		margin-top: 18px;
 		float: right;
 		height: 21px;
 	}
-	
+
 	.per_content .i_like>img {
 		float: left;
 		margin-top: 2px;
 		margin-right: 10px;
 		cursor: pointer;
 	}
-	
+
 	.per_content .i_like>span {
 		float: left;
 		height: 21px;
 		line-height: 21px;
 	}
-	
+
 	.per_content .like_users_name {
 		float: left;
 		width: 585px;
 	}
-	
+
 	.per_content .text_content>p {
 		white-space: pre-wrap;
 		word-wrap: break-word;
@@ -420,25 +420,25 @@
 		line-height: 22px;
 		transition: all .2s;
 	}
-	
+
 	.per_content .text_content>p.active {
 		height: 132px;
 		overflow: hidden;
 	}
-	
+
 	.per_content .text_content a {
 		color: rgb(72, 153, 237);
 	}
-	
+
 	.per_content .text_content a.active {
 		display: block;
 	}
-	
+
 	.per_content .content>div:nth-child(2) {
 		width: 100%;
 		border-top: 1px solid #eee;
 	}
-	
+
 	.per_content .content>div img {
 		float: left;
 		width: 178px;
@@ -446,16 +446,16 @@
 		margin-left: 5px;
 		padding: 10px 0;
 	}
-	
+
 	.per_content .result {
 		background: #fafafa;
 		;
 	}
-	
+
 	.per_content .result img {
 		float: left;
 	}
-	
+
 	.per_content .like_users_name span {
 		float: left;
 		line-height: 17px;
@@ -463,7 +463,7 @@
 		color: #54a1e9;
 		cursor: pointer;
 	}
-	
+
 	.per_content .like_users_name span.me_like {
 		color: #dd6f5a;
 	}
